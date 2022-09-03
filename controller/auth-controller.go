@@ -44,7 +44,6 @@ func (c *authController) Register(ctx *gin.Context) {
 		createdUser := c.authService.CreateUser(registerDTO)
 		token := c.jwtService.GenerateToken(strconv.FormatUint(createdUser.ID, 10))
 		createdUser.Token = token
-		// createdUser.LevelAccess = "admin"
 		response := helpers.BuildResponse(true, "OK!", createdUser)
 		ctx.JSON(http.StatusCreated, response)
 	}
