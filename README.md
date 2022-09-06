@@ -1,4 +1,6 @@
-#Login
+# ** API CONTRACT GOLANG **
+
+# Login
 
 - Login object
 
@@ -51,7 +53,7 @@ Login to Applicant page and returns the new object.
 
 ---
 
-#Register
+# Register
 
 - Register object
 
@@ -116,7 +118,7 @@ Register to Applicant page and returns the new object.
 
 ---
 
-#Users
+# Users
 
 ## **GET /api/employees/users/:id**
 
@@ -223,7 +225,7 @@ Update a User(Applicant) and returns the new object.
 
 ---
 
-#Job Experience
+# Job Experience
 
 - Job Experience object
 
@@ -362,7 +364,7 @@ Deletes the specified Experience.
 
 ---
 
-#Companies
+# Companies
 
 - Company object
 
@@ -528,7 +530,7 @@ Deletes the specified company.
   - **Code:** 401
     **Content:** `{ error : "You are unauthorized to make this request." }`
 
-#Job Categories
+# Job Categories
 
 - Job Categories object
 
@@ -654,7 +656,7 @@ Deletes the specified product.
 
 ---
 
-#Jobs
+# Jobs
 
 - Jobs Object
 
@@ -934,7 +936,7 @@ Returns the specified jobs.
 
 ---
 
-#Job Application
+# Job Application
 
 - Job Application Object
 
@@ -1027,7 +1029,7 @@ Applicant apply a job and returns the new object.
 
 ---
 
-#Skills
+# Skills
 
 - Skills object
 
