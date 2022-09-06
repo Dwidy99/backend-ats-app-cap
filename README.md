@@ -6,13 +6,13 @@
 
 ```
  {
-   user_id: int,
-   name: string,
-   username: string,
-   email: string,
-   role: string,
-   token: string,
-   created_at: timestamp
+   "user_id": int,
+   "name": string,
+   "username": string,
+   "email": string,
+   "role": string,
+   "token": string,
+   "created_at": timestamp
  }
 ```
 
@@ -28,8 +28,8 @@ Login to Applicant page and returns the new object.
 
 ```
 {
-    email: string,
-    password: string
+    "email": string,
+    "password": string
 }
 ```
 
@@ -39,13 +39,18 @@ Login to Applicant page and returns the new object.
 
 ```
 {
-    user_id: int,
-    name: string,
-    username: string,
-    email: string,
-    role: string,
-    token: string,
-    created_at: timestamp
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
+        "user_id": int,
+        "name": string,
+        "username": string,
+        "email": string,
+        "role": string,
+        "token": string,
+        "created_at": timestamp
+    }
 }
 ```
 
@@ -59,13 +64,13 @@ Login to Applicant page and returns the new object.
 
 ```
  {
-   user_id: int,
-   name: string,
-   username: string,
-   email: string,
-   role: string,
-   token: string,
-   created_at: timestamp
+   "user_id": int,
+   "name": string,
+   "username": string,
+   "email": string,
+   "role": string,
+   "token": string,
+   "created_at": timestamp
  }
 ```
 
@@ -81,22 +86,10 @@ Register to Applicant page and returns the new object.
 
 ```
 {
-    name: string,
-    username: string,
-    email: string,
-    password: string
-}
-```
-
-- **Data Params for employee**
-
-```
-{
-    name: string,
-    username: string,
-    email: string,
-    password: string,
-    role: string
+    "name": string,
+    "username": string,
+    "email": string,
+    "password": string
 }
 ```
 
@@ -105,12 +98,17 @@ Register to Applicant page and returns the new object.
    **Content:**
   ```
   {
-    id_user: int
-    name: string,
-    username: string,
-    email: string,
-    role: string,
-    token: string
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
+        "id_user": int
+        "name": string,
+        "username": string,
+        "email": string,
+        "role": string,
+        "token": string
+    }
   }
   ```
 
@@ -137,13 +135,19 @@ Returns the specified user.
 
   ```
   {
-    id: int,
-    first_name: string,
-    last_name: string,
-    avatar: string,
-    name: string,
-    last_education: string,
-    linkedin_url: string
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
+        "applicant_id": int,
+        "user_id": int,
+        "first_name": string,
+        "last_name": string,
+        "avatar": string,
+        "name": string,
+        "last_education": string,
+        "linkedin_url": string
+    }
   }
   ```
 
@@ -166,14 +170,29 @@ Update a User(Applicant) and returns the new object.
 
 ```
 {
-    name: string,
-    contact: string,
+    "name": string,
+    "contact": string,
 }
 ```
 
 - **Success Response:**
 - **Code:** 200
-  **Content:** `{ <user_object> }`
+  **Content:**
+  ```
+  {
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
+        "user_id": int
+        "name": string,
+        "username": string,
+        "email": string,
+        "role": string,
+        "token": string
+    }
+  }
+  ```
 
 ## **DELETE /api/emplooyees/users/:id**
 
@@ -203,23 +222,41 @@ Update a User(Applicant) and returns the new object.
   None
 - **Headers**
   Content-Type: application/json
-- **Data Params applicant**
+- **Data Params**
 
 ```
 {
-    first_name: string,
-    last_name: string,
-    avatar: string,
-    name: string,
-    last_education: string,
-    linkedin_url: string,
-    github_url: string
+    "first_name": string,
+    "last_name": string,
+    "avatar": string,
+    "name": string,
+    "last_education": string,
+    "linkedin_url": string,
+    "github_url": string
 }
 ```
 
 - **Success Response:**
 - **Code:** 200
-  **Content:** `{ <user_object> }`
+  **Content:**
+  ```
+  {
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
+        "id_applicant": int,
+        "user_id": int,
+        "first_name": string,
+        "last_name": string,
+        "avatar": string,
+        "name": string,
+        "last_education": string,
+        "linkedin_url": string,
+        "github_url": string
+    }
+  }
+  ```
 
 ---
 
@@ -231,14 +268,14 @@ Update a User(Applicant) and returns the new object.
 
 ```
 {
-    id: integer,
-    applicant_id: integer,
-    company_name: string,
-    role: string,
-    description: text,
-    date_start: date,
-    date_end: date,
-    status: int
+    "id_job_experience": integer,
+    "applicant_id": integer,
+    "company_name": string,
+    "role": string,
+    "description": text,
+    "date_start": date,
+    "date_end": date,
+    "status": int
 }
 ```
 
@@ -258,11 +295,14 @@ Returns all Experience in the system.
 
 ```
 {
-    companies: [
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
         {<experience_object>},
         {<experience_object>},
         {<experience_object>}
-    ]
+    }
 }
 ```
 
@@ -276,13 +316,12 @@ Creates a new Experiences for employee and returns the new object.
 
 ```
 {
-    applicant_id: integer,
-    company_name: string,
-    role: string,
-    description: text,
-    date_start: date,
-    date_end: date,
-    status: int
+    "company_name": string,
+    "role": string,
+    "description": text,
+    "date_start": date,
+    "date_end": date,
+    "status": int
 }
 ```
 
@@ -294,14 +333,19 @@ Creates a new Experiences for employee and returns the new object.
 
 ```
 {
-    id: integer,
-    applicant_id: integer,
-    company_name: string,
-    role: string,
-    description: text,
-    date_start: date,
-    date_end: date,
-    status: int
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
+        "job_experience_id": integer,
+        "applicant_id": integer,
+        "company_name": string,
+        "role": string,
+        "description": text,
+        "date_start": date,
+        "date_end": date,
+        "status": int
+    }
 }
 ```
 
@@ -322,20 +366,25 @@ Returns the specified product.
 
 ```
 {
-    id: integer,
-    applicant_id: integer,
-    company_name: string,
-    role: string,
-    description: text,
-    date_start: date,
-    date_end: date,
-    status: int
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
+        "experience_id": integer,
+        "applicant_id": integer,
+        "company_name": string,
+        "role": string,
+        "description": text,
+        "date_start": date,
+        "date_end": date,
+        "status": int
+    }
 }
 ```
 
 - **Error Response:**
   - **Code:** 404
-    **Content:** `{ error : "Product doesn't exist" }`
+    **Content:** `{ error : "Experience doesn't exist" }`
     OR
   - **Code:** 401
     **Content:** `{ error : "You are unauthorized to make this request." }`
@@ -355,7 +404,7 @@ Deletes the specified Experience.
   - **Code:** 204
 - **Error Response:**
   - **Code:** 404
-    **Content:** `{ error : "Product doesn't exist" }`
+    **Content:** `{ error : "Experience doesn't exist" }`
     OR
   - **Code:** 401
     **Content:** `{ error : "You are unauthorized to make this request." }`
@@ -370,13 +419,13 @@ Deletes the specified Experience.
 
 ```
 {
-    id: integer,
-    name: string,
-    email: string,
-    address: text,
-    contact: string,
-    website: string,
-    created_at: timestamp
+    "id": integer,
+    "name": string,
+    "email": string,
+    "address": text,
+    "contact": string,
+    "website": string,
+    "created_at": timestamp
 }
 ```
 
@@ -396,11 +445,14 @@ Returns all Companies in the system.
 
 ```
 {
-    companies: [
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
         {<product_object>},
         {<product_object>},
         {<product_object>}
-    ]
+    }
 }
 ```
 
@@ -414,11 +466,11 @@ Creates a new Company for employee and returns the new object.
 
 ```
 {
-    name: string,
-    email: string,
-    address: text,
-    contact: string,
-    website: string
+    "name": string,
+    "email": string,
+    "address": text,
+    "contact": string,
+    "website": string
 }
 ```
 
@@ -430,13 +482,18 @@ Creates a new Company for employee and returns the new object.
 
 ```
 {
-    id: integer,
-    name: string,
-    email: string,
-    address: text,
-    contact: string,
-    website: string,
-    created_at: timestamp
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
+        "company_id": integer,
+        "name": string,
+        "email": string,
+        "address": text,
+        "contact": string,
+        "website": string,
+        "created_at": timestamp
+    }
 }
 ```
 
@@ -457,20 +514,25 @@ Returns the specified product.
 
 ```
 {
-    id: integer,
-    name: string,
-    email: string,
-    address: text,
-    contact: string,
-    website: string,
-    created_at: timestamp
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
+        "company_id": integer,
+        "name": string,
+        "email": string,
+        "address": text,
+        "contact": string,
+        "website": string,
+        "created_at": timestamp
+    }
 }
 ```
 
 - **Error Response:**
 
   - **Code:** 404
-    **Content:** `{ error : "Product doesn't exist" }`
+    **Content:** `{ error : "Company doesn't exist" }`
     OR
   - **Code:** 401
     **Content:** `{ error : "You are unauthorized to make this request." }`
@@ -487,11 +549,11 @@ Update a Company and returns the new object.
 
 ```
 {
-    name: string,
-    email: string,
-    address: text,
-    contact: string,
-    website: string
+    "name": string,
+    "email": string,
+    "address": text,
+    "contact": string,
+    "website": string
 }
 ```
 
@@ -500,13 +562,18 @@ Update a Company and returns the new object.
   **Content:**
   ```
   {
-    id: integer,
-    name: string,
-    email: string,
-    address: text,
-    contact: string,
-    website: string,
-    created_at: timestamp
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
+        "company_id": integer,
+        "name": string,
+        "email": string,
+        "address": text,
+        "contact": string,
+        "website": string,
+        "created_at": timestamp
+    }
   }
   ```
 
@@ -525,10 +592,14 @@ Deletes the specified company.
   - **Code:** 204
 - **Error Response:**
   - **Code:** 404
-    **Content:** `{ error : "Product doesn't exist" }`
+    **Content:** `{ error : "Company doesn't exist" }`
     OR
   - **Code:** 401
     **Content:** `{ error : "You are unauthorized to make this request." }`
+
+---
+
+---
 
 # Job Categories
 
@@ -537,8 +608,8 @@ Deletes the specified company.
 ```
 
 {
-    id: integer,
-    name: string
+    "id": integer,
+    "name": string
 }
 
 ```
@@ -558,15 +629,16 @@ Returns all job-categories in the system.
   **Content:**
 
 ```
-
 {
-    job_categories: [
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
         {<job_categories_object>},
         {<job_categories_object>},
         {<job_categories_object>}
-    ]
+    }
 }
-
 ```
 
 ## **POST /api/v1/job-categories**
@@ -580,8 +652,7 @@ Creates a new Category for employee and returns the new object.
 ```
 
 {
-    id: integer,
-    name: string
+    "name": string
 }
 
 ```
@@ -595,8 +666,13 @@ Creates a new Category for employee and returns the new object.
 ```
 
 {
-    id: integer,
-    name: string
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
+        "job_category_id": integer,
+        "name": string
+    }
 }
 
 ```
@@ -617,17 +693,20 @@ Returns the specified product.
   **Content:**
 
 ```
-
 {
-    id: integer,
-    name: string
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
+        "id": integer,
+        "name": string
+    }
 }
-
 ```
 
 - **Error Response:**
   - **Code:** 404
-    **Content:** `{ error : "Product doesn't exist" }`
+    **Content:** `{ error : "Job Category doesn't exist" }`
     OR
   - **Code:** 401
     **Content:** `{ error : "You are unauthorized to make this request." }`
@@ -647,7 +726,7 @@ Deletes the specified product.
   - **Code:** 204
 - **Error Response:**
   - **Code:** 404
-    **Content:** `{ error : "Product doesn't exist" }`
+    **Content:** `{ error : "Job Category doesn't exist" }`
     OR
   - **Code:** 401
     **Content:** `{ error : "You are unauthorized to make this request." }`
@@ -663,20 +742,20 @@ Deletes the specified product.
 ```
 
 {
-    id: integer,
-    jobcategory_id: integer,
-    company_id: integer,
-    title: string,
-    description: text,
-    location: string,
-    salary: float,
-    type: string,
-    level_of_experience: string,
-    skills: string,
-    date_start: date,
-    date_end: date,
-    created_at: timestamp,
-    posted_by: integer
+    "id": integer,
+    "jobcategory_id": integer,
+    "company_id": integer,
+    "title": string,
+    "description": text,
+    "location": string,
+    "salary": float,
+    "type": string,
+    "level_of_experience": string,
+    "skills": string,
+    "date_start": date,
+    "date_end": date,
+    "created_at": timestamp,
+    "posted_by": integer
 }
 
 ```
@@ -698,11 +777,14 @@ Returns all jobs list in the system.
 ```
 
 {
-    jobs: [
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
         {<jobs_object>},
         {<jobs_object>},
         {<jobs_object>}
-    ]
+    }
 }
 
 ```
@@ -718,17 +800,16 @@ Creates a new jobs (for employee and applicant) and returns the new object.
 ```
 
 {
-    jobcategory_id: integer,
-    company_id: integer,
-    title: string,
-    description: text,
-    location: string,
-    salary: float,
-    type: string,
-    level_of_experience: string,
-    skills: string,
-    date_start: date,
-    date_end: date
+    "company_id": integer,
+    "title": string,
+    "description": text,
+    "location": string,
+    "salary": float,
+    "type": string,
+    "level_of_experience": string,
+    "skills": string,
+    "date_start": date,
+    "date_end": date
 }
 
 ```
@@ -742,20 +823,25 @@ Creates a new jobs (for employee and applicant) and returns the new object.
 ```
 
 {
-    id: integer,
-    jobcategory_id: integer,
-    company_id: integer,
-    title: string,
-    description: text,
-    location: string,
-    salary: float,
-    type: string,
-    level_of_experience: string,
-    skills: string,
-    date_start: date,
-    date_end: date,
-    created_at: timestamp,
-    posted_by: int
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
+        "job_id": integer,
+        "job_category_id": integer,
+        "company_id": integer,
+        "title": string,
+        "description": text,
+        "location": string,
+        "salary": float,
+        "type": string,
+        "level_of_experience": string,
+        "skills": string,
+        "date_start": date,
+        "date_end": date,
+        "created_at": timestamp,
+        "posted_by": int
+    }
 }
 
 ```
@@ -778,20 +864,25 @@ Returns the specified jobs.
 ```
 
 {
-    id: integer,
-    jobcategory_id: integer,
-    company_id: integer,
-    title: string,
-    description: text,
-    location: string,
-    salary: float,
-    type: string,
-    level_of_experience: string,
-    skills: string,
-    date_start: date,
-    date_end: date,
-    created_at: timestamp,
-    posted_by: int
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
+        "job_id": integer,
+        "job_category_id": integer,
+        "company_id": integer,
+        "title": string,
+        "description": text,
+        "location": string,
+        "salary": float,
+        "type": string,
+        "level_of_experience": string,
+        "skills": string,
+        "date_start": date,
+        "date_end": date,
+        "created_at": timestamp,
+        "posted_by": int
+    }
 }
 
 ```
@@ -816,15 +907,15 @@ Update a Company and returns the new object.
 
 ```
 {
-    title: string,
-    description: text,
-    location: string,
-    salary: string,
-    type: string,
-    level_of_experience: string,
-    skills: string,
-    date_start: date,
-    date_end: date,
+    "title": string,
+    "description": text,
+    "location": string,
+    "salary": string,
+    "type": string,
+    "level_of_experience": string,
+    "skills": string,
+    "date_start": date,
+    "date_end": date,
 }
 ```
 
@@ -833,13 +924,18 @@ Update a Company and returns the new object.
   **Content:**
   ```
   {
-    id: integer,
-    name: string,
-    email: string,
-    address: text,
-    contact: string,
-    website: string,
-    created_at: timestamp
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
+        "company_id": integer,
+        "name": string,
+        "email": string,
+        "address": text,
+        "contact": string,
+        "website": string,
+        "created_at": timestamp
+    }
   }
   ```
 
@@ -880,11 +976,14 @@ Returns all jobs available in the system.
 ```
 
 {
-    jobs: [
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
         {<jobs_object>},
         {<jobs_object>},
         {<jobs_object>}
-    ]
+    }
 }
 
 ```
@@ -907,20 +1006,25 @@ Returns the specified jobs.
 ```
 
 {
-    id: integer,
-    jobcategory_id: integer,
-    company_id: integer,
-    title: string,
-    description: text,
-    location: string,
-    salary: float,
-    type: string,
-    level_of_experience: string,
-    skills: string,
-    date_start: date,
-    date_end: date,
-    created_at: timestamp,
-    posted_by: int
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
+        "job_id": integer,
+        "jobcategory_id": integer,
+        "company_id": integer,
+        "title": string,
+        "description": text,
+        "location": string,
+        "salary": float,
+        "type": string,
+        "level_of_experience": string,
+        "skills": string,
+        "date_start": date,
+        "date_end": date,
+        "created_at": timestamp,
+        "posted_by": int
+    }
 }
 
 ```
@@ -943,10 +1047,10 @@ Returns the specified jobs.
 ```
 
 {
-    id: integer,
-    applicant_id: integer,
-    job_id: integer,
-    status: string,
+    "id": integer,
+    "applicant_id": integer,
+    "job_id": integer,
+    "status": string,
 }
 
 ```
@@ -967,27 +1071,32 @@ Returns all jobs available in the system.
 
 ```
 {
-    jobs: {
-        id: integer,
-        jobcategory_id: integer,
-        company_id: integer,
-        title: string,
-        description: text,
-        location: string,
-        salary: float,
-        type: string,
-        level_of_experience: string,
-        skills: string,
-        date_start: date,
-        date_end: date,
-        created_at: timestamp,
-        posted_by: int
-    },
-    job_application: {
-        id: int,
-        application_id: int,
-        job_id: int,
-        status: string
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
+        "jobs": {
+            "job_id": integer,
+            "jobcategory_id": integer,
+            "company_id": integer,
+            "title": string,
+            "description": text,
+            "location": string,
+            "salary": float,
+            "type": string,
+            "level_of_experience": string,
+            "skills": string,
+            "date_start": date,
+            "date_end": date,
+            "created_at": timestamp,
+            "posted_by": int
+        },
+        "job_application": {
+            "job_applicant_id": int,
+            "application_id": int,
+            "job_id": int,
+            "status": string
+        }
     }
 }
 ```
@@ -1003,7 +1112,7 @@ Applicant apply a job and returns the new object.
 ```
 
 {
-    status: string
+    "status": string
 }
 
 ```
@@ -1017,10 +1126,15 @@ Applicant apply a job and returns the new object.
 ```
 
 {
-    id: integer,
-    jobcategory_id: integer,
-    company_id: integer,
-    title: string
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
+        "job_applicant_id": integer,
+        "jobcategory_id": integer,
+        "company_id": integer,
+        "title": string
+    }
 }
 
 ```
@@ -1036,8 +1150,8 @@ Applicant apply a job and returns the new object.
 ```
 
 {
-    id: integer,
-    name: string
+    "id": integer,
+    "name": string
 }
 
 ```
@@ -1059,11 +1173,14 @@ Returns all skills in the system.
 ```
 
 {
-    skilss: [
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
         {<skills_object>},
         {<skills_object>},
         {<skills_object>}
-    ]
+    }
 }
 
 ```
@@ -1079,8 +1196,7 @@ Creates a new Skill for applicant and returns the new object.
 ```
 
 {
-    id: integer,
-    name: string
+    "name": string
 }
 
 ```
@@ -1094,8 +1210,13 @@ Creates a new Skill for applicant and returns the new object.
 ```
 
 {
-    id: integer,
-    name: string
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
+        "skill_id": integer,
+        "name": string
+    }
 }
 
 ```
@@ -1115,7 +1236,7 @@ Deletes the specified skill.
   - **Code:** 204
 - **Error Response:**
   - **Code:** 404
-    **Content:** `{ error : "Product doesn't exist" }`
+    **Content:** `{ error : "Skill doesn't exist" }`
     OR
   - **Code:** 401
     **Content:** `{ error : "You are unauthorized to make this request." }`
