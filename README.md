@@ -6,7 +6,7 @@
 
 ```
  {
-   "user_id": int,
+   "user_id": integer,
    "name": string,
    "username": string,
    "email": string,
@@ -43,7 +43,7 @@ Login to Applicant page and returns the new object.
     "message": "ok",
     "errors": null,
     "data": {
-        "user_id": int,
+        "user_id": integer,
         "name": string,
         "username": string,
         "email": string,
@@ -77,7 +77,7 @@ Login to Applicant page and returns the new object.
 
   ```
   {
-  "user_id": int,
+  "user_id": integer,
   "name": string,
   "username": string,
   "email": string,
@@ -116,7 +116,7 @@ Register to Applicant page and returns the new object.
     "message": "ok",
     "errors": null,
     "data": {
-        "id_user": int
+        "id_user": integer,
         "name": string,
         "username": string,
         "email": string,
@@ -203,7 +203,7 @@ Returns the specified user.
     "message": "ok",
     "errors": null,
     "data": {
-        "user_id": int
+        "user_id": integer,
         "name": string,
         "username": string,
         "email": string,
@@ -228,7 +228,7 @@ Returns the specified user.
 
 ## **PUT /employees/users/:id**
 
-Update a User(Applicant) and returns the new object.
+Update a User(Employee) and returns the new object.
 
 - **URL Params**
   _Required:_ `id=[integer]`
@@ -253,7 +253,7 @@ Update a User(Applicant) and returns the new object.
       "message": "ok",
       "errors": null,
       "data": {
-          "user_id": int
+          "user_id": integer,
           "name": string,
           "username": string,
           "email": string,
@@ -346,8 +346,8 @@ Update a User(Applicant) and returns the new object.
       "message": "ok",
       "errors": null,
       "data": {
-        "id_applicant": int,
-        "user_id": int,
+        "id_applicant": integer,
+        "user_id": integer,
         "first_name": string,
         "last_name": string,
         "avatar": string,
@@ -389,7 +389,7 @@ Update a User(Applicant) and returns the new object.
       "description": text,
       "date_start": date,
       "date_end": date,
-      "status": int
+      "status": integer
   }
   ```
 
@@ -448,7 +448,7 @@ Creates a new Experiences for employee and returns the new object.
     "description": text,
     "date_start": date,
     "date_end": date,
-    "status": int
+    "status": integer
   }
   ```
 
@@ -471,7 +471,7 @@ Creates a new Experiences for employee and returns the new object.
           "description": text,
           "date_start": date,
           "date_end": date,
-          "status": int
+          "status": integer
       }
   }
   ```
@@ -518,7 +518,7 @@ Returns the specified product.
           "description": text,
           "date_start": date,
           "date_end": date,
-          "status": int
+          "status": integer
       }
   }
   ```
@@ -1078,7 +1078,7 @@ Returns the specified jobs.
           "date_start": date,
           "date_end": date,
           "created_at": timestamp,
-          "posted_by": int
+          "posted_by": integer
       }
   }
   ```
@@ -1239,7 +1239,11 @@ Returns the specified jobs.
         "date_start": date,
         "date_end": date,
         "created_at": timestamp,
-        "posted_by": int
+        "posted_by": integer,
+        "job_application_id": integer,
+        "applicant_id": int
+        "job_id": integer,
+        "status": string
     }
 }
 ```
@@ -1306,19 +1310,19 @@ Returns all jobs available in the system.
         "date_start": date,
         "date_end": date,
         "created_at": timestamp,
-        "posted_by": int
+        "posted_by": integer
     },
     "job_application": {
-        "job_applicant_id": int,
-        "application_id": int,
-        "job_id": int,
+        "job_applicant_id": integer,
+        "application_id": integer,
+        "job_id": integer,
         "status": string
         }
     }
 }
 ```
 
-## **POST /applicants/jobapplicantion**
+## **POST /applicants/jobapplication**
 
 Applicant apply a job and returns the new object.
 
@@ -1352,7 +1356,7 @@ Applicant apply a job and returns the new object.
   }
   ```
 
-## **POST /employees/jobapplicantion**
+## **POST /employees/jobapplication**
 
 Applicant apply a job and returns the new object.
 
