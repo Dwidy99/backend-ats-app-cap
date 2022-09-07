@@ -278,7 +278,7 @@ Update a User(Applicant) and returns the new object.
 
 <!-- Optional -->
 
-## **DELETE /emplooyees/users/:id**
+## **DELETE /emplooyees/users/:id** (Optional)
 
 Deletes the specified user.
 
