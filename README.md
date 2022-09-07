@@ -16,7 +16,7 @@
  }
 ```
 
-## **POST /api/login**
+## **POST /login**
 
 Login to Applicant page and returns the new object.
 
@@ -74,7 +74,7 @@ Login to Applicant page and returns the new object.
  }
 ```
 
-## **POST /api/applicant/register**
+## **POST /applicants/register**
 
 Register to Applicant page and returns the new object.
 
@@ -116,9 +116,50 @@ Register to Applicant page and returns the new object.
 
 ---
 
+# Logout
+
+- Logout object
+
+```
+ {
+
+ }
+```
+
+## **POST /logout**
+
+Logout and returns no object.
+
+- **URL Params**  
+  None
+- **Headers**  
+  Content-Type: application/json
+- **Data Params for applicant**
+
+```
+{
+}
+```
+
+- **Success Response:**
+- **Code:** 200  
+   **Content:**
+  ```
+  {
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {}
+  }
+  ```
+
+---
+
+---
+
 # Users
 
-## **GET /api/employees/users/:id**
+## **GET /employees/users/:id**
 
 Returns the specified user.
 
@@ -158,7 +199,7 @@ Returns the specified user.
   - **Code:** 401
     **Content:** `{ error : "You are unauthorized to make this request." }`
 
-## **PUT /api/employees/users/:id**
+## **PUT /employees/users/:id**
 
 Update a User(Applicant) and returns the new object.
 
@@ -194,7 +235,7 @@ Update a User(Applicant) and returns the new object.
   }
   ```
 
-## **DELETE /api/emplooyees/users/:id**
+## **DELETE /emplooyees/users/:id**
 
 Deletes the specified user.
 
@@ -214,7 +255,7 @@ Deletes the specified user.
   - **Code:** 401
     **Content:** `{ error : "You are unauthorized to make this request." }`
 
-## **PUT /api/applicants/users/:id**
+## **PUT /applicants/users/:id**
 
 Update a User(Applicant) and returns the new object.
 
@@ -279,7 +320,7 @@ Update a User(Applicant) and returns the new object.
 }
 ```
 
-## **GET /api/applicants/experiences**
+## **GET /applicants/experiences**
 
 Returns all Experience in the system.
 
@@ -306,7 +347,7 @@ Returns all Experience in the system.
 }
 ```
 
-## **POST /api/applicants/experiences**
+## **POST /applicants/experiences**
 
 Creates a new Experiences for employee and returns the new object.
 
@@ -349,7 +390,7 @@ Creates a new Experiences for employee and returns the new object.
 }
 ```
 
-## **GET /api/applicants/experiences/:id**
+## **GET /applicants/experiences/:id**
 
 Returns the specified product.
 
@@ -389,7 +430,7 @@ Returns the specified product.
   - **Code:** 401
     **Content:** `{ error : "You are unauthorized to make this request." }`
 
-## **DELETE /api/applicants/experiences/:id**
+## **DELETE /applicants/experiences/:id**
 
 Deletes the specified Experience.
 
@@ -429,7 +470,7 @@ Deletes the specified Experience.
 }
 ```
 
-## **GET /api/employees/companies**
+## **GET /employees/companies**
 
 Returns all Companies in the system.
 
@@ -456,7 +497,7 @@ Returns all Companies in the system.
 }
 ```
 
-## **POST /api/employees/companies**
+## **POST /employees/companies**
 
 Creates a new Company for employee and returns the new object.
 
@@ -497,7 +538,7 @@ Creates a new Company for employee and returns the new object.
 }
 ```
 
-## **GET /api/employees/companies/:id**
+## **GET /employees/companies/:id**
 
 Returns the specified product.
 
@@ -537,7 +578,7 @@ Returns the specified product.
   - **Code:** 401
     **Content:** `{ error : "You are unauthorized to make this request." }`
 
-## **PUT /api/employees/companies/:id**
+## **PUT /employees/companies/:id**
 
 Update a Company and returns the new object.
 
@@ -577,7 +618,7 @@ Update a Company and returns the new object.
   }
   ```
 
-## **DELETE /api/employees/companies/:id**
+## **DELETE /employees/companies/:id**
 
 Deletes the specified company.
 
@@ -614,7 +655,7 @@ Deletes the specified company.
 
 ```
 
-## **GET /api/employees/job-categories**
+## **GET /employees/job-categories**
 
 Returns all job-categories in the system.
 
@@ -641,7 +682,7 @@ Returns all job-categories in the system.
 }
 ```
 
-## **POST /api/v1/job-categories**
+## **POST /v1/job-categories**
 
 Creates a new Category for employee and returns the new object.
 
@@ -677,7 +718,7 @@ Creates a new Category for employee and returns the new object.
 
 ```
 
-## **GET /api/employees/job-categories/:id**
+## **GET /employees/job-categories/:id**
 
 Returns the specified product.
 
@@ -711,7 +752,7 @@ Returns the specified product.
   - **Code:** 401
     **Content:** `{ error : "You are unauthorized to make this request." }`
 
-## **DELETE /api/employees/job-categories/:id**
+## **DELETE /employees/job-categories/:id**
 
 Deletes the specified product.
 
@@ -760,7 +801,7 @@ Deletes the specified product.
 
 ```
 
-## **GET /api/employees/jobs**
+## **GET /employees/jobs**
 
 Returns all jobs list in the system.
 
@@ -789,7 +830,7 @@ Returns all jobs list in the system.
 
 ```
 
-## **POST /api/employees/jobs**
+## **POST /employees/jobs**
 
 Creates a new jobs (for employee and applicant) and returns the new object.
 
@@ -846,7 +887,7 @@ Creates a new jobs (for employee and applicant) and returns the new object.
 
 ```
 
-## **GET /api/employees/jobs/:id**
+## **GET /employees/jobs/:id**
 
 Returns the specified jobs.
 
@@ -895,7 +936,7 @@ Returns the specified jobs.
   - **Code:** 401
     **Content:** `{ error : "You are unauthorized to make this request." }`
 
-## **PUT /api/employees/companies/:id**
+## **PUT /employees/companies/:id**
 
 Update a Company and returns the new object.
 
@@ -939,7 +980,7 @@ Update a Company and returns the new object.
   }
   ```
 
-## **DELETE /api/employees/jobs/:id**
+## **DELETE /employees/jobs/:id**
 
 Deletes the specified jobs.
 
@@ -959,7 +1000,7 @@ Deletes the specified jobs.
   - **Code:** 401
     **Content:** `{ error : "You are unauthorized to make this request." }`
 
-## **GET /api/applicants/jobs**
+## **GET /applicants/jobs**
 
 Returns all jobs available in the system.
 
@@ -988,7 +1029,7 @@ Returns all jobs available in the system.
 
 ```
 
-## **GET /api/applicants/jobs/:id**
+## **GET /applicants/jobs/:id**
 
 Returns the specified jobs.
 
@@ -1055,7 +1096,7 @@ Returns the specified jobs.
 
 ```
 
-## **GET /api/applicant/:id/jobapplication**
+## **GET /applicants/:id/jobapplication**
 
 Returns all jobs available in the system.
 
@@ -1101,7 +1142,7 @@ Returns all jobs available in the system.
 }
 ```
 
-## **POST /api/applicant/jobapplicant**
+## **POST /applicants/jobapplicant**
 
 Applicant apply a job and returns the new object.
 
@@ -1156,7 +1197,7 @@ Applicant apply a job and returns the new object.
 
 ```
 
-## **GET /api/applicants/skills**
+## **GET /applicants/skills**
 
 Returns all skills in the system.
 
@@ -1185,7 +1226,7 @@ Returns all skills in the system.
 
 ```
 
-## **POST /api/applicants/skills**
+## **POST /applicants/skills**
 
 Creates a new Skill for applicant and returns the new object.
 
@@ -1221,7 +1262,7 @@ Creates a new Skill for applicant and returns the new object.
 
 ```
 
-## **DELETE /api/applicants/skills/:id**
+## **DELETE /applicants/skills/:id**
 
 Deletes the specified skill.
 
