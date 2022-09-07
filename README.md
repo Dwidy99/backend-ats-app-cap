@@ -203,14 +203,13 @@ Returns the specified user.
     "message": "ok",
     "errors": null,
     "data": {
-        "applicant_id": int,
-        "user_id": int,
-        "first_name": string,
-        "last_name": string,
-        "avatar": string,
+        "user_id": int
         "name": string,
-        "last_education": string,
-        "linkedin_url": string
+        "username": string,
+        "email": string,
+        "role": string,
+        "token": string,
+        "contact": string
     }
   }
   ```
@@ -259,10 +258,10 @@ Update a User(Applicant) and returns the new object.
           "username": string,
           "email": string,
           "role": string,
-          "token": string
+          "token": string,
+          "contact": string
       }
   }
-
   ```
 
 - **Error Response:**
