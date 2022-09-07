@@ -1303,7 +1303,41 @@ Returns all jobs available in the system.
 }
 ```
 
-## **POST /applicants/jobapplicant**
+## **POST /applicants/jobapplicantion**
+
+Applicant apply a job and returns the new object.
+
+- **URL Params**
+  None
+- **Data Params**
+
+  ```
+  {
+      "status": string
+  }
+  ```
+
+- **Headers**
+  Content-Type: application/json
+- **Success Response:**
+- **Code:** 200
+  **Content:**
+
+  ```
+  {
+      "status": true,
+      "message": "ok",
+      "errors": null,
+      "data": {
+          "job_applicant_id": integer,
+          "jobcategory_id": integer,
+          "company_id": integer,
+          "title": string
+      }
+  }
+  ```
+
+## **POST /employees/jobapplicantion**
 
 Applicant apply a job and returns the new object.
 
