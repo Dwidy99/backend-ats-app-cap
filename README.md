@@ -612,16 +612,16 @@ Returns all Companies in the system.
 ```
 
 - **Error Response:**
-- **Code:** 400
-  **Content:**
-  ```
-  {
-      "status": false,
-      "message": "Example message",
-      "errors": "error",
-      "data": null
-  }
-  ```
+  - **Code:** 400
+    **Content:**
+    ```
+    {
+        "status": false,
+        "message": "Example message",
+        "errors": "error",
+        "data": null
+    }
+    ```
 
 ## **POST /employees/companies**
 
@@ -772,7 +772,17 @@ Deletes the specified company.
   Content-Type: application/json
   Authorization: Bearer `<OAuth Token>`
 - **Success Response:**
-- **Code:** 200
+- **Code:**
+
+  ```
+  {
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": null
+  }
+  ```
+
 - **Error Response:**
   - **Code:** 400
     **Content:**
