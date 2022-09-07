@@ -837,7 +837,7 @@ Returns all job-categories in the system.
   }
   ```
 
-## **POST /v1/job-categories**
+## **POST /employees/job-categories**
 
 Creates a new Category for employee and returns the new object.
 
@@ -869,14 +869,18 @@ Creates a new Category for employee and returns the new object.
   }
   ```
 
-## **GET /employees/job-categories/:id**
+## **PUT /employees/job-categories/:id**
 
 Returns the specified product.
 
 - **URL Params**
   _Required:_ `id=[integer]`
 - **Data Params**
-  None
+  ```
+  {
+      "name": string
+  }
+  ```
 - **Headers**
   Content-Type: application/json
   Authorization: Bearer `<OAuth Token>`
