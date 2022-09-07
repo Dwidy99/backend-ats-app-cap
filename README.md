@@ -192,7 +192,7 @@ Returns the specified user.
   None
 - **Headers**
   Content-Type: application/json
-  Authorization: Bearer `<OAuth Token>`
+  Authorization: Bearer `<JWT Token>`
 - **Success Response:**
 - **Code:** 200
 - **Content:**
@@ -288,7 +288,7 @@ Deletes the specified user.
   None
 - **Headers**
   Content-Type: application/json
-  Authorization: Bearer `<OAuth Token>`
+  Authorization: Bearer `<JWT Token>`
 - **Success Response:**
 - **Code:** 200
   **Content:**
@@ -500,7 +500,7 @@ Returns the specified product.
   None
 - **Headers**
   Content-Type: application/json
-  Authorization: Bearer `<OAuth Token>`
+  Authorization: Bearer `<JWT Token>`
 - **Success Response:**
 - **Code:** 200
   **Content:**
@@ -545,7 +545,7 @@ Deletes the specified Experience.
   None
 - **Headers**
   Content-Type: application/json
-  Authorization: Bearer `<OAuth Token>`
+  Authorization: Bearer `<JWT Token>`
 - **Success Response:**
 
   - **Code:** 200
@@ -673,7 +673,7 @@ Returns the specified product.
   None
 - **Headers**
   Content-Type: application/json
-  Authorization: Bearer `<OAuth Token>`
+  Authorization: Bearer `<JWT Token>`
 - **Success Response:**
 - **Code:** 200
   **Content:**
@@ -770,7 +770,7 @@ Deletes the specified company.
   None
 - **Headers**
   Content-Type: application/json
-  Authorization: Bearer `<OAuth Token>`
+  Authorization: Bearer `<JWT Token>`
 - **Success Response:**
 - **Code:**
 
@@ -883,7 +883,7 @@ Returns the specified product.
   ```
 - **Headers**
   Content-Type: application/json
-  Authorization: Bearer `<OAuth Token>`
+  Authorization: Bearer `<JWT Token>`
 - **Success Response:**
 - **Code:** 200
   **Content:**
@@ -912,7 +912,7 @@ Returns the specified product.
     }
     ```
 
-## **DELETE /employees/job-categories/:id**
+## **DELETE /employees/job-categories/:id**(Optional)
 
 Deletes the specified product.
 
@@ -922,7 +922,7 @@ Deletes the specified product.
   None
 - **Headers**
   Content-Type: application/json
-  Authorization: Bearer `<OAuth Token>`
+  Authorization: Bearer `<JWT Token>`
 - **Success Response:**
   - **Code:** 204
 - **Error Response:**
@@ -993,7 +993,7 @@ Returns all jobs list in the system.
 
 ## **POST /employees/jobs**
 
-Creates a new jobs (for employee and applicant) and returns the new object.
+Creates a new jobs and returns the new object.
 
 - **URL Params**
   None
@@ -1054,7 +1054,7 @@ Returns the specified jobs.
   None
 - **Headers**
   Content-Type: application/json
-  Authorization: Bearer `<OAuth Token>`
+  Authorization: Bearer `<JWT Token>`
 - **Success Response:**
 - **Code:** 200
   **Content:**
@@ -1163,7 +1163,7 @@ Deletes the specified jobs.
   None
 - **Headers**
   Content-Type: application/json
-  Authorization: Bearer `<OAuth Token>`
+  Authorization: Bearer `<JWT Token>`
 - **Success Response:**
 - **Code:** 200
 - **Error Response:**
@@ -1215,7 +1215,7 @@ Returns the specified jobs.
   None
 - **Headers**
   Content-Type: application/json
-  Authorization: Bearer `<OAuth Token>`
+  Authorization: Bearer `<JWT Token>`
 - **Success Response:**
 - **Code:** 200
   **Content:**
@@ -1470,7 +1470,7 @@ Deletes the specified skill.
   None
 - **Headers**
   Content-Type: application/json
-  Authorization: Bearer `<OAuth Token>`
+  Authorization: Bearer `<JWT Token>`
 - **Success Response:**
   - **Code:** 200
 - **Error Response:**
