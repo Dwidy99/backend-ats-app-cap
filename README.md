@@ -276,6 +276,8 @@ Update a User(Applicant) and returns the new object.
   }
   ```
 
+<!-- Optional -->
+
 ## **DELETE /emplooyees/users/:id**
 
 Deletes the specified user.
