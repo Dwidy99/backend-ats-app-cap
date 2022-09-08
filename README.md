@@ -799,148 +799,6 @@ Deletes the specified company.
 
 ---
 
-# Job Categories
-
-- Job Categories object
-
-  ```
-  {
-      "id": integer,
-      "name": string
-  }
-  ```
-
-## **GET /employees/job-categories**
-
-Returns all job-categories in the system.
-
-- **URL Params**
-  None
-- **Data Params**
-  None
-- **Headers**
-  Content-Type: application/json
-- **Success Response:**
-- **Code:** 200
-  **Content:**
-
-  ```
-  {
-      "status": true,
-      "message": "ok",
-      "errors": null,
-      "data": {
-          {<job_categories_object>},
-          {<job_categories_object>},
-          {<job_categories_object>}
-      }
-  }
-  ```
-
-## **POST /employees/job-categories**
-
-Creates a new Category for employee and returns the new object.
-
-- **URL Params**
-  None
-- **Data Params**
-
-  ```
-  {
-      "name": string
-  }
-  ```
-
-- **Headers**
-  Content-Type: application/json
-- **Success Response:**
-- **Code:** 200
-  **Content:**
-
-  ```
-  {
-    "status": true,
-    "message": "ok",
-    "errors": null,
-    "data": {
-        "job_category_id": integer,
-        "name": string
-    }
-  }
-  ```
-
-## **PUT /employees/job-categories/:id**
-
-Returns the specified product.
-
-- **URL Params**
-  _Required:_ `id=[integer]`
-- **Data Params**
-  ```
-  {
-      "name": string
-  }
-  ```
-- **Headers**
-  Content-Type: application/json
-  Authorization: Bearer `<JWT Token>`
-- **Success Response:**
-- **Code:** 200
-  **Content:**
-
-  ```
-  {
-      "status": true,
-      "message": "ok",
-      "errors": null,
-      "data": {
-      "id": integer,
-      "name": string
-      }
-  }
-  ```
-
-- **Error Response:**
-  - **Code:** 400
-    **Content:**
-    ```
-    {
-        "status": false,
-        "message": "Example message",
-        "errors": "error",
-        "data": null
-    }
-    ```
-
-## **DELETE /employees/job-categories/:id**(Optional)
-
-Deletes the specified product.
-
-- **URL Params**
-  _Required:_ `id=[integer]`
-- **Data Params**
-  None
-- **Headers**
-  Content-Type: application/json
-  Authorization: Bearer `<JWT Token>`
-- **Success Response:**
-  - **Code:** 204
-- **Error Response:**
-  - **Code:** 400
-    **Content:**
-    ```
-    {
-        "status": false,
-        "message": "Example message",
-        "errors": "error",
-        "data": null
-    }
-    ```
-
----
-
----
-
 # Jobs
 
 - Jobs Object
@@ -1227,23 +1085,21 @@ Returns the specified jobs.
     "errors": null,
     "data": {
         "job_id": integer,
-        "jobcategory_id": integer,
-        "company_id": integer,
-        "title": string,
-        "description": text,
-        "location": string,
-        "salary": float,
-        "type": string,
-        "level_of_experience": string,
-        "skills": string,
-        "date_start": date,
-        "date_end": date,
-        "created_at": timestamp,
-        "posted_by": integer,
-        "job_application_id": integer,
-        "applicant_id": int
-        "job_id": integer,
-        "status": string
+            "company_id": integer,
+            "posted_by": int,
+            "title": integer,
+            "description": string,
+            "location": string,
+            "salary": float,
+            "type": string,
+            "level_of_experience": string,
+            "skills": string,
+            "company_name": string,
+            "address": string,
+            "website": string,
+            "date_start": date,
+            "date_end": date,
+            "created_at": timestamp
     }
 }
 ```
@@ -1277,51 +1133,6 @@ Returns the specified jobs.
   }
   ```
 
-## **GET /applicants/:id/jobapplication**
-
-Returns all jobs available in the system.
-
-- **URL Params**
-  None
-- **Data Params**
-  None
-- **Headers**
-  Content-Type: application/json
-- **Success Response:**
-- **Code:** 200
-  **Content:**
-
-```
-{
-    "status": true,
-    "message": "ok",
-    "errors": null,
-    "data": {
-        "job_id": integer,
-        "jobcategory_id": integer,
-        "company_id": integer,
-        "title": string,
-        "description": text,
-        "location": string,
-        "salary": float,
-        "type": string,
-        "level_of_experience": string,
-        "skills": string,
-        "date_start": date,
-        "date_end": date,
-        "created_at": timestamp,
-        "posted_by": integer
-    },
-    "job_application": {
-        "job_applicant_id": integer,
-        "application_id": integer,
-        "job_id": integer,
-        "status": string
-        }
-    }
-}
-```
-
 ## **POST /applicants/jobapplication**
 
 Applicant apply a job and returns the new object.
@@ -1349,9 +1160,9 @@ Applicant apply a job and returns the new object.
       "errors": null,
       "data": {
           "job_applicant_id": integer,
-          "jobcategory_id": integer,
-          "company_id": integer,
-          "title": string
+          "applicant_id": integer,
+          "job_id": integer,
+          "status": string
       }
   }
   ```
@@ -1383,9 +1194,9 @@ Applicant apply a job and returns the new object.
       "errors": null,
       "data": {
           "job_applicant_id": integer,
-          "jobcategory_id": integer,
-          "company_id": integer,
-          "title": string
+          "applicant_id": integer,
+          "job_id": integer,
+          "status": string
       }
   }
   ```
@@ -1488,6 +1299,67 @@ Deletes the specified skill.
         "data": null
     }
     ```
+
+---
+
+---
+
+# History Applicant
+
+- History Applicant object
+
+  ```
+  {
+      "applicant_id": integer,
+      "user_id": integer,
+      "job_applicant_id": integer,
+      "job_title": string,
+      "job_description": string,
+      "job_location": string,
+      "job_salary": string,
+      "job_type": string,
+      "job_level_of_experience": string,
+      "status": string
+  }
+  ```
+
+## **GET /applicants/jobapplicant**
+
+Returns all skills in the system.
+
+- **URL Params**
+  None
+- **Data Params**
+  None
+- **Headers**
+  Content-Type: application/json
+- **Success Response:**
+- **Code:** 200
+  **Content:**
+
+  ```
+  {
+      "status": true,
+      "message": "ok",
+      "errors": null,
+      "data": {
+          {
+            "applicant_id": integer,
+            "user_id": integer,
+            "job_applicant_id": integer,
+            "job_title": string,
+            "job_description": string,
+            "job_location": string,
+            "job_salary": string,
+            "job_type": string,
+            "job_level_of_experience": string,
+            "status": string
+          },
+          {<skills_object>},
+          {<skills_object>}
+      }
+  }
+  ```
 
 ```
 
