@@ -120,8 +120,59 @@ Register to Applicant page and returns the new object.
         "name": string,
         "username": string,
         "email": string,
-        "role": string,
-        "token": string
+        "role": string
+    }
+  }
+  ```
+
+- **Success Response:**
+
+- **Code:** 400  
+   **Content:**
+
+  ```
+  {
+      "status": false,
+      "message": "Example message",
+      "errors": "error",
+      "data": null
+  }
+  ```
+
+## **POST /employees/register**
+
+Register to Employees page and returns the new object.(Must Superadmin can be create a new employee)
+
+- **URL Params**  
+  None
+- **Headers**  
+  Content-Type: application/json
+- **Data Params for applicant**
+
+  ```
+  {
+      "name": string,
+      "username": string,
+      "email": string,
+      "password": string
+  }
+  ```
+
+- **Success Response:**
+- **Code:** 200  
+   **Content:**
+
+  ```
+  {
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
+        "id_user": integer,
+        "name": string,
+        "username": string,
+        "email": string,
+        "role": string
     }
   }
   ```
