@@ -12,10 +12,10 @@ import (
 )
 
 var (
-	db *gorm.DB = config.SetupConnectionDatabase()
+	db             *gorm.DB                  = config.SetupConnectionDatabase()
 	userRepository repository.UserRepository = repository.NewUserRepository(db)
 	jwtService     service.JWTService        = service.NewJWTService()
-	authService service.AuthService = service.NewAuthService(userRepository)
+	authService    service.AuthService       = service.NewAuthService(userRepository)
 	authController controller.AuthController = controller.NewAuthController(authService, jwtService)
 )
 
@@ -34,12 +34,12 @@ func main() {
 	{
 		authApplicantsRoutes.POST("/register", authController.RegisterApplicants)
 	}
-	
+
 	// Employees
-	authEmployeesRoutes := r.Group("/employees", middleware.AuthorizeJWT(jwtService))
+	authEmployeeRoutes := r.Group("/employees", middleware.AuthorizeJWT(jwtService))
 	{
-		authEmployeesRoutes.POST("/register", authController.RegisterEmployees)
+		authEmployeeRoutes.POST("/register", authController.RegisterEmployee)
 	}
-	
+
 	r.Run()
 }
