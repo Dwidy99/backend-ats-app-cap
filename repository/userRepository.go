@@ -11,7 +11,7 @@ import (
 type UserRepository interface {
 	IsDuplicateEmail(email string) (tx *gorm.DB)
 	VerifyCredential(email string, password string) interface{}
-	InsertUser(user entity.User) entity.User
+	InsertUser(user entity.User, applicant entity.Applicant) entity.User
 }
 
 type userConnection struct {
@@ -38,9 +38,11 @@ func (db *userConnection) VerifyCredential(email string, password string) interf
 	return nil
 }
 
-func (db *userConnection) InsertUser(user entity.User) entity.User {
+func (db *userConnection) InsertUser(user entity.User, applicant entity.Applicant) entity.User {
 	user.Password = hashAndSalt([]byte(user.Password))
 	db.connection.Save(&user)
+	applicant.UserID = int(user.ID)
+	db.connection.Save(&applicant)
 	return user
 }
 

@@ -32,6 +32,7 @@ func NewAuthController(authService service.AuthService, jwtService service.JWTSe
 
 func (c *authController) RegisterEmployee(ctx *gin.Context) {
 	var RegisterEmployeeDTO dto.RegisterEmployeeDTO
+
 	errEmployeeDTO := ctx.ShouldBind(&RegisterEmployeeDTO)
 	if errEmployeeDTO != nil {
 		resp := helpers.BuildErrorResponse("Failed to process request", errEmployeeDTO.Error(), helpers.EmptyObj{})
@@ -44,9 +45,7 @@ func (c *authController) RegisterEmployee(ctx *gin.Context) {
 		ctx.JSON(http.StatusConflict, resp)
 	} else {
 		createdUser := c.authService.CreateEmployee(RegisterEmployeeDTO)
-		token := c.jwtService.GenerateToken(strconv.FormatUint(createdUser.ID, 10))
-		createdUser.Token = token
-		response := helpers.BuildResponse(true, "OK!", createdUser)
+		response := helpers.BuildResponse(true, "ok", createdUser)
 		ctx.JSON(http.StatusCreated, response)
 	}
 }
@@ -66,8 +65,6 @@ func (c *authController) RegisterApplicants(ctx *gin.Context) {
 		ctx.JSON(http.StatusConflict, response)
 	} else {
 		createdUser := c.authService.CreateUser(registerDTO)
-		token := c.jwtService.GenerateToken(strconv.FormatUint(createdUser.ID, 10))
-		createdUser.Token = token
 		response := helpers.BuildResponse(true, "ok", createdUser)
 		ctx.JSON(http.StatusCreated, response)
 	}

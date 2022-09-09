@@ -35,7 +35,7 @@ func SetupConnectionDatabase() *gorm.DB {
 	}
 
 	db = conn
-	db.AutoMigrate(&entity.User{})
+	db.AutoMigrate(&entity.User{}, &entity.Applicant{})
 	return db
 }
 

@@ -27,15 +27,12 @@ func main() {
 	authRoutes := r.Group("/")
 	{
 		authRoutes.POST("login", authController.Login)
+		authRoutes.POST("applicants/register", authController.RegisterApplicants)
 	}
 
-	// Applicants
-	authApplicantsRoutes := r.Group("/applicants")
-	{
-		authApplicantsRoutes.POST("/register", authController.RegisterApplicants)
-	}
+	// Applicant Routes
 
-	// Employees
+	// Employees Routes
 	authEmployeeRoutes := r.Group("/employees", middleware.AuthorizeJWT(jwtService))
 	{
 		authEmployeeRoutes.POST("/register", authController.RegisterEmployee)

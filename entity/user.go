@@ -1,6 +1,8 @@
 package entity
 
-import "time"
+import (
+	"time"
+)
 
 type User struct {
 	ID        uint64    `gorm:"primary_key:auto_increment" json:"user_id"`
@@ -11,3 +13,4 @@ type User struct {
 	Role      string    `gorm:"type:varchar(255)" json:"role"`
 	CreatedAt time.Time `json:"created_at"`
 }
+

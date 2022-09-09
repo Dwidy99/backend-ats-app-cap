@@ -56,21 +56,24 @@ func comparePassword(hashedPwd string, plainPassword []byte) bool {
 
 func (service *authService) CreateUser(user dto.RegisterDTO) entity.User {
 	userToCreate := entity.User{}
+	applicantToCreate := entity.Applicant{}
 	userToCreate.Role = "user"
+
 	err := smapping.FillStruct(&userToCreate, smapping.MapFields(&user))
 	if err != nil {
 		log.Fatalf("Failed map %v", err)
 	}
-	res := service.userRepository.InsertUser(userToCreate)
+	res := service.userRepository.InsertUser(userToCreate, applicantToCreate)
 	return res
 }
 
 func (service *authService) CreateEmployee(user dto.RegisterEmployeeDTO) entity.User {
 	userToCreate := entity.User{}
+	applicantToCreate := entity.Applicant{}
 	err := smapping.FillStruct(&userToCreate, smapping.MapFields(&user))
 	if err != nil {
 		log.Fatalf("Failed map %v", err)
 	}
-	res := service.userRepository.InsertUser(userToCreate)
+	res := service.userRepository.InsertUser(userToCreate, applicantToCreate)
 	return res
 }
