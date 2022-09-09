@@ -12,8 +12,3 @@ type RegisterEmployeeDTO struct {
 	Role     string `json:"role" form:"role" binding:"required"`
 	Password string `json:"password" form:"password" binding:"required"`
 }
-
-type LoginDTO struct {
-	Email    string `json:"email" form:"email" binding:"required,email"`
-	Password string `json:"password" form:"password" binding:"required"`
-}
