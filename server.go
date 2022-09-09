@@ -3,6 +3,7 @@ package main
 import (
 	"mini-project/config"
 	"mini-project/controller"
+	"mini-project/middleware"
 	"mini-project/repository"
 	"mini-project/service"
 
@@ -23,10 +24,22 @@ func main() {
 	defer config.CloseConnectionDatabase(db)
 	r := gin.Default()
 
-	authRoutes := r.Group("api/auth")
+	authRoutes := r.Group("/")
 	{
-		authRoutes.POST("/register", authController.Register)
+		authRoutes.POST("login", authController.Login)
 	}
 
+	// Applicants
+	authApplicantsRoutes := r.Group("/applicants")
+	{
+		authApplicantsRoutes.POST("/register", authController.RegisterApplicants)
+	}
+	
+	// Employees
+	authEmployeesRoutes := r.Group("/employees", middleware.AuthorizeJWT(jwtService))
+	{
+		authEmployeesRoutes.POST("/register", authController.RegisterEmployees)
+	}
+	
 	r.Run()
 }

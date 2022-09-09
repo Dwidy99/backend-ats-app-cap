@@ -1,8 +1,19 @@
 package dto
 
 type RegisterDTO struct {
-	Name     string `json:"name" form:"name" binding:"required"`
 	Username string `json:"username" form:"username" binding:"required"`
 	Email    string `json:"email" form:"email" binding:"required"`
+	Password string `json:"password" form:"password" binding:"required"`
+}
+
+type RegisterEmployeeDTO struct {
+	Username string `json:"username" form:"username" binding:"required"`
+	Email    string `json:"email" form:"email" binding:"required"`
+	Role     string `json:"role" form:"role" binding:"required"`
+	Password string `json:"password" form:"password" binding:"required"`
+}
+
+type LoginDTO struct {
+	Email    string `json:"email" form:"email" binding:"required,email"`
 	Password string `json:"password" form:"password" binding:"required"`
 }

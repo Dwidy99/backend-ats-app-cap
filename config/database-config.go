@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"mini-project/entity"
 	"os"
 
 	"github.com/jinzhu/gorm"
@@ -34,7 +35,7 @@ func SetupConnectionDatabase() *gorm.DB {
 	}
 
 	db = conn
-	// db.AutoMigrate(&entity.User{})
+	db.AutoMigrate(&entity.User{})
 	return db
 }
 

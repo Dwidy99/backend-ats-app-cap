@@ -14,6 +14,7 @@ type AuthService interface {
 	VerifyCredential(email string, password string) interface{}
 	IsDuplicateEmail(email string) bool
 	CreateUser(user dto.RegisterDTO) entity.User
+	CreateEmployee(user dto.RegisterEmployeeDTO) entity.User
 }
 
 type authService struct {
@@ -55,7 +56,17 @@ func comparePassword(hashedPwd string, plainPassword []byte) bool {
 
 func (service *authService) CreateUser(user dto.RegisterDTO) entity.User {
 	userToCreate := entity.User{}
-	userToCreate.LevelAccess = "user"
+	userToCreate.Role = "user"
+	err := smapping.FillStruct(&userToCreate, smapping.MapFields(&user))
+	if err != nil {
+		log.Fatalf("Failed map %v", err)
+	}
+	res := service.userRepository.InsertUser(userToCreate)
+	return res
+}
+
+func (service *authService) CreateEmployee(user dto.RegisterEmployeeDTO) entity.User {
+	userToCreate := entity.User{}
 	err := smapping.FillStruct(&userToCreate, smapping.MapFields(&user))
 	if err != nil {
 		log.Fatalf("Failed map %v", err)
