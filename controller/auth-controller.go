@@ -13,7 +13,7 @@ import (
 
 type AuthController interface {
 	RegisterApplicants(ctx *gin.Context)
-	RegisterEmployee(ctx *gin.Context)
+	RegisterEmployees(ctx *gin.Context)
 	Login(ctx *gin.Context)
 }
 
@@ -30,7 +30,7 @@ func NewAuthController(authService service.AuthService, jwtService service.JWTSe
 	}
 }
 
-func (c *authController) RegisterEmployee(ctx *gin.Context) {
+func (c *authController) RegisterEmployees(ctx *gin.Context) {
 	var RegisterEmployeeDTO dto.RegisterEmployeeDTO
 
 	errEmployeeDTO := ctx.ShouldBind(&RegisterEmployeeDTO)
@@ -51,20 +51,20 @@ func (c *authController) RegisterEmployee(ctx *gin.Context) {
 }
 
 func (c *authController) RegisterApplicants(ctx *gin.Context) {
-	var registerDTO dto.RegisterDTO
+	var registerApplicantDTO dto.RegisterApplicantDTO
 
-	errDTO := ctx.ShouldBind(&registerDTO)
+	errDTO := ctx.ShouldBind(&registerApplicantDTO)
 	if errDTO != nil {
 		response := helpers.BuildErrorResponse("Failed to process request", errDTO.Error(), helpers.EmptyObj{})
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, response)
 		return
 	}
 
-	if !c.authService.IsDuplicateEmail(registerDTO.Email) {
+	if !c.authService.IsDuplicateEmail(registerApplicantDTO.Email) {
 		response := helpers.BuildErrorResponse("Failed to process request", "Duplicate email", helpers.EmptyObj{})
 		ctx.JSON(http.StatusConflict, response)
 	} else {
-		createdUser := c.authService.CreateUser(registerDTO)
+		createdUser := c.authService.CreateApplicant(registerApplicantDTO)
 		response := helpers.BuildResponse(true, "ok", createdUser)
 		ctx.JSON(http.StatusCreated, response)
 	}

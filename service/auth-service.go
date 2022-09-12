@@ -13,17 +13,21 @@ import (
 type AuthService interface {
 	VerifyCredential(email string, password string) interface{}
 	IsDuplicateEmail(email string) bool
-	CreateUser(user dto.RegisterDTO) entity.User
+	CreateApplicant(user dto.RegisterApplicantDTO) entity.User
 	CreateEmployee(user dto.RegisterEmployeeDTO) entity.User
 }
 
 type authService struct {
 	userRepository repository.UserRepository
+	applicantRepository repository.ApplicantRepository
+	employeeRepository repository.EmployeeRepository
 }
 
-func NewAuthService(userRep repository.UserRepository) AuthService {
+func NewAuthService(userRep repository.UserRepository, applicantRep repository.ApplicantRepository, employeeRep repository.EmployeeRepository) AuthService {
 	return &authService{
 		userRepository: userRep,
+		applicantRepository: applicantRep,
+		employeeRepository: employeeRep,
 	}
 }
 
@@ -54,7 +58,7 @@ func comparePassword(hashedPwd string, plainPassword []byte) bool {
 	return true
 }
 
-func (service *authService) CreateUser(user dto.RegisterDTO) entity.User {
+func (service *authService) CreateApplicant(user dto.RegisterApplicantDTO) entity.User {
 	userToCreate := entity.User{}
 	applicantToCreate := entity.Applicant{}
 	userToCreate.Role = "user"
@@ -63,17 +67,17 @@ func (service *authService) CreateUser(user dto.RegisterDTO) entity.User {
 	if err != nil {
 		log.Fatalf("Failed map %v", err)
 	}
-	res := service.userRepository.InsertUser(userToCreate, applicantToCreate)
+	res := service.applicantRepository.InsertApplicant(userToCreate, applicantToCreate)
 	return res
 }
 
 func (service *authService) CreateEmployee(user dto.RegisterEmployeeDTO) entity.User {
 	userToCreate := entity.User{}
-	applicantToCreate := entity.Applicant{}
+	employeeToCreate := entity.Employee{}
 	err := smapping.FillStruct(&userToCreate, smapping.MapFields(&user))
 	if err != nil {
 		log.Fatalf("Failed map %v", err)
 	}
-	res := service.userRepository.InsertUser(userToCreate, applicantToCreate)
+	res := service.employeeRepository.InsertEmployee(userToCreate, employeeToCreate)
 	return res
 }
