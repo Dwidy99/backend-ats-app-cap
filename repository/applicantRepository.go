@@ -32,13 +32,16 @@ func (db *applicantConnection) InsertApplicant(user entity.User, applicant entit
 
 func (db *applicantConnection) FindApplicantByID(UserID uint64) entity.Applicant {
 	var applicant entity.Applicant
+	
+	err := db.connection.Where("user_id = ?", UserID).Find(&applicant).Error
+	if err != nil {
+		return applicant
+	}
 
-	db.connection.Raw("SELECT user_id FROM applicants WHERE user_id = ?", UserID).Scan(&applicant)
 	return applicant
 }
 
 func (db *applicantConnection) SaveApplicant(applicant entity.Applicant) entity.Applicant {
 	db.connection.Save(&applicant)
-	db.connection.Preload("User").Find(&applicant)
 	return applicant
 }

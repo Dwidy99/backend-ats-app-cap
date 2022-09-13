@@ -2,17 +2,14 @@ package service
 
 import (
 	"fmt"
-	"log"
 	"mini-project/dto"
 	"mini-project/entity"
 	"mini-project/repository"
-
-	"github.com/mashingan/smapping"
 )
 
 type ApplicantService interface {
 	IsAllowedToEdit(userID string, applicantUserID uint64) bool
-	UpdateApplicant(applicant dto.ApplicantUpdateDTO) entity.Applicant 
+	UpdateApplicant(applicant dto.ApplicantDTO, inputData dto.ApplicantUpdateDTO) entity.Applicant 
 }
 
 type applicantService struct {
@@ -28,18 +25,21 @@ func NewApplicantService(applicantRepo repository.ApplicantRepository) Applicant
 func (service *applicantService) IsAllowedToEdit(userID string, applicantUserID uint64) bool {
 	applicant := service.applicantRepository.FindApplicantByID(applicantUserID)
 	id := fmt.Sprintf("%v", applicant.UserID)
-	fmt.Println("APPLICANT ID: ", id)
+	
 	return userID == id
 }
 
-func (service *applicantService) UpdateApplicant(applicantDto dto.ApplicantUpdateDTO) entity.Applicant {
-	applicant := entity.Applicant{}
+func (service *applicantService) UpdateApplicant(inputID dto.ApplicantDTO, inputData dto.ApplicantUpdateDTO) entity.Applicant {
+	applicant := service.applicantRepository.FindApplicantByID(inputID.UserID)
 
-	err := smapping.FillStruct(&applicant, smapping.MapFields(&applicant))
-	if err != nil {
-		log.Fatal("Failed map %v: ", err)
-	}
+	applicant.FirstName = inputData.FirstName
+	applicant.LastName = inputData.LastName
+	applicant.Phone = inputData.Phone
+	applicant.LastEducation = inputData.LastEducation
+	applicant.LinkedURL = inputData.LinkedinURL
+	applicant.GithubURL = inputData.GithubURL
 
-	res := service.applicantRepository.SaveApplicant(applicant)
-	return res
+	updateApplicant := service.applicantRepository.SaveApplicant(applicant)
+
+	return updateApplicant
 }

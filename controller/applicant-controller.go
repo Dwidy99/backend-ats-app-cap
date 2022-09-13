@@ -30,35 +30,41 @@ func NewApplicantController(applicantService service.ApplicantService, jwtServic
 }
 
 func (c *applicantController) EditApplicant(ctx *gin.Context) {
-	var applicantUpdateDTO dto.ApplicantUpdateDTO
-	var applicant dto.ApplicantDTO
-
-	errDTO := ctx.ShouldBind(&applicantUpdateDTO)
-	if errDTO != nil {
-		res := helpers.BuildErrorResponse("Failed to process request", errDTO.Error(), helpers.EmptyObj{})
+	var inputID dto.ApplicantDTO
+	
+	err := ctx.ShouldBindUri(&inputID)
+	if err != nil {
+		res := helpers.BuildErrorResponse("Failed to process request", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, res)
+		return
+	}
+	
+	var inputData dto.ApplicantUpdateDTO
+	
+	err = ctx.ShouldBindJSON(&inputData)
+	if err != nil {
+		res := helpers.BuildErrorResponse("Failed to process request", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, res)
+		return
 	}
 
 	authHeader := ctx.GetHeader("Authorization")
-	token, err := c.jwtService.ValidateToken(authHeader)
+	token, errToken := c.jwtService.ValidateToken(authHeader)
+	if errToken != nil {
+		panic(errToken.Error())
+	}
+	claims := token.Claims.(jwt.MapClaims)
+	userID, err := strconv.ParseUint(fmt.Sprintf("%v", claims["user_id"]), 10, 64)
 	if err != nil {
-		panic(err.Error())
+		panic(errToken.Error())
 	}
 
-	claims := token.Claims.(jwt.MapClaims)
-	userID := fmt.Sprintf("%v", claims["user_id"])
-	fmt.Println("USERID: ", userID)
-	fmt.Println("APPLICANT UserID: ", applicant.UserID)
-	if c.applicantService.IsAllowedToEdit(userID, applicant.UserID) {
-		id, errID := strconv.ParseUint(userID, 10, 64)
-		if errID == nil {
-			applicantUpdateDTO.UserID = id
-		}
-		result := c.applicantService.UpdateApplicant(applicantUpdateDTO)
+	if userID != 0 {
+		result := c.applicantService.UpdateApplicant(inputID, inputData)
 		response := helpers.BuildResponse(true, "ok", result)
 		ctx.JSON(http.StatusOK, response)
 	} else {
-		response := helpers.BuildErrorResponse("update user failed", "error", nil)
-		ctx.JSON(http.StatusBadRequest, response)
+		res := helpers.BuildErrorResponse("Failed to process request", "error", helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, res)
 	}
 }
