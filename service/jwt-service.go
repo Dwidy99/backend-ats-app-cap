@@ -20,11 +20,11 @@ type jwtCustomClaim struct {
 
 type jwtService struct {
 	secretKey string
-	issuer string
+	issuer    string
 }
 
 func NewJWTService() JWTService {
-	return &jwtService{issuer: "adaissue", secretKey: getSecretKey(),}
+	return &jwtService{issuer: "adaissue", secretKey: getSecretKey()}
 }
 
 func getSecretKey() string {
