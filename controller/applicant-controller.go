@@ -3,7 +3,6 @@ package controller
 import (
 	"fmt"
 	"mini-project/dto"
-	"mini-project/entity"
 	"mini-project/helpers"
 	"mini-project/service"
 	"net/http"
@@ -31,7 +30,7 @@ func NewApplicantController(applicantService service.ApplicantService, jwtServic
 }
 
 func (c *applicantController) EditApplicant(ctx *gin.Context) {
-	var applicant entity.Applicant
+	// var applicant entity.Applicant
 	var inputID dto.ApplicantDTO
 	
 	err := ctx.ShouldBindUri(&inputID)
@@ -49,7 +48,7 @@ func (c *applicantController) EditApplicant(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, res)
 		return
 	}
-
+	
 	authHeader := ctx.GetHeader("Authorization")
 	token, errToken := c.jwtService.ValidateToken(authHeader)
 	if errToken != nil {
@@ -60,10 +59,10 @@ func (c *applicantController) EditApplicant(ctx *gin.Context) {
 	if err != nil {
 		panic(errToken.Error())
 	}
-	fmt.Println()
-
-	if userID != applicant.UserID {
-		result := c.applicantService.UpdateApplicant(inputID, inputData)
+	fmt.Println("User ID: ", userID)
+	
+	if userID != 0 {
+		result := c.applicantService.UpdateApplicant(inputID, int(userID), inputData)
 		response := helpers.BuildResponse(true, "ok", result)
 		ctx.JSON(http.StatusOK, response)
 	} else {
