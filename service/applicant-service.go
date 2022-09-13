@@ -12,7 +12,7 @@ import (
 
 type ApplicantService interface {
 	IsAllowedToEdit(userID string, applicantUserID uint64) bool
-	UpdateApplicant(applicant dto.ApplicantUpdateDTO) entity.Applicant
+	UpdateApplicant(applicant dto.ApplicantUpdateDTO, id int) entity.Applicant
 }
 
 type applicantService struct {
@@ -32,8 +32,16 @@ func (service *applicantService) IsAllowedToEdit(userID string, applicantUserID 
 	return userID == id
 }
 
-func (service *applicantService) UpdateApplicant(a dto.ApplicantUpdateDTO) entity.Applicant {
-	applicant := entity.Applicant{}
+func (service *applicantService) UpdateApplicant(a dto.ApplicantUpdateDTO, id int) entity.Applicant {
+	applicant := service.applicantRepository.FindApplicantByID(uint64(id))
+
+	applicant.FirstName =  a.FirstName
+	applicant.LastName = a.LastName
+	applicant.Phone = a.Phone
+	applicant.LastEducation = a.LastEducation
+	applicant.LinkedURL = a.LinkedinURL
+	applicant.GithubURL = a.GithubURL
+
 	err := smapping.FillStruct(&applicant, smapping.MapFields(&a))
 	if err != nil {
 		log.Fatalf("Failed map %v: ", err)

@@ -50,7 +50,7 @@ func (c *applicantController) EditApplicant(ctx *gin.Context) {
 
 	if c.applicantService.IsAllowedToEdit(userID, uint64(id)) {
 		
-		result := c.applicantService.UpdateApplicant(applicantUpdateDTO)
+		result := c.applicantService.UpdateApplicant(applicantUpdateDTO, id)
 		response := helpers.BuildResponse(true, "OK", result)
 		ctx.JSON(http.StatusOK, response)
 	} else {
