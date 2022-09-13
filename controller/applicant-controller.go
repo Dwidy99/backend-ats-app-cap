@@ -30,19 +30,9 @@ func NewApplicantController(applicantService service.ApplicantService, jwtServic
 }
 
 func (c *applicantController) EditApplicant(ctx *gin.Context) {
-	// var applicant entity.Applicant
-	var inputID dto.ApplicantDTO
+	var applicantUpdateDTO dto.ApplicantUpdateDTO
 
-	err := ctx.ShouldBindUri(&inputID)
-	if err != nil {
-		res := helpers.BuildErrorResponse("Failed to process request", err.Error(), helpers.EmptyObj{})
-		ctx.JSON(http.StatusBadRequest, res)
-		return
-	}
-
-	var inputData dto.ApplicantUpdateDTO
-
-	err = ctx.ShouldBindJSON(&inputData)
+	err := ctx.ShouldBindJSON(&applicantUpdateDTO)
 	if err != nil {
 		res := helpers.BuildErrorResponse("Failed to process request", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, res)
@@ -55,18 +45,16 @@ func (c *applicantController) EditApplicant(ctx *gin.Context) {
 		panic(errToken.Error())
 	}
 	claims := token.Claims.(jwt.MapClaims)
-	userID, err := strconv.ParseUint(fmt.Sprintf("%v", claims["user_id"]), 10, 64)
-	if err != nil {
-		panic(errToken.Error())
-	}
-	fmt.Println("User ID: ", userID)
+	userID := fmt.Sprintf("%v", claims["user_id"])
+	id, _ := strconv.Atoi(ctx.Param("id"))
 
-	if userID != 0 {
-		result := c.applicantService.UpdateApplicant(inputID, int(userID), inputData)
-		response := helpers.BuildResponse(true, "ok", result)
+	if c.applicantService.IsAllowedToEdit(userID, uint64(id)) {
+		
+		result := c.applicantService.UpdateApplicant(applicantUpdateDTO)
+		response := helpers.BuildResponse(true, "OK", result)
 		ctx.JSON(http.StatusOK, response)
 	} else {
-		res := helpers.BuildErrorResponse("Failed to process request", "error", helpers.EmptyObj{})
-		ctx.JSON(http.StatusBadRequest, res)
+		response := helpers.BuildErrorResponse("You dont have permission", "You are not the owner", helpers.EmptyObj{})
+		ctx.JSON(http.StatusForbidden, response)
 	}
 }

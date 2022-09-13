@@ -1,7 +1,5 @@
 package dto
 
-import "os/user"
-
 type ApplicantDTO struct {
 	UserID uint64 `uri:"id" binding:"required"`
 }
@@ -13,5 +11,4 @@ type ApplicantUpdateDTO struct {
 	LastEducation string `json:"last_education" form:"last_education" binding:"required"`
 	LinkedinURL   string `json:"linkedin_url" form:"linkedin_url" binding:"required"`
 	GithubURL     string `json:"github_url" form:"github_url" binding:"required"`
-	User          user.User
 }

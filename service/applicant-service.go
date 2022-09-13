@@ -2,14 +2,17 @@ package service
 
 import (
 	"fmt"
+	"log"
 	"mini-project/dto"
 	"mini-project/entity"
 	"mini-project/repository"
+
+	"github.com/mashingan/smapping"
 )
 
 type ApplicantService interface {
 	IsAllowedToEdit(userID string, applicantUserID uint64) bool
-	UpdateApplicant(applicant dto.ApplicantDTO, userId int, inputData dto.ApplicantUpdateDTO) entity.Applicant
+	UpdateApplicant(applicant dto.ApplicantUpdateDTO) entity.Applicant
 }
 
 type applicantService struct {
@@ -29,21 +32,12 @@ func (service *applicantService) IsAllowedToEdit(userID string, applicantUserID 
 	return userID == id
 }
 
-func (service *applicantService) UpdateApplicant(inputID dto.ApplicantDTO, userId int, inputData dto.ApplicantUpdateDTO) entity.Applicant {
-	applicant := service.applicantRepository.FindApplicantByID(inputID.UserID)
-
-	if applicant.UserID == uint64(userId) {
-		applicant.FirstName = inputData.FirstName
-		applicant.LastName = inputData.LastName
-		applicant.Phone = inputData.Phone
-		applicant.LastEducation = inputData.LastEducation
-		applicant.LinkedURL = inputData.LinkedinURL
-		applicant.GithubURL = inputData.GithubURL
-
-		updateApplicant := service.applicantRepository.SaveApplicant(applicant)
-
-		return updateApplicant
-	} else {
-		return applicant
+func (service *applicantService) UpdateApplicant(a dto.ApplicantUpdateDTO) entity.Applicant {
+	applicant := entity.Applicant{}
+	err := smapping.FillStruct(&applicant, smapping.MapFields(&a))
+	if err != nil {
+		log.Fatalf("Failed map %v: ", err)
 	}
+	res := service.applicantRepository.SaveApplicant(applicant)
+	return res
 }
