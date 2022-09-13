@@ -9,7 +9,7 @@ import (
 
 type ApplicantService interface {
 	IsAllowedToEdit(userID string, applicantUserID uint64) bool
-	UpdateApplicant(applicant dto.ApplicantDTO, inputData dto.ApplicantUpdateDTO) entity.Applicant
+	UpdateApplicant(applicant dto.ApplicantDTO, userId int, inputData dto.ApplicantUpdateDTO) entity.Applicant
 }
 
 type applicantService struct {
@@ -29,17 +29,21 @@ func (service *applicantService) IsAllowedToEdit(userID string, applicantUserID 
 	return userID == id
 }
 
-func (service *applicantService) UpdateApplicant(inputID dto.ApplicantDTO, inputData dto.ApplicantUpdateDTO) entity.Applicant {
+func (service *applicantService) UpdateApplicant(inputID dto.ApplicantDTO, userId int, inputData dto.ApplicantUpdateDTO) entity.Applicant {
 	applicant := service.applicantRepository.FindApplicantByID(inputID.UserID)
 
-	applicant.FirstName = inputData.FirstName
-	applicant.LastName = inputData.LastName
-	applicant.Phone = inputData.Phone
-	applicant.LastEducation = inputData.LastEducation
-	applicant.LinkedURL = inputData.LinkedinURL
-	applicant.GithubURL = inputData.GithubURL
+	if applicant.UserID == uint64(userId) {
+		applicant.FirstName = inputData.FirstName
+		applicant.LastName = inputData.LastName
+		applicant.Phone = inputData.Phone
+		applicant.LastEducation = inputData.LastEducation
+		applicant.LinkedURL = inputData.LinkedinURL
+		applicant.GithubURL = inputData.GithubURL
 
-	updateApplicant := service.applicantRepository.SaveApplicant(applicant)
+		updateApplicant := service.applicantRepository.SaveApplicant(applicant)
 
-	return updateApplicant
+		return updateApplicant
+	} else {
+		return applicant
+	}
 }
