@@ -92,3 +92,4 @@ func (c *authController) Login(ctx *gin.Context) {
 	response := helpers.BuildErrorResponse("Please check again your credential", "Invalid Credential", helpers.EmptyObj{})
 	ctx.AbortWithStatusJSON(http.StatusUnauthorized, response)
 }
+

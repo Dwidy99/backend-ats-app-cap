@@ -16,9 +16,14 @@ var (
 	userRepository repository.UserRepository = repository.NewUserRepository(db)
 	applicantRepository repository.ApplicantRepository = repository.NewApplicantRepository(db)
 	employeeRepository repository.EmployeeRepository = repository.NewEmployeeRepository(db)
-	jwtService     service.JWTService        = service.NewJWTService()
-	authService    service.AuthService       = service.NewAuthService(userRepository, applicantRepository, employeeRepository)
+
+	jwtService     service.JWTService = service.NewJWTService()
+	
+	authService    service.AuthService = service.NewAuthService(userRepository, applicantRepository, employeeRepository)
+	applicantService    service.ApplicantService = service.NewApplicantService(applicantRepository)
+	
 	authController controller.AuthController = controller.NewAuthController(authService, jwtService)
+	applicantController controller.ApplicantController = controller.NewApplicantController(applicantService, jwtService)
 )
 
 func main() {
@@ -33,6 +38,10 @@ func main() {
 	}
 
 	// Applicant Routes
+	authApplicantRoutes := r.Group("/", middleware.AuthorizeJWT(jwtService))
+	{
+		authApplicantRoutes.PUT("/applicants/users/:id", applicantController.EditApplicant)
+	}
 
 	// Employees Routes
 	authEmployeeRoutes := r.Group("/employees", middleware.AuthorizeJWT(jwtService))

@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"fmt"
 	"mini-project/entity"
 
 	"github.com/jinzhu/gorm"
@@ -9,6 +8,8 @@ import (
 
 type ApplicantRepository interface {
 	InsertApplicant(user entity.User, applicant entity.Applicant) entity.User
+	FindApplicantByID(applicantUserID uint64) entity.Applicant
+	SaveApplicant(applicant entity.Applicant) entity.Applicant
 }
 
 type applicantConnection struct {
@@ -26,6 +27,18 @@ func (db *applicantConnection) InsertApplicant(user entity.User, applicant entit
 	db.connection.Save(&user)
 	applicant.UserID = user.ID
 	db.connection.Save(&applicant)
-	fmt.Println("PASSWORD", user.Password)
 	return user
+}
+
+func (db *applicantConnection) FindApplicantByID(UserID uint64) entity.Applicant {
+	var applicant entity.Applicant
+
+	db.connection.Raw("SELECT user_id FROM applicants WHERE user_id = ?", UserID).Scan(&applicant)
+	return applicant
+}
+
+func (db *applicantConnection) SaveApplicant(applicant entity.Applicant) entity.Applicant {
+	db.connection.Save(&applicant)
+	db.connection.Preload("User").Find(&applicant)
+	return applicant
 }
