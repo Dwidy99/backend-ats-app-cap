@@ -14,6 +14,7 @@ import (
 
 type ApplicantController interface {
 	EditApplicant(ctx *gin.Context)
+	FetchUser(ctx *gin.Context)
 }
 
 type applicantController struct {
@@ -57,4 +58,23 @@ func (c *applicantController) EditApplicant(ctx *gin.Context) {
 		response := helpers.BuildErrorResponse("You dont have permission", "You are not the owner", helpers.EmptyObj{})
 		ctx.JSON(http.StatusForbidden, response)
 	}
+}
+
+func (c *applicantController) FetchUser(ctx *gin.Context) {
+
+	authHeader := ctx.GetHeader("Authorization")
+	token, errToken := c.jwtService.ValidateToken(authHeader)
+	if errToken != nil {
+		panic(errToken.Error())
+	}
+	claims := token.Claims.(jwt.MapClaims)
+	userID, err := strconv.ParseUint(fmt.Sprintf("%v", claims["user_id"]), 10, 64)
+	if err != nil {
+		panic(errToken.Error())
+	}
+
+	applicant := c.applicantService.GetApplicantByID(userID)
+
+	res := helpers.BuildResponse(true, "successfuly get data user applicant", applicant)
+	ctx.JSON(http.StatusOK, res)
 }
