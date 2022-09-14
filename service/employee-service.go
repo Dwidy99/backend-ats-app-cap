@@ -13,6 +13,7 @@ import (
 type EmployeeService interface {
 	IsAllowedToEdit(UserID string, employeeUserID uint64) bool
 	UpdateEmployee(employee dto.EmployeeUpdateDTO, id int) entity.Employee
+	GetEmployeeById(userId uint64) entity.Employee
 }
 
 type employeeService struct{
@@ -26,14 +27,14 @@ func NewEmployeeService(employeeRepo repository.EmployeeRepository) EmployeeServ
 }
 
 func (s *employeeService) IsAllowedToEdit(userID string, employeeUserID uint64) bool {
-	applicant := s.employeeRepository.FindApplicantByID(employeeUserID)
+	applicant := s.employeeRepository.FindEmployeeByID(employeeUserID)
 	id := fmt.Sprintf("%v", applicant.UserID)
 
 	return userID == id
 }
 
 func (s *employeeService) UpdateEmployee(e dto.EmployeeUpdateDTO, id int) entity.Employee {
-	employee := s.employeeRepository.FindApplicantByID(uint64(id))
+	employee := s.employeeRepository.FindEmployeeByID(uint64(id))
 
 	employee.Name = e.Name
 	employee.Contact = e.Contact
@@ -44,5 +45,15 @@ func (s *employeeService) UpdateEmployee(e dto.EmployeeUpdateDTO, id int) entity
 	}
 
 	res := s.employeeRepository.SaveEmployee(employee)
+	return res
+}
+
+func (s *employeeService) GetEmployeeById(userId uint64) entity.Employee {
+	res := s.employeeRepository.FindEmployeeByID(userId)
+	err := smapping.FillStruct(userId, smapping.MapFields(&userId))
+	if err != nil {
+		log.Fatalf("Failed to Fill %v: ", err)
+	}
+
 	return res
 }

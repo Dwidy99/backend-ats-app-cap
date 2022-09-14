@@ -42,7 +42,7 @@ func main() {
 	authApplicantRoutes := r.Group("/applicants", middleware.AuthorizeJWT(jwtService))
 	{
 		authApplicantRoutes.PUT("/users/:id", applicantController.EditApplicant)
-		authApplicantRoutes.GET("/users/fetch", applicantController.FetchUser)
+		authApplicantRoutes.GET("/users/fetch", applicantController.FetchUserApplicant)
 	}
 
 	// Employees Routes
@@ -50,6 +50,7 @@ func main() {
 	{
 		authEmployeeRoutes.POST("/register", authController.RegisterEmployees)
 		authEmployeeRoutes.PUT("/users/:id", employeeController.EditEmployee)
+		authEmployeeRoutes.GET("/users/fetch", employeeController.FetchUserEmployee)
 	}
 	r.Run()
 }

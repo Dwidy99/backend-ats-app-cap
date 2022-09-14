@@ -14,7 +14,7 @@ import (
 
 type ApplicantController interface {
 	EditApplicant(ctx *gin.Context)
-	FetchUser(ctx *gin.Context)
+	FetchUserApplicant(ctx *gin.Context)
 }
 
 type applicantController struct {
@@ -60,7 +60,7 @@ func (c *applicantController) EditApplicant(ctx *gin.Context) {
 	}
 }
 
-func (c *applicantController) FetchUser(ctx *gin.Context) {
+func (c *applicantController) FetchUserApplicant(ctx *gin.Context) {
 
 	authHeader := ctx.GetHeader("Authorization")
 	token, errToken := c.jwtService.ValidateToken(authHeader)

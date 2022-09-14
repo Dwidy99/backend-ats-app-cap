@@ -9,7 +9,7 @@ import (
 type EmployeeRepository interface {
 	InsertEmployee(user entity.User, employee entity.Employee) entity.User
 	SaveEmployee(employee entity.Employee) entity.Employee
-	FindApplicantByID(employeeUserID uint64) entity.Employee
+	FindEmployeeByID(employeeUserID uint64) entity.Employee
 }
 
 type employeeConnection struct {
@@ -30,7 +30,7 @@ func (db *employeeConnection) InsertEmployee(user entity.User, employee entity.E
 	return user
 }
 
-func (db *employeeConnection) FindApplicantByID(UserID uint64) entity.Employee {
+func (db *employeeConnection) FindEmployeeByID(UserID uint64) entity.Employee {
 	var employee entity.Employee
 
 	err := db.connection.Where("user_id = ?", UserID).Find(&employee).Error
