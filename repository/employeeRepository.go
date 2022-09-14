@@ -8,6 +8,8 @@ import (
 
 type EmployeeRepository interface {
 	InsertEmployee(user entity.User, employee entity.Employee) entity.User
+	SaveEmployee(employee entity.Employee) entity.Employee
+	FindApplicantByID(employeeUserID uint64) entity.Employee
 }
 
 type employeeConnection struct {
@@ -27,3 +29,20 @@ func (db *employeeConnection) InsertEmployee(user entity.User, employee entity.E
 	db.connection.Save(&employee)
 	return user
 }
+
+func (db *employeeConnection) FindApplicantByID(UserID uint64) entity.Employee {
+	var employee entity.Employee
+
+	err := db.connection.Where("user_id = ?", UserID).Find(&employee).Error
+	if err != nil {
+		return employee
+	}
+
+	return employee
+}
+
+func (db *employeeConnection) SaveEmployee(employee entity.Employee) entity.Employee {
+	db.connection.Save(&employee)
+	return employee
+}
+

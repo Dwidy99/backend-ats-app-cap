@@ -13,6 +13,7 @@ import (
 
 var (
 	db                  *gorm.DB                       = config.SetupConnectionDatabase()
+
 	userRepository      repository.UserRepository      = repository.NewUserRepository(db)
 	applicantRepository repository.ApplicantRepository = repository.NewApplicantRepository(db)
 	employeeRepository  repository.EmployeeRepository  = repository.NewEmployeeRepository(db)
@@ -21,9 +22,11 @@ var (
 
 	authService      service.AuthService      = service.NewAuthService(userRepository, applicantRepository, employeeRepository)
 	applicantService service.ApplicantService = service.NewApplicantService(applicantRepository)
+	employeeService service.EmployeeService = service.NewEmployeeService(employeeRepository)
 
 	authController      controller.AuthController      = controller.NewAuthController(authService, jwtService)
 	applicantController controller.ApplicantController = controller.NewApplicantController(applicantService, jwtService)
+	employeeController controller.EmployeeController = controller.NewEmployeeController(employeeService, jwtService)
 )
 
 func main() {
@@ -36,15 +39,16 @@ func main() {
 	}
 
 	// Applicant Routes
-	authApplicantRoutes := r.Group("/", middleware.AuthorizeJWT(jwtService))
+	authApplicantRoutes := r.Group("/applicants", middleware.AuthorizeJWT(jwtService))
 	{
-		authApplicantRoutes.PUT("/applicants/users/:id", applicantController.EditApplicant)
+		authApplicantRoutes.PUT("/users/:id", applicantController.EditApplicant)
 	}
 
 	// Employees Routes
 	authEmployeeRoutes := r.Group("/employees", middleware.AuthorizeJWT(jwtService))
 	{
 		authEmployeeRoutes.POST("/register", authController.RegisterEmployees)
+		authEmployeeRoutes.PUT("/users/:id", employeeController.EditEmployee)
 	}
 	r.Run()
 }

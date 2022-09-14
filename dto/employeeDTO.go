@@ -6,6 +6,6 @@ type EmployeeDTO struct {
 }
 
 type EmployeeUpdateDTO struct {
-	ID     uint64 `json:"applicant_id"`
-	UserID uint64 `json:"user_id"`
+	Name    string `json:"name" form:"name" binding:"required"`
+	Contact string `json:"contact" form:"contact" binding:"required"`
 }

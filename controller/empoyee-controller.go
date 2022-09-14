@@ -12,27 +12,26 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-type ApplicantController interface {
-	EditApplicant(ctx *gin.Context)
+type EmployeeController interface {
+	EditEmployee(ctx *gin.Context)
 }
 
-type applicantController struct {
-	applicantService service.ApplicantService
-	jwtService       service.JWTService
+type employeeController struct {
+	employeeService service.EmployeeService
+	jwtService service.JWTService
 }
 
-// NewAuthController creates a new instance of AuthController
-func NewApplicantController(applicantService service.ApplicantService, jwtService service.JWTService) ApplicantController {
-	return &applicantController{
-		applicantService: applicantService,
-		jwtService:       jwtService,
+func NewEmployeeController(employeeService service.EmployeeService, jwtService service.JWTService) EmployeeController {
+	return &employeeController{
+		employeeService: employeeService,
+		jwtService: jwtService,
 	}
 }
 
-func (c *applicantController) EditApplicant(ctx *gin.Context) {
-	var applicantInput dto.ApplicantUpdateDTO
+func (c *employeeController) EditEmployee(ctx *gin.Context)  {
+	var employeeInput dto.EmployeeUpdateDTO
 
-	err := ctx.ShouldBindJSON(&applicantInput)
+	err := ctx.ShouldBindJSON(&employeeInput)
 	if err != nil {
 		res := helpers.BuildErrorResponse("Failed to process request", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, res)
@@ -48,9 +47,9 @@ func (c *applicantController) EditApplicant(ctx *gin.Context) {
 	userID := fmt.Sprintf("%v", claims["user_id"])
 	id, _ := strconv.Atoi(ctx.Param("id"))
 
-	if c.applicantService.IsAllowedToEdit(userID, uint64(id)) {
+	if c.employeeService.IsAllowedToEdit(userID, uint64(id)) {
 		
-		result := c.applicantService.UpdateApplicant(applicantInput, id)
+		result := c.employeeService.UpdateEmployee(employeeInput, id)
 		response := helpers.BuildResponse(true, "OK", result)
 		ctx.JSON(http.StatusOK, response)
 	} else {
