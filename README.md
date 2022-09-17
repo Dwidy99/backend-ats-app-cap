@@ -24,7 +24,7 @@ Login to Applicant page and returns the new object.
   None
 - **Headers**  
   Content-Type: application/json
-- **Data Params**
+- **Request Body**
 
 ```
 {
@@ -95,7 +95,7 @@ Register to Applicant page and returns the new object.
   None
 - **Headers**  
   Content-Type: application/json
-- **Data Params for applicant**
+- **Request Body for applicant**
 
   ```
   {
@@ -147,7 +147,7 @@ Register to Employees page and returns the new object.(Must Superadmin can be cr
   None
 - **Headers**  
   Content-Type: application/json
-- **Data Params for applicant**
+- **Request Body for applicant**
 
   ```
   {
@@ -213,7 +213,7 @@ Logout and returns no object.
   None
 - **Headers**  
   Content-Type: application/json
-- **No Data Params**
+- **No Request Body**
 
 - **Success Response:**
 - **Code:** 200  
@@ -233,13 +233,13 @@ Logout and returns no object.
 
 # Users
 
-## **GET /employees/users/:id**
+## **GET /employees/users/fetch**
 
 Returns the specified user.
 
 - **URL Params**
   _Required:_ `id=[integer]`
-- **Data Params**
+- **Request Body**
   None
 - **Headers**
   Content-Type: application/json
@@ -285,7 +285,7 @@ Update a User(Employee) and returns the new object.
   _Required:_ `id=[integer]`
 - **Headers**
   Content-Type: application/json
-- **Data Params for employee**
+- **Request Body for employee**
 
   ```
   {
@@ -327,43 +327,49 @@ Update a User(Employee) and returns the new object.
   }
   ```
 
-<!-- Optional -->
+## **GET /applicants/users/fetch**
 
-## **DELETE /emplooyees/users/:id** (Optional)
-
-Deletes the specified user.
+Returns the specified user.
 
 - **URL Params**
   _Required:_ `id=[integer]`
-- **Data Params**
+- **Request Body**
   None
 - **Headers**
   Content-Type: application/json
   Authorization: Bearer `<JWT Token>`
 - **Success Response:**
 - **Code:** 200
-  **Content:**
+- **Content:**
 
   ```
   {
-      "status": true,
-      "message": "ok",
-      "errors": null,
-      "data": null
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
+        "user_id": integer,
+        "name": string,
+        "username": string,
+        "email": string,
+        "role": string,
+        "token": string,
+        "contact": string
+    }
   }
   ```
 
 - **Error Response:**
-- **Code:** 400
-  **Content:**
-  ```
-  {
-      "status": false,
-      "message": "Example message",
-      "errors": "error",
-      "data": null
-  }
-  ```
+  - **Code:** 400
+    **Content:**
+    ```
+    {
+        "status": false,
+        "message": "Example message",
+        "errors": "error",
+        "data": null
+    }
+    ```
 
 ## **PUT /applicants/users/:id**
 
@@ -373,7 +379,7 @@ Update a User(Applicant) and returns the new object.
   _Required:_ `id=[integer]`
 - **Headers**
   Content-Type: application/json
-- **Data Params**
+- **Request Body**
 
   ```
   {
@@ -444,53 +450,13 @@ Update a User(Applicant) and returns the new object.
   }
   ```
 
-## **GET /applicants/experiences**
-
-Returns all Experience in the system.
-
-- **URL Params**
-  None
-- **Data Params**
-  None
-- **Headers**
-  Content-Type: application/json
-- **Success Response:**
-- **Code:** 200
-  **Content:**
-
-```
-{
-    "status": true,
-    "message": "ok",
-    "errors": null,
-    "data": {
-        {<experience_object>},
-        {<experience_object>},
-        {<experience_object>}
-    }
-}
-```
-
-**Error Response:**
-
-- **Code:** 400
-  **Content:**
-  ```
-  {
-      "status": false,
-      "message": "Example message",
-      "errors": "error",
-      "data": null
-  }
-  ```
-
 ## **POST /applicants/experiences**
 
 Creates a new Experiences for employee and returns the new object.
 
 - **URL Params**
   None
-- **Data Params**
+- **Request Body**
 
   ```
   {
@@ -541,13 +507,53 @@ Creates a new Experiences for employee and returns the new object.
   }
   ```
 
+## **GET /applicants/experiences**
+
+Returns all Experience in the system.
+
+- **URL Params**
+  None
+- **Request Body**
+  None
+- **Headers**
+  Content-Type: application/json
+- **Success Response:**
+- **Code:** 200
+  **Content:**
+
+```
+{
+    "status": true,
+    "message": "ok",
+    "errors": null,
+    "data": {
+        {<experience_object>},
+        {<experience_object>},
+        {<experience_object>}
+    }
+}
+```
+
+**Error Response:**
+
+- **Code:** 400
+  **Content:**
+  ```
+  {
+      "status": false,
+      "message": "Example message",
+      "errors": "error",
+      "data": null
+  }
+  ```
+
 ## **GET /applicants/experiences/:id**
 
 Returns the specified product.
 
 - **URL Params**
   _Required:_ `id=[integer]`
-- **Data Params**
+- **Request Body**
   None
 - **Headers**
   Content-Type: application/json
@@ -592,7 +598,7 @@ Deletes the specified Experience.
 
 - **URL Params**
   _Required:_ `id=[integer]`
-- **Data Params**
+- **Request Body**
   None
 - **Headers**
   Content-Type: application/json
@@ -641,7 +647,7 @@ Returns all Companies in the system.
 
 - **URL Params**
   None
-- **Data Params**
+- **Request Body**
   None
 - **Headers**
   Content-Type: application/json
@@ -680,7 +686,7 @@ Creates a new Company for employee and returns the new object.
 
 - **URL Params**
   None
-- **Data Params**
+- **Request Body**
 
   ```
   {
@@ -720,7 +726,7 @@ Returns the specified product.
 
 - **URL Params**
   _Required:_ `id=[integer]`
-- **Data Params**
+- **Request Body**
   None
 - **Headers**
   Content-Type: application/json
@@ -766,7 +772,7 @@ Update a Company and returns the new object.
   _Required_ `id=[integer]`
 - **Headers**
   Content-Type: application/json
-- **Data Params**
+- **Request Body**
 
   ```
   {
@@ -817,7 +823,7 @@ Deletes the specified company.
 
 - **URL Params**
   _Required:_ `id=[integer]`
-- **Data Params**
+- **Request Body**
   None
 - **Headers**
   Content-Type: application/json
@@ -879,7 +885,7 @@ Returns all jobs list in the system.
 
 - **URL Params**
   None
-- **Data Params**
+- **Request Body**
   None
 - **Headers**
   Content-Type: application/json
@@ -906,7 +912,7 @@ Creates a new jobs and returns the new object.
 
 - **URL Params**
   None
-- **Data Params**
+- **Request Body**
 
   ```
   {
@@ -959,7 +965,7 @@ Returns the specified jobs.
 
 - **URL Params**
   _Required:_ `id=[integer]`
-- **Data Params**
+- **Request Body**
   None
 - **Headers**
   Content-Type: application/json
@@ -1012,7 +1018,7 @@ Update a Company and returns the new object.
   _Required_ `id=[integer]`
 - **Headers**
   Content-Type: application/json
-- **Data Params**
+- **Request Body**
 
   ```
   {
@@ -1068,7 +1074,7 @@ Deletes the specified jobs.
 
 - **URL Params**
   _Required:_ `id=[integer]`
-- **Data Params**
+- **Request Body**
   None
 - **Headers**
   Content-Type: application/json
@@ -1093,7 +1099,7 @@ Returns all jobs available in the system.
 
 - **URL Params**
   None
-- **Data Params**
+- **Request Body**
   None
 - **Headers**
   Content-Type: application/json
@@ -1120,7 +1126,7 @@ Returns the specified jobs.
 
 - **URL Params**
   _Required:_ `id=[integer]`
-- **Data Params**
+- **Request Body**
   None
 - **Headers**
   Content-Type: application/json
@@ -1190,7 +1196,7 @@ Applicant apply a job and returns the new object.
 
 - **URL Params**
   None
-- **Data Params**
+- **Request Body**
 
   ```
   {
@@ -1224,7 +1230,7 @@ Applicant apply a job and returns the new object.
 
 - **URL Params**
   None
-- **Data Params**
+- **Request Body**
 
   ```
   {
@@ -1273,7 +1279,7 @@ Returns all skills in the system.
 
 - **URL Params**
   None
-- **Data Params**
+- **Request Body**
   None
 - **Headers**
   Content-Type: application/json
@@ -1300,7 +1306,7 @@ Creates a new Skill for applicant and returns the new object.
 
 - **URL Params**
   None
-- **Data Params**
+- **Request Body**
 
   ```
   {
@@ -1332,7 +1338,7 @@ Deletes the specified skill.
 
 - **URL Params**
   _Required:_ `id=[integer]`
-- **Data Params**
+- **Request Body**
   None
 - **Headers**
   Content-Type: application/json
@@ -1380,7 +1386,7 @@ Returns all skills in the system.
 
 - **URL Params**
   None
-- **Data Params**
+- **Request Body**
   None
 - **Headers**
   Content-Type: application/json

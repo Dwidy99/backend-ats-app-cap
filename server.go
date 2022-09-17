@@ -17,16 +17,19 @@ var (
 	userRepository      repository.UserRepository      = repository.NewUserRepository(db)
 	applicantRepository repository.ApplicantRepository = repository.NewApplicantRepository(db)
 	employeeRepository  repository.EmployeeRepository  = repository.NewEmployeeRepository(db)
+	experienceRepository  repository.ExperienceRepository  = repository.NewExperienceRepository(db)
 
 	jwtService service.JWTService = service.NewJWTService()
 
 	authService      service.AuthService      = service.NewAuthService(userRepository, applicantRepository, employeeRepository)
 	applicantService service.ApplicantService = service.NewApplicantService(applicantRepository)
 	employeeService service.EmployeeService = service.NewEmployeeService(employeeRepository)
+	experienceService service.ExperienceService = service.NewExperienceService(experienceRepository)
 
 	authController      controller.AuthController      = controller.NewAuthController(authService, jwtService)
 	applicantController controller.ApplicantController = controller.NewApplicantController(applicantService, jwtService)
 	employeeController controller.EmployeeController = controller.NewEmployeeController(employeeService, jwtService)
+	experienceController controller.ExperienceController = controller.NewExperienceController(experienceService, jwtService)
 )
 
 func main() {
@@ -43,6 +46,8 @@ func main() {
 	{
 		authApplicantRoutes.PUT("/users/:id", applicantController.EditApplicant)
 		authApplicantRoutes.GET("/users/fetch", applicantController.FetchUserApplicant)
+		authApplicantRoutes.POST("/jobexperiences", experienceController.CreateExperience)
+		authApplicantRoutes.PUT("/jobexperiences/:id", experienceController.UpdateExperience)
 	}
 
 	// Employees Routes

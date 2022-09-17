@@ -22,9 +22,9 @@ type employeeController struct {
 	jwtService service.JWTService
 }
 
-func NewEmployeeController(employeeService service.EmployeeService, jwtService service.JWTService) EmployeeController {
+func NewEmployeeController(empService service.EmployeeService, jwtService service.JWTService) EmployeeController {
 	return &employeeController{
-		employeeService: employeeService,
+		employeeService: empService,
 		jwtService: jwtService,
 	}
 }
