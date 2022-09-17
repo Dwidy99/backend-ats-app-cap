@@ -48,6 +48,7 @@ func main() {
 		authApplicantRoutes.GET("/users/fetch", applicantController.FetchUserApplicant)
 		authApplicantRoutes.POST("/jobexperiences", experienceController.CreateExperience)
 		authApplicantRoutes.PUT("/jobexperiences/:id", experienceController.UpdateExperience)
+		authApplicantRoutes.DELETE("/jobexperiences/:id", experienceController.DeleteExperience)
 	}
 
 	// Employees Routes

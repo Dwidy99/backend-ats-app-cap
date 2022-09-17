@@ -13,9 +13,11 @@ import (
 type ExperienceService interface {
 	GetApplicantByID(userID int) (entity.Applicant, error)
 	GetUserByID(userID int) (entity.User, error)
-	GetExperienceByID(idApplicant int) (entity.Jobexperience, error)
+	GetExperienceByIdApplicant(idApplicant int) (entity.Jobexperience, error)
+	GetExperienceByID(inputID int) (entity.Jobexperience, error)
 	CreateExperience(experience dto.CreateExperienceDTO, applicantID int) (entity.Jobexperience, error)
-	UpdateExperience(inputID int, inputData dto.CreateExperienceDTO, idApplicant uint64) (entity.Jobexperience, error)
+	UpdateExperience(inputID int, inputData dto.CreateExperienceDTO) (entity.Jobexperience, error)
+	DeleteExperience(inputID int) (entity.Jobexperience, error)
 }
 
 type experienceService struct {
@@ -54,8 +56,21 @@ func (s *experienceService) GetUserByID(userID int) (entity.User, error) {
 	return user, nil
 }
 
-func (s *experienceService) GetExperienceByID(idApplicant int) (entity.Jobexperience, error) {
-	experience, err := s.experienceRepository.FindExperienceByID(idApplicant)
+func (s *experienceService) GetExperienceByIdApplicant(idApplicant int) (entity.Jobexperience, error) {
+	experience, err := s.experienceRepository.FindExperienceByIdApplicant(idApplicant)
+	if err != nil {
+		return experience, err
+	}
+
+	if experience.ID == 0 {
+		return experience, errors.New("no user logged in")
+	}
+
+	return experience, nil
+}
+
+func (s *experienceService) GetExperienceByID(inputID int) (entity.Jobexperience, error) {
+	experience, err := s.experienceRepository.FindExperienceByID(inputID)
 	if err != nil {
 		return experience, err
 	}
@@ -88,13 +103,13 @@ func (service *experienceService) CreateExperience(experienceInput dto.CreateExp
 	return res, nil
 }
 
-func (s *experienceService) UpdateExperience(inputID int, inputData dto.CreateExperienceDTO, idApplicant uint64) (entity.Jobexperience, error) {
+func (s *experienceService) UpdateExperience(inputID int, inputData dto.CreateExperienceDTO) (entity.Jobexperience, error) {
 	experience, err := s.experienceRepository.FindExperienceByID(inputID)
 	if err != nil {
 		return experience, err
 	}
-
-	if experience.ApplicantID != uint64(inputID) {
+	
+	if experience.ID != uint64(inputID) {
 		return experience, errors.New("not a user applicant owner experience")
 	}
 
@@ -111,4 +126,12 @@ func (s *experienceService) UpdateExperience(inputID int, inputData dto.CreateEx
 	}
 
 	return updateExperience, nil
+}
+
+func (s *experienceService) DeleteExperience(inputID int) (entity.Jobexperience, error) {
+	campaignDeleted, err := s.experienceRepository.DeleteExperience(inputID)
+	if err != nil {
+		return campaignDeleted, err
+	}
+	return campaignDeleted, nil
 }
