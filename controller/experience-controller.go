@@ -17,6 +17,7 @@ type ExperienceController interface {
 	CreateExperience(ctx *gin.Context)
 	UpdateExperience(ctx *gin.Context)
 	DeleteExperience(ctx *gin.Context)
+	GetAllExperiences(ctx *gin.Context)
 }
 
 type experienceController struct {
@@ -233,5 +234,43 @@ func (c *experienceController) DeleteExperience(ctx *gin.Context) {
 	}
 
 	response := helpers.BuildResponse(true, "success to delete job experience", nil)
+	ctx.JSON(http.StatusOK, response)
+}
+
+func (c *experienceController) GetAllExperiences(ctx *gin.Context) {
+
+	authHeader := ctx.GetHeader("Authorization")
+	token, errToken := c.jwtService.ValidateToken(authHeader)
+	if errToken != nil {
+		messError := fmt.Sprintf("failed to access delete job experience, token user applicant wrong or empty")
+		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+	claims := token.Claims.(jwt.MapClaims)
+	userID, err := strconv.Atoi(fmt.Sprintf("%v", claims["user_id"]))
+	if err != nil {
+		messError := fmt.Sprintf("failed to delete job experience, user applicant with user id %v is empty", userID)
+		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	if userID == 0 {
+		errorMessage := gin.H{"error": errors.New("forbidden")}
+		messError := fmt.Sprintf("failed to delete job experience, user applicant with user id %v is empty", userID)
+		response := helpers.BuildErrorResponse("failed to process request", messError, errorMessage)
+		ctx.JSON(http.StatusForbidden, response)
+		return
+	}
+
+	experience, err := c.experienceService.GetAllExperiences(userID)
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusForbidden, response)
+		return
+	}
+
+	response := helpers.BuildResponse(true, "success to get job experiences", experience)
 	ctx.JSON(http.StatusOK, response)
 }

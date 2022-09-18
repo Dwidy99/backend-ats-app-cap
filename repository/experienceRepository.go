@@ -11,6 +11,8 @@ type ExperienceRepository interface {
 	FindUserByID(userID int) (entity.User, error)
 	FindExperienceByIdApplicant(idApplicant int) (entity.Jobexperience, error)
 	FindExperienceByID(inputID int) (entity.Jobexperience, error)
+	GetAllExperienceByID(applicantID int) ([]entity.Jobexperience, error)
+	GetAllExperience() ([]entity.Jobexperience, error)
 	InsertExperience(experience entity.Jobexperience) (entity.Jobexperience, error)
 	Update(experience entity.Jobexperience) (entity.Jobexperience, error)
 	DeleteExperience(inputID int) (entity.Jobexperience, error)
@@ -48,14 +50,6 @@ func (db *experienceConnection) FindExperienceByID(inputID int) (entity.Jobexper
 	return experience, nil
 }
 
-func (db *experienceConnection) InsertExperience(experience entity.Jobexperience) (entity.Jobexperience, error) {
-	err := db.connection.Save(&experience).Error
-	if err != nil {
-		return experience, err
-	}
-	return experience, nil
-}
-
 func (db *experienceConnection) FindApplicantByID(userID int) (entity.Applicant, error) {
 	var applicant entity.Applicant
 
@@ -76,6 +70,36 @@ func (db *experienceConnection) FindUserByID(userID int) (entity.User, error) {
 	}
 
 	return user, nil
+}
+
+func (db *experienceConnection) GetAllExperienceByID(applicantID int) ([]entity.Jobexperience, error) {
+	var experience []entity.Jobexperience
+
+	err := db.connection.Raw("SELECT id, applicant_id, company_name, role, description, date_start, date_end, status FROM jobexperiences WHERE applicant_id = ?", applicantID).Scan(&experience).Error
+	if err != nil {
+		return experience, err
+	}
+
+	return experience, nil
+}
+
+func (db *experienceConnection) GetAllExperience() ([]entity.Jobexperience, error) {
+	var experience []entity.Jobexperience
+
+	err := db.connection.Raw("SELECT id, applicant_id, company_name, role, description, date_start, date_end, status FROM jobexperiences").Scan(&experience).Error
+	if err != nil {
+		return experience, err
+	}
+
+	return experience, nil
+}
+
+func (db *experienceConnection) InsertExperience(experience entity.Jobexperience) (entity.Jobexperience, error) {
+	err := db.connection.Save(&experience).Error
+	if err != nil {
+		return experience, err
+	}
+	return experience, nil
 }
 
 func (db *experienceConnection) Update(experience entity.Jobexperience) (entity.Jobexperience, error) {
