@@ -11,8 +11,8 @@ import (
 )
 
 type ExperienceService interface {
-	GetApplicantByID(userID int) (entity.Applicant, error)
 	GetUserByID(userID int) (entity.User, error)
+	GetApplicantByID(userID int) (entity.Applicant, error)
 	GetExperienceByIdApplicant(idApplicant int) (entity.Jobexperience, error)
 	GetExperienceByID(inputID int) (entity.Jobexperience, error)
 	GetAllExperiences(userID int) ([]entity.Jobexperience, error)

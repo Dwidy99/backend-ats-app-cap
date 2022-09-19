@@ -18,6 +18,7 @@ var (
 	applicantRepository repository.ApplicantRepository = repository.NewApplicantRepository(db)
 	employeeRepository  repository.EmployeeRepository  = repository.NewEmployeeRepository(db)
 	experienceRepository  repository.ExperienceRepository  = repository.NewExperienceRepository(db)
+	skillrepository repository.SkillRepository = repository.NewSkillRepository(db)
 
 	jwtService service.JWTService = service.NewJWTService()
 
@@ -25,11 +26,13 @@ var (
 	applicantService service.ApplicantService = service.NewApplicantService(applicantRepository)
 	employeeService service.EmployeeService = service.NewEmployeeService(employeeRepository)
 	experienceService service.ExperienceService = service.NewExperienceService(experienceRepository)
+	skillService service.SkillService = service.NewSkillService(skillrepository)
 
 	authController      controller.AuthController      = controller.NewAuthController(authService, jwtService)
 	applicantController controller.ApplicantController = controller.NewApplicantController(applicantService, jwtService)
 	employeeController controller.EmployeeController = controller.NewEmployeeController(employeeService, jwtService)
 	experienceController controller.ExperienceController = controller.NewExperienceController(experienceService, jwtService)
+	skillController controller.SkillController = controller.NewSkillController(skillService, jwtService)
 )
 
 func main() {
@@ -52,6 +55,8 @@ func main() {
 		authApplicantRoutes.DELETE("/jobexperiences/:id", experienceController.DeleteExperience)
 		authApplicantRoutes.GET("/jobexperiences/", experienceController.GetAllExperiences)
 		authApplicantRoutes.GET("/jobexperiences/:id", experienceController.GetExperienceByID)
+
+		authApplicantRoutes.POST("/skills", skillController.CreateSkill)
 	}
 
 	// Employees Routes
