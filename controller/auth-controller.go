@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"mini-project/dto"
 	"mini-project/entity"
 	"mini-project/helpers"
@@ -9,6 +10,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 type AuthController interface {
@@ -43,11 +45,53 @@ func (c *authController) RegisterEmployees(ctx *gin.Context) {
 	if !c.authService.IsDuplicateEmail(RegisterEmployeeDTO.Email) {
 		resp := helpers.BuildErrorResponse("Failed to process request", "Duplicate email", helpers.EmptyObj{})
 		ctx.JSON(http.StatusConflict, resp)
+		return
 	} else {
-		createdUser := c.authService.CreateEmployee(RegisterEmployeeDTO)
-		response := helpers.BuildResponse(true, "ok", createdUser)
-		ctx.JSON(http.StatusCreated, response)
+		authHeader := ctx.GetHeader("Authorization")
+		token, errToken := c.jwtService.ValidateToken(authHeader)
+		if errToken != nil {
+			response := helpers.BuildErrorResponse("failed to process request", errToken.Error(), helpers.EmptyObj{})
+			ctx.JSON(http.StatusBadRequest, response)
+			return
+		}
+		claims := token.Claims.(jwt.MapClaims)
+		userID, err := strconv.Atoi(fmt.Sprintf("%v", claims["user_id"]))
+		if err != nil {
+			response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
+			ctx.JSON(http.StatusBadRequest, response)
+			return
+		}
+
+		if userID == 0 {
+			response := helpers.BuildErrorResponse("failed to process request", "user not login", helpers.EmptyObj{})
+			ctx.JSON(http.StatusForbidden, response)
+			return
+		}
+		
+		user, err := c.authService.GetUserByID(userID)
+		if err != nil {
+			response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
+			ctx.JSON(http.StatusBadRequest, response)
+			return
+		}
+		fmt.Println("ROLE", user.Role)
+
+		if user.Role != "superadmin" {
+			response := helpers.BuildErrorResponse("request blocked, role invalid", "role not superadmin", helpers.EmptyObj{})
+			ctx.JSON(http.StatusForbidden, response)
+			return
+		} else {
+			createdUser, err := c.authService.CreateEmployee(RegisterEmployeeDTO)
+			if err != nil {
+				response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
+				ctx.JSON(http.StatusBadRequest, response)
+				return
+			}
+			response := helpers.BuildResponse(true, "ok", createdUser)
+			ctx.JSON(http.StatusCreated, response)
+		}
 	}
+
 }
 
 func (c *authController) RegisterApplicants(ctx *gin.Context) {

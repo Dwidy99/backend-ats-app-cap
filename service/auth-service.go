@@ -14,7 +14,8 @@ type AuthService interface {
 	VerifyCredential(email string, password string) interface{}
 	IsDuplicateEmail(email string) bool
 	CreateApplicant(user dto.RegisterApplicantDTO) entity.User
-	CreateEmployee(user dto.RegisterEmployeeDTO) entity.User
+	CreateEmployee(user dto.RegisterEmployeeDTO) (entity.User, error)
+	GetUserByID(userID int) (entity.User, error)
 }
 
 type authService struct {
@@ -71,13 +72,26 @@ func (service *authService) CreateApplicant(user dto.RegisterApplicantDTO) entit
 	return res
 }
 
-func (service *authService) CreateEmployee(user dto.RegisterEmployeeDTO) entity.User {
+func (service *authService) CreateEmployee(user dto.RegisterEmployeeDTO) (entity.User, error) {
 	userToCreate := entity.User{}
 	employeeToCreate := entity.Employee{}
 	err := smapping.FillStruct(&userToCreate, smapping.MapFields(&user))
 	if err != nil {
 		log.Fatalf("Failed map %v", err)
 	}
-	res := service.employeeRepository.InsertEmployee(userToCreate, employeeToCreate)
-	return res
+
+	res, err := service.employeeRepository.InsertEmployee(userToCreate, employeeToCreate)
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
+
+func (s *authService) GetUserByID(userID int) (entity.User, error) {
+	user, err := s.employeeRepository.FindUserByID(userID)
+	if err != nil {
+		return user, err
+	}
+	return user, nil
 }
