@@ -18,6 +18,7 @@ type ExperienceController interface {
 	UpdateExperience(ctx *gin.Context)
 	DeleteExperience(ctx *gin.Context)
 	GetAllExperiences(ctx *gin.Context)
+	GetExperienceByID(ctx *gin.Context)
 }
 
 type experienceController struct {
@@ -272,5 +273,77 @@ func (c *experienceController) GetAllExperiences(ctx *gin.Context) {
 	}
 
 	response := helpers.BuildResponse(true, "success to get job experiences", experience)
+	ctx.JSON(http.StatusOK, response)
+}
+
+func (c *experienceController) GetExperienceByID(ctx *gin.Context) {
+	var input dto.GetExperienceDetailDTO
+
+	err := ctx.ShouldBindUri(&input)
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	authHeader := ctx.GetHeader("Authorization")
+	token, errToken := c.jwtService.ValidateToken(authHeader)
+	if errToken != nil {
+		messError := fmt.Sprintf("failed to access delete job experience, token user applicant wrong or empty")
+		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+	claims := token.Claims.(jwt.MapClaims)
+	userID, err := strconv.Atoi(fmt.Sprintf("%v", claims["user_id"]))
+	if err != nil {
+		messError := fmt.Sprintf("failed to delete job experience, user applicant with user id %v is empty", userID)
+		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	if userID == 0 {
+		errorMessage := gin.H{"error": errors.New("forbidden")}
+		messError := fmt.Sprintf("failed to delete job experience, user applicant with user id %v is empty", userID)
+		response := helpers.BuildErrorResponse("failed to process request", messError, errorMessage)
+		ctx.JSON(http.StatusForbidden, response)
+		return
+	}
+
+	// ambil data di tabel experience berdasarkan id url 
+	experienceId, err := c.experienceService.GetExperienceByID(input.ID)
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to process request", "failed to update job experience, id not found", helpers.EmptyObj{})
+		ctx.JSON(http.StatusNotFound, response)
+		return
+	}
+	idApplicant := experienceId.ApplicantID
+
+	// ambil data di tabel applicant berdasarkan id yang login
+	applicant, _ := c.experienceService.GetApplicantByID(userID)
+	// ambil data di tabel experience berdasarkan id applicant
+	experienceApplicant, err := c.experienceService.GetExperienceByIdApplicant(int(applicant.ID))
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	// cek apakah applicant_id (yg ada di tabel jobexperience) tidak sama dengan applicant_id (yg ada di tabel applicant)
+	if idApplicant != experienceApplicant.ApplicantID {
+		response := helpers.BuildErrorResponse("failed to process request", "not an owner this job experience", helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+	
+	experience, err := c.experienceService.GetExperienceByID(input.ID)
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	response := helpers.BuildResponse(true, "expereince detail", experience)
 	ctx.JSON(http.StatusOK, response)
 }

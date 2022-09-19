@@ -51,6 +51,7 @@ func main() {
 		authApplicantRoutes.PUT("/jobexperiences/:id", experienceController.UpdateExperience)
 		authApplicantRoutes.DELETE("/jobexperiences/:id", experienceController.DeleteExperience)
 		authApplicantRoutes.GET("/jobexperiences/", experienceController.GetAllExperiences)
+		authApplicantRoutes.GET("/jobexperiences/:id", experienceController.GetExperienceByID)
 	}
 
 	// Employees Routes
