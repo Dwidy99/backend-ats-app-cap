@@ -57,6 +57,7 @@ func main() {
 		authApplicantRoutes.GET("/jobexperiences/:id", experienceController.GetExperienceByID)
 
 		authApplicantRoutes.POST("/skills", skillController.CreateSkill)
+		authApplicantRoutes.PUT("/skills/:id", skillController.UpdateSkill)
 	}
 
 	// Employees Routes

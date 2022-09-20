@@ -14,6 +14,8 @@ type SkillService interface {
 	GetUserByID(userID int) (entity.User, error)
 	CreateSkill(skillInput dto.Jobskill, applicantID int) (entity.Jobskill, error)
 	GetApplicantByID(userID int) (entity.Applicant, error)
+	GetSkillByID(inputID int) (entity.Jobskill, error)
+	UpdateSkill(inputID int, inputData dto.Jobskill, applicantID int, userID int) (entity.Jobskill, error)
 }
 
 type skillService struct {
@@ -68,4 +70,39 @@ func (s *skillService) GetApplicantByID(userID int) (entity.Applicant, error) {
 	}
 
 	return applicant, nil
+}
+
+func (s *skillService) GetSkillByID(inputID int) (entity.Jobskill, error) {
+	applicant, err := s.skillRepository.GetSkillByID(inputID)
+	if err != nil {
+		return applicant, err
+	}
+
+	return applicant, nil
+}
+
+func (s *skillService) UpdateSkill(inputID int, inputData dto.Jobskill, applicantID int, userID int) (entity.Jobskill, error) {
+	var jobSkills entity.Jobskill
+
+	jobSkillApplicant, err := s.skillRepository.GetJobSkillApplicantBySkillID(inputID)
+	if err != nil {
+		return jobSkills, err
+	}
+
+	jobSkill, err := s.skillRepository.GetSkillByID(inputID)
+
+	for _, jobSkillApp := range jobSkillApplicant {
+		if int(jobSkillApp.ApplicantID) != applicantID {
+			return jobSkill, errors.New("not an owner skill job")
+		}
+	}
+
+	jobSkill.Name = inputData.Name
+
+	skill, err := s.skillRepository.Update(jobSkill)
+	if err != nil {
+		return skill, nil
+	}
+
+	return skill, nil
 }

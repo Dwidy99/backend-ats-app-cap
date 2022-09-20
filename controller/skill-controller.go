@@ -14,6 +14,7 @@ import (
 
 type SkillController interface {
 	CreateSkill(ctx *gin.Context)
+	UpdateSkill(ctx *gin.Context)
 }
 
 type skillController struct {
@@ -41,7 +42,7 @@ func (c *skillController) CreateSkill(ctx *gin.Context) {
 	authHeader := ctx.GetHeader("Authorization")
 	token, errToken := c.jwtService.ValidateToken(authHeader)
 	if errToken != nil {
-		messError := fmt.Sprintf("failed to access update job experience, token user applicant wrong or empty")
+		messError := fmt.Sprintf("failed to create skill, token user applicant wrong or empty")
 		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
@@ -49,7 +50,7 @@ func (c *skillController) CreateSkill(ctx *gin.Context) {
 	claims := token.Claims.(jwt.MapClaims)
 	userID, err := strconv.Atoi(fmt.Sprintf("%v", claims["user_id"]))
 	if err != nil {
-		messError := fmt.Sprintf("failed to access create job experience, user applicant with user id %v is empty", userID)
+		messError := fmt.Sprintf("failed to access create job skill, user applicant with user id %v is empty", userID)
 		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
@@ -57,15 +58,14 @@ func (c *skillController) CreateSkill(ctx *gin.Context) {
 	
 	user, err := c.serviceSkill.GetUserByID(userID)
 	if user.Role != "user" {
-		messError := fmt.Sprintf("failed to access create job experience, role is unknow")
-		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+		response := helpers.BuildErrorResponse("failed to process request", "role is not user", helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 
 	applicant, err := c.serviceSkill.GetApplicantByID(userID)
 	if err != nil {
-		messError := fmt.Sprintf("failed to access create job experience, user applicant with user id %v is empty", userID)
+		messError := fmt.Sprintf("failed to access create job skill, user applicant with user id %v is empty", userID)
 		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
@@ -73,12 +73,80 @@ func (c *skillController) CreateSkill(ctx *gin.Context) {
 
 	experience, err := c.serviceSkill.CreateSkill(skillInput, int(applicant.ID))
 	if err != nil {
-		messError := fmt.Sprintf("failed to access create job experience, user applicant with user id %v is empty", userID)
+		messError := fmt.Sprintf("failed to access create job skill, user applicant with user id %v is empty", userID)
 		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 
-	response := helpers.BuildResponse(true, "success to create job experience", experience)
+	response := helpers.BuildResponse(true, "success to create job skill", experience)
+	ctx.JSON(http.StatusOK, response)
+}
+
+func (c *skillController) UpdateSkill(ctx *gin.Context) {
+	var inputID dto.GetSkillDetailDTO
+
+	err := ctx.ShouldBindUri(&inputID)
+	if err != nil {
+		errorMessage := gin.H{"error": err}
+		response := helpers.BuildErrorResponse("failed update skill", err.Error(), errorMessage)
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+	
+	var inputData dto.Jobskill
+	err = ctx.ShouldBind(&inputData)
+	if err != nil {
+		errorMessage := gin.H{"error": err}
+		response := helpers.BuildErrorResponse("failed update skill", "error", errorMessage)
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	authHeader := ctx.GetHeader("Authorization")
+	token, errToken := c.jwtService.ValidateToken(authHeader)
+	if errToken != nil {
+		messError := fmt.Sprintf("failed to access update job skill, token user applicant wrong or empty")
+		response := helpers.BuildErrorResponse(messError, errToken.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+	claims := token.Claims.(jwt.MapClaims)
+	userID, err := strconv.Atoi(fmt.Sprintf("%v", claims["user_id"]))
+	if err != nil {
+		messError := fmt.Sprintf("failed to access create job skill, user applicant with user id %v is empty", userID)
+		response := helpers.BuildErrorResponse(messError, err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+	
+	user, err := c.serviceSkill.GetUserByID(userID)
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to update skill", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	if user.Role != "user" {
+		response := helpers.BuildErrorResponse("failed to process request", "role is not user", helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	applicant, err := c.serviceSkill.GetApplicantByID(userID)
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to update skill", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	skill, err := c.serviceSkill.UpdateSkill(inputID.ID, inputData, int(applicant.ID), userID)
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to update skill", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	response := helpers.BuildResponse(true, "success to update job skill", skill)
 	ctx.JSON(http.StatusOK, response)
 }

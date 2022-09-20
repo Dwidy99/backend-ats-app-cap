@@ -76,10 +76,6 @@ func (s *experienceService) GetAllExperiences(userID int) ([]entity.Jobexperienc
 	return experience, nil
 }
 
-// func (s *experienceService) GetExperienceByID(applicantID int) (entity.Jobexperience, error) {
-
-// }
-
 func (s *experienceService) GetExperienceByIdApplicant(idApplicant int) (entity.Jobexperience, error) {
 	experience, err := s.experienceRepository.FindExperienceByIdApplicant(idApplicant)
 	if err != nil {

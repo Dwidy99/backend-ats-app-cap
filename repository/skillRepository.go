@@ -11,6 +11,9 @@ type SkillRepository interface {
 	CreateSkill(skill entity.Jobskill, jobSkillApplicant entity.Jobskillapplicant, applicantID int) (entity.Jobskill, error)
 	FindUserByID(userID int) (entity.User, error)
 	FindApplicantByID(userID int) (entity.Applicant, error)
+	GetSkillByID(inputID int) (entity.Jobskill, error)
+	GetJobSkillApplicantBySkillID(inputID int) ([]entity.Jobskillapplicant, error)
+	Update(jobSkill entity.Jobskill) (entity.Jobskill, error)
 }
 
 type skillConnection struct {
@@ -60,4 +63,35 @@ func (db *skillConnection) FindApplicantByID(userID int) (entity.Applicant, erro
 	}
 
 	return applicant, nil
+}
+
+func (db *skillConnection) GetSkillByID(inputID int) (entity.Jobskill, error) {
+	var skill entity.Jobskill
+
+	err := db.connection.Where("id = ?", inputID).Find(&skill).Error
+	if err != nil {
+		return skill, err
+	}
+
+	return skill, nil
+}
+
+func (db *skillConnection) GetJobSkillApplicantBySkillID(inputID int) ([]entity.Jobskillapplicant, error) {
+	var jobSkillApplicant []entity.Jobskillapplicant
+
+	err := db.connection.Where("skill_id = ?", inputID).Find(&jobSkillApplicant).Error
+	if err != nil {
+		return jobSkillApplicant, err
+	}
+
+	return jobSkillApplicant, nil
+}
+
+func (db *skillConnection) Update(jobSkill entity.Jobskill) (entity.Jobskill, error) {
+	err := db.connection.Save(&jobSkill).Error
+	if err != nil {
+		return jobSkill, err
+	}
+
+	return jobSkill, nil
 }
