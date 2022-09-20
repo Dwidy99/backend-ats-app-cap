@@ -55,9 +55,10 @@ func main() {
 		authApplicantRoutes.DELETE("/jobexperiences/:id", experienceController.DeleteExperience)
 		authApplicantRoutes.GET("/jobexperiences/", experienceController.GetAllExperiences)
 		authApplicantRoutes.GET("/jobexperiences/:id", experienceController.GetExperienceByID)
-
+		
 		authApplicantRoutes.POST("/skills", skillController.CreateSkill)
 		authApplicantRoutes.PUT("/skills/:id", skillController.UpdateSkill)
+		authApplicantRoutes.GET("/skills/:id", skillController.GetSkillByID)
 	}
 
 	// Employees Routes

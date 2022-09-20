@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"errors"
 	"fmt"
 	"mini-project/dto"
 	"mini-project/helpers"
@@ -15,6 +16,7 @@ import (
 type SkillController interface {
 	CreateSkill(ctx *gin.Context)
 	UpdateSkill(ctx *gin.Context)
+	GetSkillByID(ctx *gin.Context)
 }
 
 type skillController struct {
@@ -27,6 +29,71 @@ func NewSkillController(skillService service.SkillService, jwtService service.JW
 		serviceSkill: skillService,
 		jwtService: jwtService,
 	}
+}
+
+func (c *skillController) GetSkillByID(ctx *gin.Context) {
+	var input dto.GetSkillDetailDTO
+
+	err := ctx.ShouldBindUri(&input)
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	authHeader := ctx.GetHeader("Authorization")
+	token, err := c.jwtService.ValidateToken(authHeader)
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+	claims := token.Claims.(jwt.MapClaims)
+	userID, err := strconv.Atoi(fmt.Sprintf("%v", claims["user_id"]))
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	if userID == 0 {
+		errorMessage := gin.H{"error": errors.New("forbidden")}
+		messError := fmt.Sprintf("user applicant with user id %v is empty", userID)
+		response := helpers.BuildErrorResponse("failed to process request", messError, errorMessage)
+		ctx.JSON(http.StatusForbidden, response)
+		return
+	}
+
+	user, err := c.serviceSkill.GetUserByID(userID)
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to update skill", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	if user.Role != "user" {
+		response := helpers.BuildErrorResponse("failed to process request", "role is not user", helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	applicant, err := c.serviceSkill.GetApplicantByID(userID)
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to get skill", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	// ambil data di tabel experience berdasarkan id url 
+	skill, err := c.serviceSkill.GetSkillDetailByID(input.ID, int(applicant.ID))
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to process request", "failed to get job skill, id not found", helpers.EmptyObj{})
+		ctx.JSON(http.StatusNotFound, response)
+		return
+	}
+
+	response := helpers.BuildResponse(true, "job skill detail", skill)
+	ctx.JSON(http.StatusOK, response)
 }
 
 func (c *skillController) CreateSkill(ctx *gin.Context) {
@@ -114,7 +181,7 @@ func (c *skillController) UpdateSkill(ctx *gin.Context) {
 	claims := token.Claims.(jwt.MapClaims)
 	userID, err := strconv.Atoi(fmt.Sprintf("%v", claims["user_id"]))
 	if err != nil {
-		messError := fmt.Sprintf("failed to access create job skill, user applicant with user id %v is empty", userID)
+		messError := fmt.Sprintf("failed to access update job skill, user applicant with user id %v is empty", userID)
 		response := helpers.BuildErrorResponse(messError, err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
