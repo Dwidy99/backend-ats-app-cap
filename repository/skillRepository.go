@@ -14,6 +14,7 @@ type SkillRepository interface {
 	GetSkillByID(inputID int) (entity.Jobskill, error)
 	GetJobSkillApplicantBySkillID(inputID int) ([]entity.Jobskillapplicant, error)
 	Update(jobSkill entity.Jobskill) (entity.Jobskill, error)
+	Delete(inputID int) (entity.Jobskill, error)
 }
 
 type skillConnection struct {
@@ -89,6 +90,16 @@ func (db *skillConnection) GetJobSkillApplicantBySkillID(inputID int) ([]entity.
 
 func (db *skillConnection) Update(jobSkill entity.Jobskill) (entity.Jobskill, error) {
 	err := db.connection.Save(&jobSkill).Error
+	if err != nil {
+		return jobSkill, err
+	}
+
+	return jobSkill, nil
+}
+
+func (db *skillConnection) Delete(inputID int) (entity.Jobskill, error) {
+	var jobSkill entity.Jobskill
+	err := db.connection.Where("id = ?", inputID).Delete(&jobSkill).Error
 	if err != nil {
 		return jobSkill, err
 	}

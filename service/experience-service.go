@@ -149,9 +149,9 @@ func (s *experienceService) UpdateExperience(inputID int, inputData dto.CreateEx
 }
 
 func (s *experienceService) DeleteExperience(inputID int) (entity.Jobexperience, error) {
-	campaignDeleted, err := s.experienceRepository.DeleteExperience(inputID)
+	experience, err := s.experienceRepository.DeleteExperience(inputID)
 	if err != nil {
-		return campaignDeleted, err
+		return experience, err
 	}
-	return campaignDeleted, nil
+	return experience, nil
 }

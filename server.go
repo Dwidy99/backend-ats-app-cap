@@ -59,6 +59,7 @@ func main() {
 		authApplicantRoutes.POST("/skills", skillController.CreateSkill)
 		authApplicantRoutes.PUT("/skills/:id", skillController.UpdateSkill)
 		authApplicantRoutes.GET("/skills/:id", skillController.GetSkillByID)
+		authApplicantRoutes.DELETE("/skills/:id", skillController.DeleteSkill)
 	}
 
 	// Employees Routes
