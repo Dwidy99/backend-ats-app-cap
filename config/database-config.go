@@ -35,13 +35,13 @@ func SetupConnectionDatabase() *gorm.DB {
 	}
 
 	db = conn
-	db.AutoMigrate(&entity.Applicant{}, &entity.Employee{}, &entity.Jobexperience{}, &entity.Jobskill{}, &entity.Jobskillapplicant{})
+	db.AutoMigrate(&entity.Applicant{}, &entity.Employee{}, &entity.Jobexperience{}, &entity.Jobskill{}, &entity.Jobskillapplicant{}, &entity.Jobs{})
 	return db
 }
 
 func CloseConnectionDatabase(db *gorm.DB) {
 	dbPostgre := db.DB()
-	
+
 	err := dbPostgre.Close()
 	if err != nil {
 		panic("Failed to close connection to your database")
