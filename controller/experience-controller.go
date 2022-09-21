@@ -289,7 +289,7 @@ func (c *experienceController) GetExperienceByID(ctx *gin.Context) {
 	authHeader := ctx.GetHeader("Authorization")
 	token, errToken := c.jwtService.ValidateToken(authHeader)
 	if errToken != nil {
-		messError := fmt.Sprintf("failed to access delete job experience, token user applicant wrong or empty")
+		messError := fmt.Sprintf("failed to access job experience, token user applicant wrong or empty")
 		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
