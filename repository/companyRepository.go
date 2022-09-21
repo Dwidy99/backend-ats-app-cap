@@ -7,11 +7,11 @@ import (
 )
 
 type CompanyRepository interface {
-	GetAllCompany() ([]entity.Company, error)
-	GetCompanyByID(inputID int) (entity.Company, error)
+	AllCompany() ([]entity.Company, error)
+	FindCompanyByID(companyID int) (entity.Company, error)
 	InsertCompany(company entity.Company) (entity.Company, error)
 	UpdateCompany(company entity.Company) (entity.Company, error)
-	DeleteCompany(inputID int) (entity.Company, error)
+	DeleteCompany(companyID int) (entity.Company, error)
 }
 
 type companyConnection struct {
@@ -24,7 +24,7 @@ func NewCompanyRepository(db *gorm.DB) CompanyRepository {
 	}
 }
 
-func (db *companyConnection) GetAllCompany() ([]entity.Company, error) {
+func (db *companyConnection) AllCompany() ([]entity.Company, error) {
 	var companies []entity.Company
 
 	err := db.connection.Raw("SELECT id, name, email, address, contact, website, created_at FROM company").Scan(&companies).Error
@@ -35,10 +35,10 @@ func (db *companyConnection) GetAllCompany() ([]entity.Company, error) {
 	return companies, nil
 }
 
-func (db *companyConnection) GetCompanyByID(inputID int) (entity.Company, error) {
+func (db *companyConnection) FindCompanyByID(companyID int) (entity.Company, error) {
 	var company entity.Company
 
-	err := db.connection.Where("id = ?", inputID).Find(&company).Error
+	err := db.connection.Where("id = ?", companyID).Find(&company).Error
 	if err != nil {
 		return company, err
 	}
@@ -61,9 +61,9 @@ func (db *companyConnection) UpdateCompany(company entity.Company) (entity.Compa
 	return company, nil
 }
 
-func (db *companyConnection) DeleteCompany(inputID int) (entity.Company, error) {
+func (db *companyConnection) DeleteCompany(companyID int) (entity.Company, error) {
 	var company entity.Company
-	err := db.connection.Where("id = ?", inputID).Delete(&company).Error
+	err := db.connection.Where("id = ?", companyID).Delete(&company).Error
 	if err != nil {
 		return company, err
 	}

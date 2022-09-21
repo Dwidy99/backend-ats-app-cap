@@ -1,6 +1,6 @@
 package dto
 
-type companyDTO struct {
+type CompanyDTO struct {
 	Name    string `json:"name" form:"name" binding:"required"`
 	Email   string `json:"email" form:"email" binding:"required"`
 	Address string `json:"address" form:"address" binding:"required"`
