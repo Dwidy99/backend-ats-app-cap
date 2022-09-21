@@ -12,6 +12,8 @@ import (
 
 type JobsService interface {
 	GetUserByID(userID int) (entity.User, error)
+	GetEmployeeByID(userID int) (entity.Employee, error)
+	AllJobs() ([]entity.Jobs, error)
 	CreateJobs(jobs dto.CreateJobsDTO, userID int) (entity.Jobs, error)
 }
 
@@ -36,6 +38,27 @@ func (s *jobsService) GetUserByID(userID int) (entity.User, error) {
 	}
 
 	return user, nil
+}
+
+func (s *jobsService) GetEmployeeByID(userID int) (entity.Employee, error) {
+	employee, err := s.jobsRepository.FindEmployeeByID(userID)
+	if err != nil {
+		return employee, err
+	}
+
+	if employee.UserID == 0 {
+		return employee, errors.New("no user logged in")
+	}
+
+	return employee, nil
+}
+
+func (s *jobsService) AllJobs() ([]entity.Jobs, error) {
+	jobs, err := s.jobsRepository.GetAllJob()
+	if err != nil {
+		return jobs, err
+	}
+	return jobs, nil
 }
 
 func (s *jobsService) CreateJobs(jobs dto.CreateJobsDTO, userID int) (entity.Jobs, error) {

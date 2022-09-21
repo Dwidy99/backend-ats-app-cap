@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"errors"
 	"fmt"
 	"mini-project/dto"
 	"mini-project/helpers"
@@ -13,6 +14,7 @@ import (
 )
 
 type JobsController interface {
+	GetAllJobs(ctx *gin.Context)
 	CreatedJobs(ctx *gin.Context)
 }
 
@@ -26,6 +28,55 @@ func NewJobsController(jobServ service.JobsService, jwtService service.JWTServic
 		jobsService: jobServ,
 		jwtService:  jwtService,
 	}
+}
+
+func (c *jobsController) GetAllJobs(ctx *gin.Context) {
+	authHeader := ctx.GetHeader("Authorization")
+	token, errToken := c.jwtService.ValidateToken(authHeader)
+	if errToken != nil {
+		messError := fmt.Sprintf("Failed to get all jobs data, token user wrong or empty")
+		response := helpers.BuildErrorResponse("Failed to process request", messError, helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+	claims := token.Claims.(jwt.MapClaims)
+	userID, err := strconv.Atoi(fmt.Sprintf("%v", claims["user_id"]))
+	if err != nil {
+		messError := fmt.Sprintf("Failed to get all jobs data, token user wrong or empty")
+		response := helpers.BuildErrorResponse("Failed to process request", messError, helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	if userID == 0 {
+		errorMessage := gin.H{"error": errors.New("forbidden")}
+		messError := fmt.Sprintf("Failed to get all jobs data, user with user id %v is empty", userID)
+		response := helpers.BuildErrorResponse("Failed to process request", messError, errorMessage)
+		ctx.JSON(http.StatusForbidden, response)
+		return
+	}
+
+	user, err := c.jobsService.GetUserByID(userID)
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+	if user.Role != "admin" {
+		messError := fmt.Sprintf("failed to create jobs, role is not admin")
+		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	jobs, err := c.jobsService.AllJobs()
+	if err != nil {
+		response := helpers.BuildErrorResponse("Failed to process request", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusForbidden, response)
+		return
+	}
+	response := helpers.BuildResponse(true, "Success to get all jobs data", jobs)
+	ctx.JSON(http.StatusOK, response)
 }
 
 func (c *jobsController) CreatedJobs(ctx *gin.Context) {
