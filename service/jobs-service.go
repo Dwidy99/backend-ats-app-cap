@@ -15,6 +15,7 @@ type JobsService interface {
 	GetEmployeeByID(userID int) (entity.Employee, error)
 	AllJobs() ([]entity.Jobs, error)
 	CreateJobs(jobs dto.CreateJobsDTO, userID int) (entity.Jobs, error)
+	DeletedJob(inputID int) (entity.Jobs, error)
 }
 
 type jobsService struct {
@@ -83,4 +84,13 @@ func (s *jobsService) CreateJobs(jobs dto.CreateJobsDTO, userID int) (entity.Job
 		return res, err
 	}
 	return res, nil
+}
+
+func (s *jobsService) DeletedJob(inputID int) (entity.Jobs, error) {
+	jobs, err := s.jobsRepository.DeleteJob(inputID)
+	if err != nil {
+		return jobs, err
+	}
+
+	return jobs, nil
 }

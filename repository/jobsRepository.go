@@ -11,6 +11,7 @@ type JobsRepository interface {
 	FindEmployeeByID(userID int) (entity.Employee, error)
 	GetAllJob() ([]entity.Jobs, error)
 	InsertJobs(j entity.Jobs) (entity.Jobs, error)
+	DeleteJob(inputID int) (entity.Jobs, error)
 }
 
 type jobsConnection struct {
@@ -57,5 +58,15 @@ func (db *jobsConnection) GetAllJob() ([]entity.Jobs, error) {
 	if err != nil {
 		return jobs, err
 	}
+	return jobs, nil
+}
+
+func (db *jobsConnection) DeleteJob(inputID int) (entity.Jobs, error) {
+	var jobs entity.Jobs
+	err := db.connection.Where("id = ?", inputID).Delete(&jobs).Error
+	if err != nil {
+		return jobs, err
+	}
+
 	return jobs, nil
 }

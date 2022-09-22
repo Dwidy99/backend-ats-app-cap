@@ -12,27 +12,30 @@ import (
 )
 
 var (
-	db                  *gorm.DB                       = config.SetupConnectionDatabase()
+	db *gorm.DB = config.SetupConnectionDatabase()
 
-	userRepository      repository.UserRepository      = repository.NewUserRepository(db)
-	applicantRepository repository.ApplicantRepository = repository.NewApplicantRepository(db)
-	employeeRepository  repository.EmployeeRepository  = repository.NewEmployeeRepository(db)
-	experienceRepository  repository.ExperienceRepository  = repository.NewExperienceRepository(db)
-	skillrepository repository.SkillRepository = repository.NewSkillRepository(db)
+	userRepository       repository.UserRepository       = repository.NewUserRepository(db)
+	applicantRepository  repository.ApplicantRepository  = repository.NewApplicantRepository(db)
+	employeeRepository   repository.EmployeeRepository   = repository.NewEmployeeRepository(db)
+	experienceRepository repository.ExperienceRepository = repository.NewExperienceRepository(db)
+	skillrepository      repository.SkillRepository      = repository.NewSkillRepository(db)
+	jobsRepository       repository.JobsRepository       = repository.NewJobsRepository(db)
 
 	jwtService service.JWTService = service.NewJWTService()
 
-	authService      service.AuthService      = service.NewAuthService(userRepository, applicantRepository, employeeRepository)
-	applicantService service.ApplicantService = service.NewApplicantService(applicantRepository)
-	employeeService service.EmployeeService = service.NewEmployeeService(employeeRepository)
+	authService       service.AuthService       = service.NewAuthService(userRepository, applicantRepository, employeeRepository)
+	applicantService  service.ApplicantService  = service.NewApplicantService(applicantRepository)
+	employeeService   service.EmployeeService   = service.NewEmployeeService(employeeRepository)
 	experienceService service.ExperienceService = service.NewExperienceService(experienceRepository)
-	skillService service.SkillService = service.NewSkillService(skillrepository)
+	skillService      service.SkillService      = service.NewSkillService(skillrepository)
+	jobsService       service.JobsService       = service.NewJobsService(jobsRepository)
 
-	authController      controller.AuthController      = controller.NewAuthController(authService, jwtService)
-	applicantController controller.ApplicantController = controller.NewApplicantController(applicantService, jwtService)
-	employeeController controller.EmployeeController = controller.NewEmployeeController(employeeService, jwtService)
+	authController       controller.AuthController       = controller.NewAuthController(authService, jwtService)
+	applicantController  controller.ApplicantController  = controller.NewApplicantController(applicantService, jwtService)
+	employeeController   controller.EmployeeController   = controller.NewEmployeeController(employeeService, jwtService)
 	experienceController controller.ExperienceController = controller.NewExperienceController(experienceService, jwtService)
-	skillController controller.SkillController = controller.NewSkillController(skillService, jwtService)
+	skillController      controller.SkillController      = controller.NewSkillController(skillService, jwtService)
+	jobsController       controller.JobsController       = controller.NewJobsController(jobsService, jwtService)
 )
 
 func main() {
@@ -55,7 +58,7 @@ func main() {
 		authApplicantRoutes.DELETE("/jobexperiences/:id", experienceController.DeleteExperience)
 		authApplicantRoutes.GET("/jobexperiences/", experienceController.GetAllExperiences)
 		authApplicantRoutes.GET("/jobexperiences/:id", experienceController.GetExperienceByID)
-		
+
 		authApplicantRoutes.POST("/skills", skillController.CreateSkill)
 		authApplicantRoutes.PUT("/skills/:id", skillController.UpdateSkill)
 		authApplicantRoutes.GET("/skills/:id", skillController.GetSkillByID)
@@ -68,6 +71,9 @@ func main() {
 		authEmployeeRoutes.POST("/register", authController.RegisterEmployees)
 		authEmployeeRoutes.PUT("/users/:id", employeeController.EditEmployee)
 		authEmployeeRoutes.GET("/users/fetch", employeeController.FetchUserEmployee)
+		authEmployeeRoutes.GET("/jobs/", jobsController.GetAllJobs)
+		authEmployeeRoutes.POST("/jobs", jobsController.CreatedJobs)
+		authEmployeeRoutes.DELETE("/jobs/:id", jobsController.DeleteJobs)
 	}
 	r.Run()
 }

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"mini-project/dto"
+	"mini-project/entity"
 	"mini-project/helpers"
 	"mini-project/service"
 	"net/http"
@@ -16,6 +17,7 @@ import (
 type JobsController interface {
 	GetAllJobs(ctx *gin.Context)
 	CreatedJobs(ctx *gin.Context)
+	DeleteJobs(ctx *gin.Context)
 }
 
 type jobsController struct {
@@ -127,5 +129,69 @@ func (c *jobsController) CreatedJobs(ctx *gin.Context) {
 	}
 
 	response := helpers.BuildResponse(true, "success to create job", jobs)
+	ctx.JSON(http.StatusOK, response)
+}
+
+func (c *jobsController) DeleteJobs(ctx *gin.Context) {
+	var jobs entity.Jobs
+
+	id, err := strconv.ParseUint(ctx.Param("id"), 0, 0)
+	if err != nil {
+		errorMessage := gin.H{"error": err}
+		response := helpers.BuildErrorResponse("failed to get id", "No param id were found", errorMessage)
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	jobs.ID = id
+
+	authHeader := ctx.GetHeader("Authorization")
+	token, errToken := c.jwtService.ValidateToken(authHeader)
+	if errToken != nil {
+		messError := fmt.Sprintf("failed to access delete job, token user admin wrong or empty")
+		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+	claims := token.Claims.(jwt.MapClaims)
+	userID, err := strconv.Atoi(fmt.Sprintf("%v", claims["user_id"]))
+	if err != nil {
+		messError := fmt.Sprintf("failed to access delete job, user admin with user id %v is empty", userID)
+		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	if userID == 0 {
+		errorMessage := gin.H{"error": errors.New("forbidden")}
+		messError := fmt.Sprintf("failed to delete job experience, user applicant with user id %v is empty", userID)
+		response := helpers.BuildErrorResponse("failed to process request", messError, errorMessage)
+		ctx.JSON(http.StatusForbidden, response)
+		return
+	}
+
+	user, err := c.jobsService.GetUserByID(userID)
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+	if user.Role != "admin" {
+		messError := fmt.Sprintf("failed to create jobs, role is not admin")
+		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	_, err = c.jobsService.DeletedJob(int(jobs.ID))
+	if err != nil {
+		errorMessage := gin.H{"error": err.Error()}
+		messError := fmt.Sprintf("failed to delete jobs")
+		response := helpers.BuildErrorResponse("failed to process request", messError, errorMessage)
+		ctx.JSON(http.StatusForbidden, response)
+		return
+	}
+
+	response := helpers.BuildResponse(true, "success to delete job experience", nil)
 	ctx.JSON(http.StatusOK, response)
 }
