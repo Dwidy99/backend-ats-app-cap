@@ -863,7 +863,6 @@ Deletes the specified company.
   ```
   {
       "id": integer,
-      "jobcategory_id": integer,
       "company_id": integer,
       "title": string,
       "description": text,

@@ -18,6 +18,7 @@ type SkillController interface {
 	UpdateSkill(ctx *gin.Context)
 	GetSkillByID(ctx *gin.Context)
 	DeleteSkill(ctx *gin.Context)
+	GetSkills(ctx *gin.Context)
 }
 
 type skillController struct {
@@ -30,6 +31,44 @@ func NewSkillController(skillService service.SkillService, jwtService service.JW
 		serviceSkill: skillService,
 		jwtService: jwtService,
 	}
+}
+
+func (c *skillController) GetSkills(ctx *gin.Context) {
+	authHeader := ctx.GetHeader("Authorization")
+	token, err := c.jwtService.ValidateToken(authHeader)
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+	claims := token.Claims.(jwt.MapClaims)
+	userID, err := strconv.Atoi(fmt.Sprintf("%v", claims["user_id"]))
+	if err != nil {
+		messError := fmt.Sprintf("user applicant with user id %v is empty", userID)
+		response := helpers.BuildErrorResponse("failed to process request", messError, err)
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	if userID == 0 {
+		errorMessage := gin.H{"error": errors.New("forbidden")}
+		messError := fmt.Sprintf("user applicant with user id %v is empty", userID)
+		response := helpers.BuildErrorResponse("failed to process request", messError, errorMessage)
+		ctx.JSON(http.StatusForbidden, response)
+		return
+	}
+
+	applicant, err := c.serviceSkill.GetApplicantByID(userID)
+
+	skills, err := c.serviceSkill.GetSkills(int(applicant.ID))
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusForbidden, response)
+		return
+	}
+
+	response := helpers.BuildResponse(true, "success to get job skills", skills)
+	ctx.JSON(http.StatusOK, response)
 }
 
 func (c *skillController) GetSkillByID(ctx *gin.Context) {
@@ -133,16 +172,14 @@ func (c *skillController) CreateSkill(ctx *gin.Context) {
 
 	applicant, err := c.serviceSkill.GetApplicantByID(userID)
 	if err != nil {
-		messError := fmt.Sprintf("failed to access create job skill, user applicant with user id %v is empty", userID)
-		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 
 	experience, err := c.serviceSkill.CreateSkill(skillInput, int(applicant.ID))
 	if err != nil {
-		messError := fmt.Sprintf("failed to access create job skill, user applicant with user id %v is empty", userID)
-		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
@@ -166,7 +203,7 @@ func (c *skillController) UpdateSkill(ctx *gin.Context) {
 	err = ctx.ShouldBind(&inputData)
 	if err != nil {
 		errorMessage := gin.H{"error": err}
-		response := helpers.BuildErrorResponse("failed update skill", "error", errorMessage)
+		response := helpers.BuildErrorResponse("failed update skill", err.Error(), errorMessage)
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
@@ -174,23 +211,21 @@ func (c *skillController) UpdateSkill(ctx *gin.Context) {
 	authHeader := ctx.GetHeader("Authorization")
 	token, errToken := c.jwtService.ValidateToken(authHeader)
 	if errToken != nil {
-		messError := fmt.Sprintf("failed to access update job skill, token user applicant wrong or empty")
-		response := helpers.BuildErrorResponse(messError, errToken.Error(), helpers.EmptyObj{})
+		response := helpers.BuildErrorResponse("failed to access update job skill, token user applicant wrong or empty", errToken.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 	claims := token.Claims.(jwt.MapClaims)
 	userID, err := strconv.Atoi(fmt.Sprintf("%v", claims["user_id"]))
 	if err != nil {
-		messError := fmt.Sprintf("failed to access update job skill, user applicant with user id %v is empty", userID)
-		response := helpers.BuildErrorResponse(messError, err.Error(), helpers.EmptyObj{})
+		response := helpers.BuildErrorResponse("failed to access request", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 	
 	user, err := c.serviceSkill.GetUserByID(userID)
 	if err != nil {
-		response := helpers.BuildErrorResponse("failed to update skill", err.Error(), helpers.EmptyObj{})
+		response := helpers.BuildErrorResponse("failed to access request", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
@@ -225,7 +260,7 @@ func (c *skillController) DeleteSkill(ctx *gin.Context) {
 	err := ctx.ShouldBindUri(&inputID)
 	if err != nil {
 		errorMessage := gin.H{"error": err}
-		response := helpers.BuildErrorResponse("failed to delete skill", "error", errorMessage)
+		response := helpers.BuildErrorResponse("failed to delete skill", err.Error(), errorMessage)
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
@@ -233,16 +268,14 @@ func (c *skillController) DeleteSkill(ctx *gin.Context) {
 	authHeader := ctx.GetHeader("Authorization")
 	token, errToken := c.jwtService.ValidateToken(authHeader)
 	if errToken != nil {
-		messError := fmt.Sprintf("token user applicant wrong or empty")
-		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+		response := helpers.BuildErrorResponse("failed to process request", errToken.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 	claims := token.Claims.(jwt.MapClaims)
 	userID, err := strconv.Atoi(fmt.Sprintf("%v", claims["user_id"]))
 	if err != nil {
-		messError := fmt.Sprintf("user applicant with user id %v is empty", userID)
-		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
