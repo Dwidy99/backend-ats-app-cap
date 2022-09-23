@@ -5,7 +5,7 @@ type JobDetailDTO struct {
 }
 
 type CreateJobsDTO struct {
-	CompanyID         uint64  `json:"company_id" form:"company_id" binding:"required"`
+	CompanyName       string  `json:"company_name" form:"company_name" binding:"required"`
 	Title             string  `json:"title" form:"title" binding:"required"`
 	Description       string  `json:"description" form:"description" binding:"required"`
 	Location          string  `json:"location" form:"location" binding:"required"`

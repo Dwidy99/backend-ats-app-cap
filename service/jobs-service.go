@@ -79,7 +79,7 @@ func (s *jobsService) AllJobs() ([]entity.Jobs, error) {
 
 func (s *jobsService) CreateJobs(jobs dto.CreateJobsDTO, userID int) (entity.Jobs, error) {
 	createJob := entity.Jobs{}
-	createJob.CompanyID = jobs.CompanyID
+	createJob.CompanyName = jobs.CompanyName
 	createJob.Title = jobs.Title
 	createJob.Description = jobs.Description
 	createJob.Location = jobs.Location
@@ -107,7 +107,7 @@ func (s *jobsService) UpdateJob(inputData dto.CreateJobsDTO, inputID dto.JobDeta
 		return job, nil
 	}
 
-	job.CompanyID = inputData.CompanyID
+	job.CompanyName = inputData.CompanyName
 	job.Title = inputData.Title
 	job.Description = inputData.Description
 	job.Type = inputData.Type

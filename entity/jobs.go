@@ -4,7 +4,7 @@ import "time"
 
 type Jobs struct {
 	ID                uint64    `json:"id"`
-	CompanyID         uint64    `json:"company_id"`
+	CompanyName       string    `gorm:"type:varchar(255)" json:"company_name"`
 	Title             string    `gorm:"type:varchar(255)" json:"title"`
 	Description       string    `json:"description"`
 	Location          string    `gorm:"type:varchar(255)" json:"location"`
