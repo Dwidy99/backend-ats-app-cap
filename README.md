@@ -863,14 +863,16 @@ Deletes the specified company.
   ```
   {
       "id": integer,
-      "company_id": integer,
+      "company_name": string,
       "title": string,
       "description": text,
       "location": string,
       "salary": float,
       "type": string,
       "level_of_experience": string,
-      "skills": string,
+      "address": text,
+      "contact": string,
+      "website": string,
       "date_start": date,
       "date_end": date,
       "created_at": timestamp,
@@ -915,14 +917,16 @@ Creates a new jobs and returns the new object.
 
   ```
   {
-      "company_id": integer,
+      "company_name": string,
       "title": string,
       "description": text,
       "location": string,
       "salary": float,
       "type": string,
       "level_of_experience": string,
-      "skills": string,
+      "address": text,
+      "contact": string,
+      "website": string,
       "date_start": date,
       "date_end": date
   }
@@ -941,15 +945,16 @@ Creates a new jobs and returns the new object.
       "errors": null,
       "data": {
           "job_id": integer,
-          "job_category_id": integer,
-          "company_id": integer,
+          "company_name": string,
           "title": string,
           "description": text,
           "location": string,
           "salary": float,
           "type": string,
           "level_of_experience": string,
-          "skills": string,
+          "address": text,
+          "contact": string,
+          "website": string,
           "date_start": date,
           "date_end": date,
           "created_at": timestamp,
@@ -980,15 +985,16 @@ Returns the specified jobs.
       "errors": null,
       "data": {
           "job_id": integer,
-          "job_category_id": integer,
-          "company_id": integer,
+          "company_name": string,
           "title": string,
           "description": text,
           "location": string,
           "salary": float,
           "type": string,
           "level_of_experience": string,
-          "skills": string,
+          "address": text,
+          "contact": string,
+          "website": string,
           "date_start": date,
           "date_end": date,
           "created_at": timestamp,
@@ -1021,13 +1027,16 @@ Update a Company and returns the new object.
 
   ```
   {
+    "company_name": string,
     "title": string,
     "description": text,
     "location": string,
     "salary": string,
     "type": string,
     "level_of_experience": string,
-    "skills": string,
+    "address": text,
+    "contact": string,
+    "website": string,
     "date_start": date,
     "date_end": date,
   }
@@ -1043,13 +1052,21 @@ Update a Company and returns the new object.
       "message": "ok",
       "errors": null,
       "data": {
-          "company_id": integer,
-          "name": string,
-          "email": string,
+          "job_id": integer,
+          "company_name": string,
+          "title": string,
+          "description": text,
+          "location": string,
+          "salary": float,
+          "type": string,
+          "level_of_experience": string,
           "address": text,
           "contact": string,
           "website": string,
-          "created_at": timestamp
+          "date_start": date,
+          "date_end": date,
+          "created_at": timestamp,
+          "posted_by": integer
       }
   }
   ```
