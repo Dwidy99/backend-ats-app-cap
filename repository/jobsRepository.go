@@ -9,6 +9,7 @@ import (
 type JobsRepository interface {
 	FindUserByID(userID int) (entity.User, error)
 	FindEmployeeByID(userID int) (entity.Employee, error)
+	FindJobsByID(inputID int) (entity.Jobs, error)
 	GetAllJob() ([]entity.Jobs, error)
 	InsertJobs(j entity.Jobs) (entity.Jobs, error)
 	DeleteJob(inputID int) (entity.Jobs, error)
@@ -42,6 +43,17 @@ func (db *jobsConnection) FindEmployeeByID(userID int) (entity.Employee, error) 
 		return employee, err
 	}
 	return employee, nil
+}
+
+func (db *jobsConnection) FindJobsByID(inputID int) (entity.Jobs, error) {
+	var jobs entity.Jobs
+
+	err := db.connection.Where("id = ?", inputID).Find(&jobs).Error
+	if err != nil {
+		return jobs, err
+	}
+
+	return jobs, nil
 }
 
 func (db *jobsConnection) InsertJobs(j entity.Jobs) (entity.Jobs, error) {

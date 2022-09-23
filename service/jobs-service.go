@@ -14,6 +14,7 @@ type JobsService interface {
 	GetUserByID(userID int) (entity.User, error)
 	GetEmployeeByID(userID int) (entity.Employee, error)
 	AllJobs() ([]entity.Jobs, error)
+	GetJobByID(inputID int) (entity.Jobs, error)
 	CreateJobs(jobs dto.CreateJobsDTO, userID int) (entity.Jobs, error)
 	DeletedJob(inputID int) (entity.Jobs, error)
 }
@@ -52,6 +53,19 @@ func (s *jobsService) GetEmployeeByID(userID int) (entity.Employee, error) {
 	}
 
 	return employee, nil
+}
+
+func (s *jobsService) GetJobByID(inputID int) (entity.Jobs, error) {
+	jobs, err := s.jobsRepository.FindJobsByID(inputID)
+	if err != nil {
+		return jobs, err
+	}
+
+	if jobs.ID == 0 {
+		return jobs, errors.New("No user logged in")
+	}
+
+	return jobs, nil
 }
 
 func (s *jobsService) AllJobs() ([]entity.Jobs, error) {
