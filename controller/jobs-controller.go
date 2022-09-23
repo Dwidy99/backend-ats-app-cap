@@ -18,6 +18,7 @@ type JobsController interface {
 	GetAllJobs(ctx *gin.Context)
 	GetJobsByID(ctx *gin.Context)
 	CreatedJobs(ctx *gin.Context)
+	UpdateJobs(ctx *gin.Context)
 	DeleteJobs(ctx *gin.Context)
 }
 
@@ -79,6 +80,74 @@ func (c *jobsController) GetAllJobs(ctx *gin.Context) {
 		return
 	}
 	response := helpers.BuildResponse(true, "Success to get all jobs data", jobs)
+	ctx.JSON(http.StatusOK, response)
+}
+
+func (c *jobsController) UpdateJobs(ctx *gin.Context) {
+	var inputID dto.JobDetailDTO
+
+	err := ctx.ShouldBindUri(&inputID)
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to get id", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	var inputData dto.CreateJobsDTO
+
+	err = ctx.ShouldBind(&inputData)
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to get id", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	authHeader := ctx.GetHeader("Authorization")
+	token, err := c.jwtService.ValidateToken(authHeader)
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	claims := token.Claims.(jwt.MapClaims)
+	userID, err := strconv.Atoi(fmt.Sprintf("%v", claims["user_id"]))
+	if err != nil {
+		messError := fmt.Sprintf("failed to get jobs by id, user applicant with user id %v is empty", userID)
+		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	if userID == 0 {
+		errorMessage := gin.H{"error": errors.New("forbidden")}
+		messError := fmt.Sprintf("failed to get jobs by id, user applicant with user id %v is empty", userID)
+		response := helpers.BuildErrorResponse("failed to process request", messError, errorMessage)
+		ctx.JSON(http.StatusForbidden, response)
+		return
+	}
+
+	user, err := c.jobsService.GetUserByID(userID)
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	if user.Role != "admin" {
+		response := helpers.BuildErrorResponse("failed to process request", "failed to update jobs, role is not admin", helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	job, err := c.jobsService.UpdateJob(inputData, inputID, userID)
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	response := helpers.BuildResponse(true, "success to update jobs", job)
 	ctx.JSON(http.StatusOK, response)
 }
 

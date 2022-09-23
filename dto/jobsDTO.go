@@ -1,5 +1,9 @@
 package dto
 
+type JobDetailDTO struct {
+	ID uint64 `uri:"id" binding:"required"`
+}
+
 type CreateJobsDTO struct {
 	CompanyID         uint64  `json:"company_id" form:"company_id" binding:"required"`
 	Title             string  `json:"title" form:"title" binding:"required"`

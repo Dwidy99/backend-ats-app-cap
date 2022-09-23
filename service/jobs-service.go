@@ -16,6 +16,7 @@ type JobsService interface {
 	AllJobs() ([]entity.Jobs, error)
 	GetJobByID(inputID int) (entity.Jobs, error)
 	CreateJobs(jobs dto.CreateJobsDTO, userID int) (entity.Jobs, error)
+	UpdateJob(inputData dto.CreateJobsDTO, inputID dto.JobDetailDTO, userID int) (entity.Jobs, error)
 	DeletedJob(inputID int) (entity.Jobs, error)
 }
 
@@ -98,6 +99,31 @@ func (s *jobsService) CreateJobs(jobs dto.CreateJobsDTO, userID int) (entity.Job
 		return res, err
 	}
 	return res, nil
+}
+
+func (s *jobsService) UpdateJob(inputData dto.CreateJobsDTO, inputID dto.JobDetailDTO, userID int) (entity.Jobs, error) {
+	job, err := s.jobsRepository.FindJobsByID(int(inputID.ID))
+	if err != nil {
+		return job, nil
+	}
+
+	job.CompanyID = inputData.CompanyID
+	job.Title = inputData.Title
+	job.Description = inputData.Description
+	job.Type = inputData.Type
+	job.Location = inputData.Location
+	job.LevelOfExperience = inputData.LevelOfExperience
+	job.Salary = inputData.Salary
+	job.DateStart = inputData.DateStart
+	job.DateEnd = inputData.DateEnd
+	job.PostedBy = uint64(userID)
+
+	updateJob, err := s.jobsRepository.Update(job)
+	if err != nil {
+		return job, nil
+	}
+
+	return updateJob, nil
 }
 
 func (s *jobsService) DeletedJob(inputID int) (entity.Jobs, error) {

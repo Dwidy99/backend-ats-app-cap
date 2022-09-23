@@ -12,6 +12,7 @@ type JobsRepository interface {
 	FindJobsByID(inputID int) (entity.Jobs, error)
 	GetAllJob() ([]entity.Jobs, error)
 	InsertJobs(j entity.Jobs) (entity.Jobs, error)
+	Update(j entity.Jobs) (entity.Jobs, error)
 	DeleteJob(inputID int) (entity.Jobs, error)
 }
 
@@ -71,6 +72,15 @@ func (db *jobsConnection) GetAllJob() ([]entity.Jobs, error) {
 		return jobs, err
 	}
 	return jobs, nil
+}
+
+func (db *jobsConnection) Update(j entity.Jobs) (entity.Jobs, error) {
+	err := db.connection.Save(&j).Error
+	if err != nil {
+		return j, err
+	}
+
+	return j, nil
 }
 
 func (db *jobsConnection) DeleteJob(inputID int) (entity.Jobs, error) {
