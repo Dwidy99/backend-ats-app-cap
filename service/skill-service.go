@@ -14,6 +14,7 @@ type SkillService interface {
 	GetUserByID(userID int) (entity.User, error)
 	CreateSkill(skillInput dto.Jobskill, applicantID int) (entity.Jobskill, error)
 	GetApplicantByID(userID int) (entity.Applicant, error)
+	GetEmployeeByID(userID int) (entity.Employee, error)
 	GetSkillByID(inputID int) (entity.Jobskill, error)
 	UpdateSkill(inputID int, inputData dto.Jobskill, applicantID int, userID int) (entity.Jobskill, error)
 	GetSkillDetailByID(inputID int, applicantID int) (entity.Jobskill, error)
@@ -32,23 +33,23 @@ func NewSkillService(skillRepository repository.SkillRepository) SkillService {
 }
 
 func (s *skillService) GetSkills(applicantID int) ([]entity.JobSkillsDetailFormatter, error) {
-	testSkill := []entity.JobSkillsDetailFormatter{}
+	skills := []entity.JobSkillsDetailFormatter{}
 
-	skills, err := s.skillRepository.GetSkills(applicantID)
+	getSkills, err := s.skillRepository.GetSkills(applicantID)
 	if err != nil {
-		return testSkill, err
+		return skills, err
 	}
 	
-	for _, v := range skills {
-		skillApplicant, _ := s.GetSkillByID(int(v.SkillID))
-		testSkill = append(testSkill, entity.JobSkillsDetailFormatter{
-			ApplicantID: v.ApplicantID,
-			SkillID: v.SkillID,
+	for _, getSkill := range getSkills {
+		skillApplicant, _ := s.GetSkillByID(int(getSkill.SkillID))
+		skills = append(skills, entity.JobSkillsDetailFormatter{
+			ApplicantID: getSkill.ApplicantID,
+			SkillID: getSkill.SkillID,
 			Name: skillApplicant.Name,
 		})
 	}
 
-	return testSkill, nil
+	return skills, nil
 }
 
 func (s *skillService) GetSkillDetailByID(inputID int, applicantID int) (entity.Jobskill, error) {
@@ -116,6 +117,19 @@ func (s *skillService) GetApplicantByID(userID int) (entity.Applicant, error) {
 	}
 
 	return applicant, nil
+}
+
+func (s *skillService) GetEmployeeByID(userID int) (entity.Employee, error) {
+	employee, err := s.skillRepository.FindEmployeeByID(userID)
+	if err != nil {
+		return employee, err
+	}
+	
+	if employee.UserID == 0 {
+		return employee, errors.New("no user logged in")
+	}
+
+	return employee, nil
 }
 
 func (s *skillService) GetSkillByID(inputID int) (entity.Jobskill, error) {

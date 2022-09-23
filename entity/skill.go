@@ -16,3 +16,8 @@ type JobSkillsDetailFormatter struct {
 	ApplicantID uint64 `json:"applicant_id"`
 	Name        string `json:"name"`
 }
+
+type Jobskillrequirement struct {
+	SkillID uint64 `json:"id_skill" gorm:"foreignKey:JobskillRefer"`
+	JobID   uint64 `json:"id_job" gorm:"foreignKey:JobsRefer"`
+}

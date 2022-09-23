@@ -7,5 +7,5 @@ type Jobapplication struct {
 	ApplicantID uint64 `json:"applicant_id"`
 	JobID       uint64 `json:"job_id"`
 	Status      string `json:"status" gorm:"type:varchar(255)"`
-	CreatdAt    time.Time `json:"created_at"`
+	CreatedAt    time.Time `json:"created_at"`
 }

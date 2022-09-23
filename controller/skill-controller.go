@@ -44,8 +44,7 @@ func (c *skillController) GetSkills(ctx *gin.Context) {
 	claims := token.Claims.(jwt.MapClaims)
 	userID, err := strconv.Atoi(fmt.Sprintf("%v", claims["user_id"]))
 	if err != nil {
-		messError := fmt.Sprintf("user applicant with user id %v is empty", userID)
-		response := helpers.BuildErrorResponse("failed to process request", messError, err)
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), err)
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
@@ -147,18 +146,16 @@ func (c *skillController) CreateSkill(ctx *gin.Context) {
 	}
 
 	authHeader := ctx.GetHeader("Authorization")
-	token, errToken := c.jwtService.ValidateToken(authHeader)
-	if errToken != nil {
-		messError := fmt.Sprintf("failed to create skill, token user applicant wrong or empty")
-		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+	token, err := c.jwtService.ValidateToken(authHeader)
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 	claims := token.Claims.(jwt.MapClaims)
 	userID, err := strconv.Atoi(fmt.Sprintf("%v", claims["user_id"]))
 	if err != nil {
-		messError := fmt.Sprintf("failed to access create job skill, user applicant with user id %v is empty", userID)
-		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
@@ -311,8 +308,7 @@ func (c *skillController) DeleteSkill(ctx *gin.Context) {
 	_, err = c.serviceSkill.DeleteSkill(inputID.ID, int(applicant.ID))
 	if err != nil {
 		errorMessage := gin.H{"error": err.Error()}
-		messError := fmt.Sprintf("failed to delete job experience")
-		response := helpers.BuildErrorResponse("failed to process request", messError, errorMessage)
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), errorMessage)
 		ctx.JSON(http.StatusForbidden, response)
 		return
 	}

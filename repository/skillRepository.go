@@ -12,6 +12,7 @@ type SkillRepository interface {
 	CreateSkill(skill entity.Jobskill, jobSkillApplicant entity.Jobskillapplicant, applicantID int) (entity.Jobskill, error)
 	FindUserByID(userID int) (entity.User, error)
 	FindApplicantByID(userID int) (entity.Applicant, error)
+	FindEmployeeByID(userID int) (entity.Employee, error)
 	GetSkillByID(inputID int) (entity.Jobskill, error)
 	GetJobSkillApplicantBySkillID(inputID int) ([]entity.Jobskillapplicant, error)
 	Update(jobSkill entity.Jobskill) (entity.Jobskill, error)
@@ -90,6 +91,17 @@ func (db *skillConnection) FindApplicantByID(userID int) (entity.Applicant, erro
 	}
 
 	return applicant, nil
+}
+
+func (db *skillConnection) FindEmployeeByID(userID int) (entity.Employee, error) {
+	var employee entity.Employee
+
+	err := db.connection.Where("user_id = ?", userID).Find(&employee).Error
+	if err != nil {
+		return employee, err
+	}
+
+	return employee, nil
 }
 
 func (db *skillConnection) GetSkillByID(inputID int) (entity.Jobskill, error) {

@@ -11,8 +11,6 @@ import (
 type UserRepository interface {
 	IsDuplicateEmail(email string) (tx *gorm.DB)
 	VerifyCredential(email string, password string) interface{}
-	// InsertApplicant(user entity.User, applicant entity.Applicant) entity.User
-	// InsertEmployee(user entity.User, applicant entity.Applicant) entity.User
 }
 
 type userConnection struct {

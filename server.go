@@ -21,6 +21,7 @@ var (
 	skillrepository          repository.SkillRepository          = repository.NewSkillRepository(db)
 	jobsRepository           repository.JobsRepository           = repository.NewJobsRepository(db)
 	jobApplicationRepository repository.JobApplicationRepository = repository.NewjobApplication(db)
+	jobAppliedRepository repository.JobsAppliedRepository = repository.NewJobAppliedConnection(db)
 
 	jwtService service.JWTService = service.NewJWTService()
 
@@ -31,6 +32,7 @@ var (
 	skillService      service.SkillService          = service.NewSkillService(skillrepository)
 	jobsService       service.JobsService           = service.NewJobsService(jobsRepository)
 	jobApplication    service.JobApplicationService = service.NewJobApplicationService(jobApplicationRepository)
+	jobAppliedService service.JobAppliedService = service.NewJobAppliedService(jobAppliedRepository)
 
 	authController       controller.AuthController       = controller.NewAuthController(authService, jwtService)
 	applicantController  controller.ApplicantController  = controller.NewApplicantController(applicantService, jwtService)
@@ -39,7 +41,10 @@ var (
 	skillController      controller.SkillController      = controller.NewSkillController(skillService, jwtService)
 	jobsController       controller.JobsController       = controller.NewJobsController(jobsService, jwtService)
 
+	jobAppliedController controller.JobAppliedController = controller.NewJobAppliedController(jobAppliedService, jwtService)
+
 	jobApplicantion controller.JobApplicationController = controller.NewJobApplicationController(jobApplication, jwtService)
+
 )
 
 func main() {
@@ -70,6 +75,11 @@ func main() {
 		authApplicantRoutes.GET("/skills", skillController.GetSkills)
 
 		authApplicantRoutes.POST("/jobapplication", jobApplicantion.CreateApply)
+
+		authApplicantRoutes.GET("/applied", jobAppliedController.JobsAppliedByApplicantID)
+
+		authApplicantRoutes.GET("/jobs", jobsController.GetAllJobsApplicant)
+		authApplicantRoutes.GET("/jobs/:id", jobsController.ApplicantGetJobsByID)
 	}
 
 	// Employees Routes
@@ -78,7 +88,9 @@ func main() {
 		authEmployeeRoutes.POST("/register", authController.RegisterEmployees)
 		authEmployeeRoutes.PUT("/users/:id", employeeController.EditEmployee)
 		authEmployeeRoutes.GET("/users/fetch", employeeController.FetchUserEmployee)
-		authEmployeeRoutes.GET("/jobs/", jobsController.GetAllJobs)
+
+		authEmployeeRoutes.GET("/jobs", jobsController.GetAllJobs)
+		authEmployeeRoutes.GET("/jobs/:id", jobsController.GetJobsByID)
 		authEmployeeRoutes.POST("/jobs", jobsController.CreatedJobs)
 		authEmployeeRoutes.DELETE("/jobs/:id", jobsController.DeleteJobs)
 		authEmployeeRoutes.PUT("/jobs/:id", jobsController.UpdateJobs)
