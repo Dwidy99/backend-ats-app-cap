@@ -97,6 +97,9 @@ func (s *jobsService) CreateJobs(jobs dto.CreateJobsDTO, userID int) (entity.Job
 	createJob.Salary = jobs.Salary
 	createJob.Type = jobs.Type
 	createJob.LevelOfExperience = jobs.LevelOfExperience
+	createJob.Address = jobs.Address
+	createJob.Contact = jobs.Contact
+	createJob.Website = jobs.Website
 	createJob.DateStart = jobs.DateStart
 	createJob.DateEnd = jobs.DateEnd
 	createJob.PostedBy = uint64(userID)
@@ -125,6 +128,9 @@ func (s *jobsService) UpdateJob(inputData dto.CreateJobsDTO, inputID dto.JobDeta
 	job.Type = inputData.Type
 	job.Location = inputData.Location
 	job.LevelOfExperience = inputData.LevelOfExperience
+	job.Address = inputData.Address
+	job.Contact = inputData.Contact
+	job.Website = inputData.Website
 	job.Salary = inputData.Salary
 	job.DateStart = inputData.DateStart
 	job.DateEnd = inputData.DateEnd

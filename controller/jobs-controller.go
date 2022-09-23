@@ -97,7 +97,7 @@ func (c *jobsController) UpdateJobs(ctx *gin.Context) {
 
 	err = ctx.ShouldBind(&inputData)
 	if err != nil {
-		response := helpers.BuildErrorResponse("failed to get id", "id is null", helpers.EmptyObj{})
+		response := helpers.BuildErrorResponse("failed to update jobs data", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}

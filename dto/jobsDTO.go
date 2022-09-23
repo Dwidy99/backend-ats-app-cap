@@ -12,6 +12,9 @@ type CreateJobsDTO struct {
 	Salary            float64 `json:"salary" form:"salary" binding:"required"`
 	Type              string  `json:"type" form:"type" binding:"required"`
 	LevelOfExperience string  `json:"level_of_experience" form:"level_of_experience" binding:"required"`
+	Address           string  `json:"address" form:"address" binding:"required"`
+	Contact           string  `json:"contact" form:"contact" binding:"required"`
+	Website           string  `json:"website" form:"website" binding:"required"`
 	DateStart         string  `json:"date_start" form:"date_start" binding:"required"`
 	DateEnd           string  `json:"date_end" form:"date_end" binding:"required"`
 }
