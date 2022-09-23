@@ -140,7 +140,7 @@ func (c *jobsController) UpdateJobs(ctx *gin.Context) {
 		return
 	}
 
-	checkId, err := c.jobsService.CheckID(int(inputID.ID))
+	checkId, err := c.jobsService.ChecksID(int(inputID.ID))
 	if checkId {
 		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)

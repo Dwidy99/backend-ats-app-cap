@@ -19,7 +19,7 @@ type JobsService interface {
 	CreateJobs(jobs dto.CreateJobsDTO, userID int) (entity.Jobs, error)
 	UpdateJob(inputData dto.CreateJobsDTO, inputID dto.JobDetailDTO, userID int) (entity.Jobs, error)
 	DeletedJob(inputID int) (entity.Jobs, error)
-	CheckID(inputID int) (bool, error)
+	ChecksID(inputID int) (bool, error)
 }
 
 type jobsService struct {
@@ -32,7 +32,7 @@ func NewJobsService(jobRepository repository.JobsRepository) JobsService {
 	}
 }
 
-func (s *jobsService) CheckID(inputID int) (bool, error) {
+func (s *jobsService) ChecksID(inputID int) (bool, error) {
 	id, err := s.jobsRepository.CheckID(inputID)
 	if err != nil {
 		return id, err

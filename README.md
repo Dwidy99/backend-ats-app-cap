@@ -1009,7 +1009,7 @@ Returns the specified jobs.
     }
     ```
 
-## **PUT /employees/companies/:id**
+## **PUT /employees/jobs/:id**
 
 Update a Company and returns the new object.
 
