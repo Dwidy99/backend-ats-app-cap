@@ -18,6 +18,7 @@ type SkillService interface {
 	UpdateSkill(inputID int, inputData dto.Jobskill, applicantID int, userID int) (entity.Jobskill, error)
 	GetSkillDetailByID(inputID int, applicantID int) (entity.Jobskill, error)
 	DeleteSkill(inputID int, applicantID int) (entity.Jobskill, error)
+	GetSkills(applicantID int) ([]entity.JobSkillsDetailFormatter, error)
 }
 
 type skillService struct {
@@ -28,6 +29,26 @@ func NewSkillService(skillRepository repository.SkillRepository) SkillService {
 	return &skillService{
 		skillRepository: skillRepository,
 	}
+}
+
+func (s *skillService) GetSkills(applicantID int) ([]entity.JobSkillsDetailFormatter, error) {
+	testSkill := []entity.JobSkillsDetailFormatter{}
+
+	skills, err := s.skillRepository.GetSkills(applicantID)
+	if err != nil {
+		return testSkill, err
+	}
+	
+	for _, v := range skills {
+		skillApplicant, _ := s.GetSkillByID(int(v.SkillID))
+		testSkill = append(testSkill, entity.JobSkillsDetailFormatter{
+			ApplicantID: v.ApplicantID,
+			SkillID: v.SkillID,
+			Name: skillApplicant.Name,
+		})
+	}
+
+	return testSkill, nil
 }
 
 func (s *skillService) GetSkillDetailByID(inputID int, applicantID int) (entity.Jobskill, error) {

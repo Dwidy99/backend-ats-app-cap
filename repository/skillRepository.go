@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"log"
 	"mini-project/entity"
 
@@ -15,6 +16,8 @@ type SkillRepository interface {
 	GetJobSkillApplicantBySkillID(inputID int) ([]entity.Jobskillapplicant, error)
 	Update(jobSkill entity.Jobskill) (entity.Jobskill, error)
 	Delete(inputID int) (entity.Jobskill, error)
+	GetSkills(applicantID int) ([]entity.Jobskillapplicant, error)
+	GetJobSkillAppByApplicantID(applicantID int) ([]entity.Jobskillapplicant, error)
 }
 
 type skillConnection struct {
@@ -27,12 +30,35 @@ func NewSkillRepository(db *gorm.DB) SkillRepository {
 	}
 }
 
+func (db *skillConnection) GetSkills(applicantID int) ([]entity.Jobskillapplicant, error) {
+	var jobSkillApplicant []entity.Jobskillapplicant
+
+	err := db.connection.Where("applicant_id = ?", applicantID).Find(&jobSkillApplicant).Error
+	if err != nil {
+		return jobSkillApplicant, err
+	}
+	fmt.Println("entity", jobSkillApplicant)
+
+	return jobSkillApplicant, nil
+}
+
+func (db *skillConnection) GetJobSkillAppByApplicantID(applicantID int) ([]entity.Jobskillapplicant, error) {
+	var jobSkillApplicant []entity.Jobskillapplicant
+
+	err := db.connection.Where("applicant_id = ?", applicantID).Find(&jobSkillApplicant).Error
+	if err != nil {
+		return jobSkillApplicant, err
+	}
+
+	return jobSkillApplicant, nil
+}
+
 func (db *skillConnection) CreateSkill(skill entity.Jobskill, jobsSkillApplicant entity.Jobskillapplicant, applicantID int) (entity.Jobskill, error) {
 	err := db.connection.Save(&skill).Error
 	if err != nil {
 		return skill, err
 	}
-	
+
 	jobsSkillApplicant.SkillID = skill.ID
 	jobsSkillApplicant.ApplicantID = uint64(applicantID)
 	err = db.connection.Save(&jobsSkillApplicant).Error
@@ -99,7 +125,10 @@ func (db *skillConnection) Update(jobSkill entity.Jobskill) (entity.Jobskill, er
 
 func (db *skillConnection) Delete(inputID int) (entity.Jobskill, error) {
 	var jobSkill entity.Jobskill
+	var jobSkillApplicant entity.Jobskillapplicant
+
 	err := db.connection.Where("id = ?", inputID).Delete(&jobSkill).Error
+	err = db.connection.Where("skill_id = ?", inputID).Delete(&jobSkillApplicant).Error
 	if err != nil {
 		return jobSkill, err
 	}
