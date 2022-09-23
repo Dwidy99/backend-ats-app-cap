@@ -97,7 +97,7 @@ func (c *jobsController) UpdateJobs(ctx *gin.Context) {
 
 	err = ctx.ShouldBind(&inputData)
 	if err != nil {
-		response := helpers.BuildErrorResponse("failed to get id", err.Error(), helpers.EmptyObj{})
+		response := helpers.BuildErrorResponse("failed to get id", "id is null", helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
@@ -136,6 +136,13 @@ func (c *jobsController) UpdateJobs(ctx *gin.Context) {
 
 	if user.Role != "admin" {
 		response := helpers.BuildErrorResponse("failed to process request", "failed to update jobs, role is not admin", helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	checkId, err := c.jobsService.CheckID(int(inputID.ID))
+	if checkId {
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}

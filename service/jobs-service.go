@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"mini-project/dto"
 	"mini-project/entity"
@@ -18,6 +19,7 @@ type JobsService interface {
 	CreateJobs(jobs dto.CreateJobsDTO, userID int) (entity.Jobs, error)
 	UpdateJob(inputData dto.CreateJobsDTO, inputID dto.JobDetailDTO, userID int) (entity.Jobs, error)
 	DeletedJob(inputID int) (entity.Jobs, error)
+	CheckID(inputID int) (bool, error)
 }
 
 type jobsService struct {
@@ -28,6 +30,15 @@ func NewJobsService(jobRepository repository.JobsRepository) JobsService {
 	return &jobsService{
 		jobsRepository: jobRepository,
 	}
+}
+
+func (s *jobsService) CheckID(inputID int) (bool, error) {
+	id, err := s.jobsRepository.CheckID(inputID)
+	if err != nil {
+		return id, err
+	}
+
+	return id, nil
 }
 
 func (s *jobsService) GetUserByID(userID int) (entity.User, error) {
@@ -104,8 +115,9 @@ func (s *jobsService) CreateJobs(jobs dto.CreateJobsDTO, userID int) (entity.Job
 func (s *jobsService) UpdateJob(inputData dto.CreateJobsDTO, inputID dto.JobDetailDTO, userID int) (entity.Jobs, error) {
 	job, err := s.jobsRepository.FindJobsByID(int(inputID.ID))
 	if err != nil {
-		return job, nil
+		return job, err
 	}
+	fmt.Println("JOB", job)
 
 	job.CompanyName = inputData.CompanyName
 	job.Title = inputData.Title

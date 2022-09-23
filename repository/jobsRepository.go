@@ -14,6 +14,7 @@ type JobsRepository interface {
 	InsertJobs(j entity.Jobs) (entity.Jobs, error)
 	Update(j entity.Jobs) (entity.Jobs, error)
 	DeleteJob(inputID int) (entity.Jobs, error)
+	CheckID(inputID int) (bool, error)
 }
 
 type jobsConnection struct {
@@ -81,6 +82,20 @@ func (db *jobsConnection) Update(j entity.Jobs) (entity.Jobs, error) {
 	}
 
 	return j, nil
+}
+
+func (db *jobsConnection) CheckID(inputID int) (bool, error) {
+	var exists bool
+	err := db.connection.
+		Select("count(*) > 0").
+		Where("id = ?", inputID).
+		Find(&exists).
+		Error
+	if err != nil {
+		return exists, err
+	}
+
+	return exists, nil
 }
 
 func (db *jobsConnection) DeleteJob(inputID int) (entity.Jobs, error) {
