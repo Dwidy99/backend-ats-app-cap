@@ -1158,21 +1158,20 @@ Returns the specified jobs.
     "errors": null,
     "data": {
         "job_id": integer,
-            "company_id": integer,
-            "posted_by": int,
-            "title": integer,
-            "description": string,
-            "location": string,
-            "salary": float,
-            "type": string,
-            "level_of_experience": string,
-            "skills": string,
-            "company_name": string,
-            "address": string,
-            "website": string,
-            "date_start": date,
-            "date_end": date,
-            "created_at": timestamp
+        "company_name": string,
+        "title": integer,
+        "description": string,
+        "location": string,
+        "salary": float,
+        "type": string,
+        "level_of_experience": string,
+        "address": text,
+        "website": string,
+        "contact": string,
+        "date_start": date,
+        "date_end": date,
+        "created_at": timestamp,
+        "posted_by": int
     }
 }
 ```
