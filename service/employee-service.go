@@ -1,8 +1,8 @@
 package service
 
 import (
+	"errors"
 	"fmt"
-	"log"
 	"mini-project/dto"
 	"mini-project/entity"
 	"mini-project/repository"
@@ -11,9 +11,9 @@ import (
 )
 
 type EmployeeService interface {
-	IsAllowedToEdit(UserID string, employeeUserID uint64) bool
-	UpdateEmployee(employee dto.EmployeeUpdateDTO, id int) entity.Employee
-	GetEmployeeById(userId uint64) entity.Employee
+	IsAllowedToEdit(UserID string, employeeUserID uint64) (bool, error)
+	UpdateEmployee(employee dto.EmployeeUpdateDTO, id int) (entity.Employee, error)
+	GetEmployeeById(userId uint64) (entity.Employee, error)
 }
 
 type employeeService struct{
@@ -26,34 +26,43 @@ func NewEmployeeService(employeeRepo repository.EmployeeRepository) EmployeeServ
 	}
 }
 
-func (s *employeeService) IsAllowedToEdit(userID string, employeeUserID uint64) bool {
-	applicant := s.employeeRepository.FindEmployeeByID(employeeUserID)
-	id := fmt.Sprintf("%v", applicant.UserID)
+func (s *employeeService) IsAllowedToEdit(userID string, employeeUserID uint64) (bool, error) {
+	employee, err := s.employeeRepository.FindEmployeeByID(employeeUserID)
+	if err != nil {
+		return false, err
+	}
+	id := fmt.Sprintf("%v", employee.UserID)
 
-	return userID == id
+	if userID != id {
+		return false, errors.New("not allowed to edit")
+	}
+	return true, nil
 }
 
-func (s *employeeService) UpdateEmployee(e dto.EmployeeUpdateDTO, id int) entity.Employee {
-	employee := s.employeeRepository.FindEmployeeByID(uint64(id))
+func (s *employeeService) UpdateEmployee(e dto.EmployeeUpdateDTO, id int) (entity.Employee, error) {
+	employee, err := s.employeeRepository.FindEmployeeByID(uint64(id))
 
 	employee.Name = e.Name
 	employee.Contact = e.Contact
 
-	err := smapping.FillStruct(&employee, smapping.MapFields(&e))
+	err = smapping.FillStruct(&employee, smapping.MapFields(&e))
 	if err != nil {
-		log.Fatalf("Failed map %v", err)
+		return employee, err
 	}
 
-	res := s.employeeRepository.SaveEmployee(employee)
-	return res
+	res, err := s.employeeRepository.SaveEmployee(employee)
+	if err != nil {
+		return res, err
+	}
+	return res, nil
 }
 
-func (s *employeeService) GetEmployeeById(userId uint64) entity.Employee {
-	res := s.employeeRepository.FindEmployeeByID(userId)
-	err := smapping.FillStruct(userId, smapping.MapFields(&userId))
+func (s *employeeService) GetEmployeeById(userId uint64) (entity.Employee, error) {
+	res, err := s.employeeRepository.FindEmployeeByID(userId)
+	err = smapping.FillStruct(userId, smapping.MapFields(&userId))
 	if err != nil {
-		log.Fatalf("Failed to Fill %v: ", err)
+		return res, err
 	}
 
-	return res
+	return res, nil
 }

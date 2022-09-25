@@ -1,19 +1,21 @@
 package service
 
 import (
+	"errors"
 	"fmt"
-	"log"
 	"mini-project/dto"
 	"mini-project/entity"
 	"mini-project/repository"
+	"os"
 
 	"github.com/mashingan/smapping"
 )
 
 type ApplicantService interface {
-	IsAllowedToEdit(userID string, applicantUserID uint64) bool
-	UpdateApplicant(applicant dto.ApplicantUpdateDTO, id int) entity.Applicant
-	GetApplicantByID(userId uint64) entity.Applicant
+	IsAllowedToEdit(userID string, applicantUserID uint64) (bool, error)
+	UpdateApplicant(applicant dto.ApplicantUpdateDTO, id int) (entity.Applicant, error)
+	GetApplicantByUserID(userId uint64) (entity.Applicant, error)
+	UploadAvatar(ID int, fileLocation string) (entity.Applicant, error)
 }
 
 type applicantService struct {
@@ -26,15 +28,24 @@ func NewApplicantService(applicantRepo repository.ApplicantRepository) Applicant
 	}
 }
 
-func (service *applicantService) IsAllowedToEdit(userID string, applicantUserID uint64) bool {
-	applicant := service.applicantRepository.FindApplicantByID(applicantUserID)
+func (service *applicantService) IsAllowedToEdit(userID string, applicantUserID uint64) (bool, error) {
+	applicant, err := service.applicantRepository.FindApplicantByUserID(applicantUserID)
+	if err != nil {
+		return false, err
+	}
 	id := fmt.Sprintf("%v", applicant.UserID)
 
-	return userID == id
+	if userID != id {
+		return false, errors.New("not allowed to edit")
+	}
+	return true, nil
 }
 
-func (service *applicantService) UpdateApplicant(a dto.ApplicantUpdateDTO, id int) entity.Applicant {
-	applicant := service.applicantRepository.FindApplicantByID(uint64(id))
+func (service *applicantService) UpdateApplicant(a dto.ApplicantUpdateDTO, id int) (entity.Applicant, error) {
+	applicant, err := service.applicantRepository.FindApplicantByUserID(uint64(id))
+	if err != nil {
+		return applicant, err
+	}
 
 	applicant.FirstName =  a.FirstName
 	applicant.LastName = a.LastName
@@ -43,20 +54,53 @@ func (service *applicantService) UpdateApplicant(a dto.ApplicantUpdateDTO, id in
 	applicant.LinkedURL = a.LinkedinURL
 	applicant.GithubURL = a.GithubURL
 
-	err := smapping.FillStruct(&applicant, smapping.MapFields(&a))
+	err = smapping.FillStruct(&applicant, smapping.MapFields(&a))
 	if err != nil {
-		log.Fatalf("Failed map %v: ", err)
+		return applicant, err
 	}
-	res := service.applicantRepository.SaveApplicant(applicant)
-	return res
+
+	res, err := service.applicantRepository.SaveApplicant(applicant)
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
 }
 
-func (s *applicantService) GetApplicantByID(userId uint64) entity.Applicant {
-	res := s.applicantRepository.FindApplicantByID(userId)
-	err := smapping.FillStruct(&userId, smapping.MapFields(&userId))
+func (s *applicantService) GetApplicantByUserID(userId uint64) (entity.Applicant, error) {
+	res, err := s.applicantRepository.FindApplicantByUserID(userId)
 	if err != nil {
-		log.Fatalf("Failet map %v: ", err)
+		return res, err
+	}
+	err = smapping.FillStruct(&userId, smapping.MapFields(&userId))
+	if err != nil {
+		return res, err
 	}
 
-	return res
+	return res, nil
+}
+
+func (s *applicantService)  UploadAvatar(ID int, fileLocation string) (entity.Applicant, error) {
+	applicant, err := s.applicantRepository.FindApplicantByUserID(uint64(ID))
+	if err != nil {
+		return applicant, err
+	}
+	fmt.Println(applicant.Avatar)
+
+	if applicant.Avatar != "" {
+		e := os.Remove(applicant.Avatar)
+		if e != nil {
+			return applicant, e
+		} 
+	}
+
+	applicant.Avatar = fileLocation
+	
+	updatedApplicant, err := s.applicantRepository.SaveApplicant(applicant)
+	if err != nil {
+		return updatedApplicant, err
+	}
+	fmt.Println(updatedApplicant.Avatar)
+
+	return updatedApplicant, nil
 }

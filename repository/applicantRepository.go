@@ -8,8 +8,8 @@ import (
 
 type ApplicantRepository interface {
 	InsertApplicant(user entity.User, applicant entity.Applicant) entity.User
-	FindApplicantByID(applicantUserID uint64) entity.Applicant
-	SaveApplicant(applicant entity.Applicant) entity.Applicant
+	FindApplicantByUserID(applicantUserID uint64) (entity.Applicant, error)
+	SaveApplicant(applicant entity.Applicant) (entity.Applicant, error)
 }
 
 type applicantConnection struct {
@@ -29,18 +29,21 @@ func (db *applicantConnection) InsertApplicant(user entity.User, applicant entit
 	return user
 }
 
-func (db *applicantConnection) FindApplicantByID(UserID uint64) entity.Applicant {
+func (db *applicantConnection) FindApplicantByUserID(UserID uint64) (entity.Applicant, error) {
 	var applicant entity.Applicant
 
 	err := db.connection.Where("user_id = ?", UserID).Find(&applicant).Error
 	if err != nil {
-		return applicant
+		return applicant, err
 	}
 
-	return applicant
+	return applicant, nil
 }
 
-func (db *applicantConnection) SaveApplicant(applicant entity.Applicant) entity.Applicant {
-	db.connection.Save(&applicant)
-	return applicant
+func (db *applicantConnection) SaveApplicant(applicant entity.Applicant) (entity.Applicant, error) {
+	err := db.connection.Save(&applicant).Error
+	if err != nil {
+		return applicant, err
+	}
+	return applicant, nil
 }

@@ -50,6 +50,7 @@ var (
 func main() {
 	defer config.CloseConnectionDatabase(db)
 	r := gin.Default()
+	r.Static("/images", "./images")
 	authRoutes := r.Group("/")
 	{
 		authRoutes.POST("login", authController.Login)
@@ -61,6 +62,7 @@ func main() {
 	{
 		authApplicantRoutes.PUT("/users/:id", applicantController.EditApplicant)
 		authApplicantRoutes.GET("/users/fetch", applicantController.FetchUserApplicant)
+		authApplicantRoutes.POST("/avatars", applicantController.UploadAvatar)
 
 		authApplicantRoutes.POST("/jobexperiences", experienceController.CreateExperience)
 		authApplicantRoutes.PUT("/jobexperiences/:id", experienceController.UpdateExperience)

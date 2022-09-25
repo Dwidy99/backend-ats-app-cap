@@ -48,9 +48,18 @@ func (c *employeeController) EditEmployee(ctx *gin.Context)  {
 	userID := fmt.Sprintf("%v", claims["user_id"])
 	id, _ := strconv.Atoi(ctx.Param("id"))
 
-	if c.employeeService.IsAllowedToEdit(userID, uint64(id)) {
-		
-		result := c.employeeService.UpdateEmployee(employeeInput, id)
+	isAllowed, err := c.employeeService.IsAllowedToEdit(userID, uint64(id))
+	if err != nil {
+		response := helpers.BuildErrorResponse("You dont have permission", "You are not the owner", helpers.EmptyObj{})
+		ctx.JSON(http.StatusForbidden, response)
+	}
+
+	if  isAllowed {
+		result, err := c.employeeService.UpdateEmployee(employeeInput, id)
+		if err != nil {
+			response := helpers.BuildErrorResponse("request failed", err.Error(), helpers.EmptyObj{})
+			ctx.JSON(http.StatusForbidden, response)
+		}
 		response := helpers.BuildResponse(true, "ok", result)
 		ctx.JSON(http.StatusOK, response)
 	} else {
@@ -61,17 +70,27 @@ func (c *employeeController) EditEmployee(ctx *gin.Context)  {
 
 func (c *employeeController) FetchUserEmployee(ctx *gin.Context) {
 	authHeader := ctx.GetHeader("Authorization")
-	token, errToken := c.jwtService.ValidateToken(authHeader)
-	if errToken != nil {
-		panic(errToken.Error())
+	token, err := c.jwtService.ValidateToken(authHeader)
+	if err != nil {
+		response := helpers.BuildErrorResponse("request failed", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusForbidden, response)
+		return
 	}
 	claims := token.Claims.(jwt.MapClaims)
 	userID, err := strconv.ParseUint(fmt.Sprintf("%v", claims["user_id"]), 10, 64)
 	if err != nil {
-		panic(errToken.Error())
+		response := helpers.BuildErrorResponse("request failed", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusForbidden, response)
+		return
 	}
 	
-	result := c.employeeService.GetEmployeeById(userID)
+	result, err := c.employeeService.GetEmployeeById(userID)
+	if err != nil {
+		response := helpers.BuildErrorResponse("request failed", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
 	response := helpers.BuildResponse(true, "ok", result)
 	ctx.JSON(http.StatusOK, response)
 }

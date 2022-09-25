@@ -8,8 +8,8 @@ import (
 
 type EmployeeRepository interface {
 	InsertEmployee(user entity.User, employee entity.Employee) (entity.User, error)
-	SaveEmployee(employee entity.Employee) entity.Employee
-	FindEmployeeByID(employeeUserID uint64) entity.Employee
+	SaveEmployee(employee entity.Employee) (entity.Employee, error)
+	FindEmployeeByID(employeeUserID uint64) (entity.Employee, error)
 	FindUserByID(userID int) (entity.User, error)
 }
 
@@ -35,20 +35,23 @@ func (db *employeeConnection) InsertEmployee(user entity.User, employee entity.E
 	return user, nil
 }
 
-func (db *employeeConnection) FindEmployeeByID(UserID uint64) entity.Employee {
+func (db *employeeConnection) FindEmployeeByID(UserID uint64) (entity.Employee, error) {
 	var employee entity.Employee
 
 	err := db.connection.Where("user_id = ?", UserID).Find(&employee).Error
 	if err != nil {
-		return employee
+		return employee, err
 	}
 
-	return employee
+	return employee, nil
 }
 
-func (db *employeeConnection) SaveEmployee(employee entity.Employee) entity.Employee {
-	db.connection.Save(&employee)
-	return employee
+func (db *employeeConnection) SaveEmployee(employee entity.Employee) (entity.Employee, error) {
+	err := db.connection.Save(&employee).Error
+	if err != nil {
+		return employee, err
+	}
+	return employee, nil
 }
 
 func (db *employeeConnection) FindUserByID(userID int) (entity.User, error) {
