@@ -16,6 +16,7 @@ type ApplicantController interface {
 	EditApplicant(ctx *gin.Context)
 	FetchUserApplicant(ctx *gin.Context)
 	UploadAvatar(ctx *gin.Context)
+	DetailApplicant(ctx *gin.Context)
 }
 
 type applicantController struct {
@@ -29,6 +30,33 @@ func NewApplicantController(applicantService service.ApplicantService, jwtServic
 		applicantService: applicantService,
 		jwtService:       jwtService,
 	}
+}
+
+func (c *applicantController) DetailApplicant(ctx *gin.Context) {
+	authHeader := ctx.GetHeader("Authorization")
+	token, err := c.jwtService.ValidateToken(authHeader)
+	if err != nil {
+		response := helpers.BuildErrorResponse("request failed", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusForbidden, response)
+		return
+	}
+	claims := token.Claims.(jwt.MapClaims)
+	userID, err := strconv.ParseUint(fmt.Sprintf("%v", claims["user_id"]), 10, 64)
+	if err != nil {
+		response := helpers.BuildErrorResponse("request failed", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusForbidden, response)
+		return
+	}
+
+	applicant, err := c.applicantService.GetDetailApplicant(userID)
+	if err != nil {
+		response := helpers.BuildErrorResponse("request failed", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusForbidden, response)
+		return
+	}
+
+	res := helpers.BuildResponse(true, "successfuly get data user applicant", applicant)
+	ctx.JSON(http.StatusOK, res)
 }
 
 func (c *applicantController) EditApplicant(ctx *gin.Context) {

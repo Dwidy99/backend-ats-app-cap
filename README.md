@@ -1433,6 +1433,55 @@ Returns all skills in the system.
   }
   ```
 
+  CV Applicant object
+
+  ```
+  }
+  "status": true,
+    "message": "successfuly get data user applicant",
+    "errors": null,
+    "data": {
+        "id": 1,
+        "user_id": 2,
+        "first_name": "Ahmad",
+        "last_name": "Messi",
+        "avatar": "images/applicants/2-liverpool.jpeg",
+        "phone_number": "0813132400",
+        "account_status": 0,
+        "last_education": "s1 Ekonomi",
+        "linkedin_url": "www.google.com",
+        "github_url": "www.vidio.com",
+        "job_experience": [
+            {
+                "company_name": "asd",
+                "role": "asd",
+                "description": "asd",
+                "date_start": "asd",
+                "date_start": "asd",
+                "status": "inactive",
+            },
+            {
+                "company_name": "asd",
+                "role": "asd",
+                "description": "asd",
+                "date_start": "asd",
+                "date_start": "asd",
+                "status": "inactive",
+            },
+        ],
+        "job_skill": [
+            {
+                "id": 1
+                "name": "PHP",
+            },
+            {
+                "id": 2
+                "name": "Golang",
+            }
+        ]
+    }
+  ```
+
 ```
 
 ```

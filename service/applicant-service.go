@@ -15,6 +15,7 @@ type ApplicantService interface {
 	IsAllowedToEdit(userID string, applicantUserID uint64) (bool, error)
 	UpdateApplicant(applicant dto.ApplicantUpdateDTO, id int) (entity.Applicant, error)
 	GetApplicantByUserID(userId uint64) (entity.Applicant, error)
+	GetDetailApplicant(userId uint64) (entity.DetailApplicant, error)
 	UploadAvatar(ID int, fileLocation string) (entity.Applicant, error)
 }
 
@@ -78,6 +79,64 @@ func (s *applicantService) GetApplicantByUserID(userId uint64) (entity.Applicant
 	}
 
 	return res, nil
+}
+
+func (s *applicantService) GetDetailApplicant(userId uint64) (entity.DetailApplicant, error) {
+	createDetailApplicant := entity.DetailApplicant{}
+
+	applicant, err := s.applicantRepository.FindApplicantByUserID(userId)
+	if err != nil {
+		return createDetailApplicant, err
+	}
+	
+	// return array
+	jobSkillApplicant, err := s.applicantRepository.GetJobSkillApplicantByApplicantID(applicant.ID)
+	if err != nil {
+		return createDetailApplicant, err
+	}
+	
+	experience, err := s.applicantRepository.GetExperienceByApplicantID(applicant.ID)
+	if err != nil {
+		return createDetailApplicant, err
+	}
+
+	createDetailApplicant.ID = applicant.ID
+	createDetailApplicant.UserID = applicant.UserID
+	createDetailApplicant.FirstName = applicant.FirstName
+	createDetailApplicant.LastName = applicant.LastName
+	createDetailApplicant.Avatar = applicant.Avatar
+	createDetailApplicant.Phone = applicant.Phone
+	createDetailApplicant.LastEducation = applicant.LastEducation
+	createDetailApplicant.LinkedURL = applicant.LinkedURL
+	createDetailApplicant.GithubURL = applicant.GithubURL
+	
+	for _, ex := range experience {
+		createDetailApplicant.JobExperience = append(createDetailApplicant.JobExperience, entity.Jobexperience{
+			ID: ex.ID,
+			ApplicantID: ex.ApplicantID,
+			CompanyName: ex.CompanyName,
+			Description: ex.Description,
+			Status: ex.Status,
+			Role: ex.Role,
+			DateStart: ex.DateStart,
+			DateEnd: ex.DateEnd,
+		})
+	}
+
+	for _, jobSkillApp := range jobSkillApplicant {
+		skill, err := s.applicantRepository.GetJobSkillByJobSkillApplicantID(jobSkillApp.SkillID)
+		if err != nil {
+			return createDetailApplicant, err
+		}
+		for _, s := range skill {
+			createDetailApplicant.JobSkill = append(createDetailApplicant.JobSkill, entity.Jobskill{
+				Name: s.Name,
+				ID: s.ID,
+			})
+		}
+	}
+
+	return createDetailApplicant, nil
 }
 
 func (s *applicantService)  UploadAvatar(ID int, fileLocation string) (entity.Applicant, error) {

@@ -10,6 +10,9 @@ type ApplicantRepository interface {
 	InsertApplicant(user entity.User, applicant entity.Applicant) entity.User
 	FindApplicantByUserID(applicantUserID uint64) (entity.Applicant, error)
 	SaveApplicant(applicant entity.Applicant) (entity.Applicant, error)
+	GetExperienceByApplicantID(applicantID uint64) ([]entity.Jobexperience, error)
+	GetJobSkillApplicantByApplicantID(applicantID uint64) ([]entity.Jobskillapplicant, error)
+	GetJobSkillByJobSkillApplicantID(skillID uint64) ([]entity.Jobskill, error)
 }
 
 type applicantConnection struct {
@@ -39,6 +42,39 @@ func (db *applicantConnection) FindApplicantByUserID(UserID uint64) (entity.Appl
 	}
 
 	return applicant, nil
+}
+
+func (db *applicantConnection) GetExperienceByApplicantID(applicantID uint64) ([]entity.Jobexperience, error) {
+	var experience []entity.Jobexperience
+
+	err := db.connection.Where("applicant_id = ?", applicantID).Find(&experience).Error
+	if err != nil {
+		return experience, err
+	}
+
+	return experience, nil
+}
+
+func (db *applicantConnection) GetJobSkillApplicantByApplicantID(applicantID uint64) ([]entity.Jobskillapplicant, error) {
+	var jobskillapplicant []entity.Jobskillapplicant
+
+	err := db.connection.Where("applicant_id = ?", applicantID).Find(&jobskillapplicant).Error
+	if err != nil {
+		return jobskillapplicant, err
+	}
+
+	return jobskillapplicant, nil
+}
+
+func (db *applicantConnection) GetJobSkillByJobSkillApplicantID(skillID uint64) ([]entity.Jobskill, error) {
+	var jobskillapplicant []entity.Jobskill
+
+	err := db.connection.Where("id = ?", skillID).Find(&jobskillapplicant).Error
+	if err != nil {
+		return jobskillapplicant, err
+	}
+
+	return jobskillapplicant, nil
 }
 
 func (db *applicantConnection) SaveApplicant(applicant entity.Applicant) (entity.Applicant, error) {
