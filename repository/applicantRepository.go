@@ -21,6 +21,7 @@ func NewApplicantRepository(db *gorm.DB) ApplicantRepository {
 		connection: db,
 	}
 }
+
 func (db *applicantConnection) InsertApplicant(user entity.User, applicant entity.Applicant) entity.User {
 	user.Password = HashAndSalt([]byte(user.Password))
 	db.connection.Save(&user)

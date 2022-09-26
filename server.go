@@ -7,6 +7,7 @@ import (
 	"mini-project/repository"
 	"mini-project/service"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 )
@@ -51,6 +52,7 @@ func main() {
 	defer config.CloseConnectionDatabase(db)
 	r := gin.Default()
 	r.Static("/images", "./images")
+	r.Use(cors.Default())
 	authRoutes := r.Group("/")
 	{
 		authRoutes.POST("login", authController.Login)
