@@ -3,20 +3,19 @@ package controller
 import (
 	"errors"
 	"fmt"
+	"net/http"
+	"strconv"
+
 	"github.com/PutraFajarF/backend-ats-app-cap/dto"
 	"github.com/PutraFajarF/backend-ats-app-cap/entity"
 	"github.com/PutraFajarF/backend-ats-app-cap/helpers"
 	"github.com/PutraFajarF/backend-ats-app-cap/service"
-	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 )
 
 type JobsController interface {
-	GetAllJobsApplicant(ctx *gin.Context)
-	ApplicantGetJobsByID(ctx *gin.Context)
 	GetAllJobs(ctx *gin.Context)
 	GetJobsByID(ctx *gin.Context)
 	CreatedJobs(ctx *gin.Context)
@@ -34,120 +33,6 @@ func NewJobsController(jobServ service.JobsService, jwtService service.JWTServic
 		jobsService: jobServ,
 		jwtService:  jwtService,
 	}
-}
-
-func (c *jobsController) GetAllJobsApplicant(ctx *gin.Context) {
-	authHeader := ctx.GetHeader("Authorization")
-	token, errToken := c.jwtService.ValidateToken(authHeader)
-	if errToken != nil {
-		messError := fmt.Sprintf("Failed to get all jobs data, token user wrong or empty")
-		response := helpers.BuildErrorResponse("Failed to process request", messError, helpers.EmptyObj{})
-		ctx.JSON(http.StatusBadRequest, response)
-		return
-	}
-	claims := token.Claims.(jwt.MapClaims)
-	userID, err := strconv.Atoi(fmt.Sprintf("%v", claims["user_id"]))
-	if err != nil {
-		messError := fmt.Sprintf("Failed to get all jobs data, token user wrong or empty")
-		response := helpers.BuildErrorResponse("Failed to process request", messError, helpers.EmptyObj{})
-		ctx.JSON(http.StatusBadRequest, response)
-		return
-	}
-
-	if userID == 0 {
-		errorMessage := gin.H{"error": errors.New("forbidden")}
-		messError := fmt.Sprintf("Failed to get all jobs data, user with user id %v is empty", userID)
-		response := helpers.BuildErrorResponse("Failed to process request", messError, errorMessage)
-		ctx.JSON(http.StatusForbidden, response)
-		return
-	}
-
-	user, err := c.jobsService.GetUserByID(userID)
-	if err != nil {
-		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
-		ctx.JSON(http.StatusBadRequest, response)
-		return
-	}
-	if user.Role != "user" {
-		messError := fmt.Sprintf("failed to get all jobs, role is not user/applicant")
-		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
-		ctx.JSON(http.StatusBadRequest, response)
-		return
-	}
-
-	jobs, err := c.jobsService.AllJobs()
-	if err != nil {
-		response := helpers.BuildErrorResponse("Failed to process request", err.Error(), helpers.EmptyObj{})
-		ctx.JSON(http.StatusForbidden, response)
-		return
-	}
-	response := helpers.BuildResponse(true, "Success to get all jobs data", jobs)
-	ctx.JSON(http.StatusOK, response)
-}
-
-func (c *jobsController) ApplicantGetJobsByID(ctx *gin.Context) {
-	var jobs entity.Jobs
-
-	id, err := strconv.ParseUint(ctx.Param("id"), 0, 0)
-	if err != nil {
-		errorMessage := gin.H{"error": err}
-		response := helpers.BuildErrorResponse("failed to get id", "No param id were found", errorMessage)
-		ctx.JSON(http.StatusBadRequest, response)
-		return
-	}
-
-	jobs.ID = id
-
-	authHeader := ctx.GetHeader("Authorization")
-	token, errToken := c.jwtService.ValidateToken(authHeader)
-	if errToken != nil {
-		messError := fmt.Sprintf("failed to access jobs by id, token user applicant wrong or empty")
-		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
-		ctx.JSON(http.StatusBadRequest, response)
-		return
-	}
-
-	claims := token.Claims.(jwt.MapClaims)
-	userID, err := strconv.Atoi(fmt.Sprintf("%v", claims["user_id"]))
-	if err != nil {
-		messError := fmt.Sprintf("failed to get jobs by id, user applicant with user id %v is empty", userID)
-		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
-		ctx.JSON(http.StatusBadRequest, response)
-		return
-	}
-
-	if userID == 0 {
-		errorMessage := gin.H{"error": errors.New("forbidden")}
-		messError := fmt.Sprintf("failed to get jobs by id, user applicant with user id %v is empty", userID)
-		response := helpers.BuildErrorResponse("failed to process request", messError, errorMessage)
-		ctx.JSON(http.StatusForbidden, response)
-		return
-	}
-
-	user, err := c.jobsService.GetUserByID(userID)
-	if err != nil {
-		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
-		ctx.JSON(http.StatusBadRequest, response)
-		return
-	}
-	if user.Role != "user" {
-		messError := fmt.Sprintf("failed to access all jobs data, role is not user/applicant")
-		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
-		ctx.JSON(http.StatusBadRequest, response)
-		return
-	}
-
-	job, err := c.jobsService.GetJobByID(int(jobs.ID))
-	if err != nil {
-		errorMessage := gin.H{"error": err.Error()}
-		messError := fmt.Sprintf("failed to get jobs by id")
-		response := helpers.BuildErrorResponse("failed to process request", messError, errorMessage)
-		ctx.JSON(http.StatusForbidden, response)
-		return
-	}
-
-	response := helpers.BuildResponse(true, "success to get jobs data by id", job)
-	ctx.JSON(http.StatusOK, response)
 }
 
 func (c *jobsController) GetAllJobs(ctx *gin.Context) {

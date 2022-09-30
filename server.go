@@ -41,6 +41,7 @@ var (
 	experienceController controller.ExperienceController = controller.NewExperienceController(experienceService, jwtService)
 	skillController      controller.SkillController      = controller.NewSkillController(skillService, jwtService)
 	jobsController       controller.JobsController       = controller.NewJobsController(jobsService, jwtService)
+	jobsAppController    controller.JobsAppController    = controller.NewJobsAppController(jobsService)
 
 	jobAppliedController controller.JobAppliedController = controller.NewJobAppliedController(jobAppliedService, jwtService)
 
@@ -56,8 +57,8 @@ func main() {
 	{
 		authRoutes.POST("login", authController.Login)
 		authRoutes.POST("applicants/register", authController.RegisterApplicants)
-		authRoutes.GET("/jobs", jobsController.GetAllJobsApplicant)
-		authRoutes.GET("/jobs/:id", jobsController.ApplicantGetJobsByID)
+		authRoutes.GET("/jobs", jobsAppController.GetAllJobsApplicant)
+		authRoutes.GET("/jobs/:id", jobsAppController.ApplicantGetJobsByID)
 	}
 
 	// Applicant Routes
