@@ -3,10 +3,11 @@ package controller
 import (
 	"errors"
 	"fmt"
-	"github.com/PutraFajarF/backend-ats-app-cap/helpers"
-	"github.com/PutraFajarF/backend-ats-app-cap/service"
 	"net/http"
 	"strconv"
+
+	"github.com/PutraFajarF/backend-ats-app-cap/helpers"
+	"github.com/PutraFajarF/backend-ats-app-cap/service"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
@@ -53,6 +54,11 @@ func (c *jobAppliedController) JobsAppliedByApplicantID(ctx *gin.Context) {
 	}
 
 	applicant, err := c.jobAppliedService.GetApplicantByID(userID)
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusForbidden, response)
+		return
+	}
 
 	applied, err := c.jobAppliedService.JobAppliedByApplicantID(int(applicant.ID))
 	if err != nil {

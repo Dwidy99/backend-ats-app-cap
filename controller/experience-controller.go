@@ -3,11 +3,12 @@ package controller
 import (
 	"errors"
 	"fmt"
+	"net/http"
+	"strconv"
+
 	"github.com/PutraFajarF/backend-ats-app-cap/dto"
 	"github.com/PutraFajarF/backend-ats-app-cap/helpers"
 	"github.com/PutraFajarF/backend-ats-app-cap/service"
-	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
@@ -23,13 +24,13 @@ type ExperienceController interface {
 
 type experienceController struct {
 	experienceService service.ExperienceService
-	jwtService service.JWTService
+	jwtService        service.JWTService
 }
 
 func NewExperienceController(expService service.ExperienceService, jwtService service.JWTService) ExperienceController {
 	return &experienceController{
 		experienceService: expService,
-		jwtService: jwtService,
+		jwtService:        jwtService,
 	}
 }
 
@@ -59,8 +60,8 @@ func (c *experienceController) CreateExperience(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
-	
-	user, err := c.experienceService.GetUserByID(userID)
+
+	user, _ := c.experienceService.GetUserByID(userID)
 	if user.Role != "user" {
 		messError := fmt.Sprintf("failed to access create job experience, role is unknow")
 		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
@@ -98,7 +99,7 @@ func (c *experienceController) UpdateExperience(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
-	
+
 	var inputData dto.CreateExperienceDTO
 	err = ctx.ShouldBind(&inputData)
 	if err != nil {
@@ -125,7 +126,7 @@ func (c *experienceController) UpdateExperience(ctx *gin.Context) {
 		return
 	}
 
-	// ambil data di tabel experience berdasarkan id url 
+	// ambil data di tabel experience berdasarkan id url
 	experienceId, err := c.experienceService.GetExperienceByID(inputID.ID)
 	if err != nil {
 		response := helpers.BuildErrorResponse("failed to process request", "failed to update job experience, id not found", helpers.EmptyObj{})
@@ -150,7 +151,7 @@ func (c *experienceController) UpdateExperience(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
-	
+
 	updateExperience, err := c.experienceService.UpdateExperience(inputID.ID, inputData)
 	if err != nil {
 		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
@@ -160,7 +161,6 @@ func (c *experienceController) UpdateExperience(ctx *gin.Context) {
 
 	response := helpers.BuildResponse(true, "success to update job experience", updateExperience)
 	ctx.JSON(http.StatusOK, response)
-	return
 }
 
 func (c *experienceController) DeleteExperience(ctx *gin.Context) {
@@ -199,7 +199,7 @@ func (c *experienceController) DeleteExperience(ctx *gin.Context) {
 		return
 	}
 
-	// ambil data di tabel experience berdasarkan id url 
+	// ambil data di tabel experience berdasarkan id url
 	experienceId, err := c.experienceService.GetExperienceByID(inputID.ID)
 	if err != nil {
 		response := helpers.BuildErrorResponse("failed to process request", "failed to update job experience, id not found", helpers.EmptyObj{})
@@ -311,7 +311,7 @@ func (c *experienceController) GetExperienceByID(ctx *gin.Context) {
 		return
 	}
 
-	// ambil data di tabel experience berdasarkan id url 
+	// ambil data di tabel experience berdasarkan id url
 	experienceId, err := c.experienceService.GetExperienceByID(input.ID)
 	if err != nil {
 		response := helpers.BuildErrorResponse("failed to process request", "failed to update job experience, id not found", helpers.EmptyObj{})
@@ -336,7 +336,7 @@ func (c *experienceController) GetExperienceByID(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
-	
+
 	experience, err := c.experienceService.GetExperienceByID(input.ID)
 	if err != nil {
 		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})

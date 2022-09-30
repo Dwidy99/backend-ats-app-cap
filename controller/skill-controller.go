@@ -3,11 +3,12 @@ package controller
 import (
 	"errors"
 	"fmt"
+	"net/http"
+	"strconv"
+
 	"github.com/PutraFajarF/backend-ats-app-cap/dto"
 	"github.com/PutraFajarF/backend-ats-app-cap/helpers"
 	"github.com/PutraFajarF/backend-ats-app-cap/service"
-	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
@@ -58,6 +59,11 @@ func (c *skillController) GetSkills(ctx *gin.Context) {
 	}
 
 	applicant, err := c.serviceSkill.GetApplicantByID(userID)
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusForbidden, response)
+		return
+	}
 
 	skills, err := c.serviceSkill.GetSkills(int(applicant.ID))
 	if err != nil {
@@ -160,7 +166,7 @@ func (c *skillController) CreateSkill(ctx *gin.Context) {
 		return
 	}
 
-	user, err := c.serviceSkill.GetUserByID(userID)
+	user, _ := c.serviceSkill.GetUserByID(userID)
 	if user.Role != "user" {
 		response := helpers.BuildErrorResponse("failed to process request", "role is not user", helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
