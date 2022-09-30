@@ -1,11 +1,11 @@
 package main
 
 import (
-	"mini-project/config"
-	"mini-project/controller"
-	"mini-project/middleware"
-	"mini-project/repository"
-	"mini-project/service"
+	"github.com/PutraFajarF/backend-ats-app-cap/config"
+	"github.com/PutraFajarF/backend-ats-app-cap/controller"
+	"github.com/PutraFajarF/backend-ats-app-cap/middleware"
+	"github.com/PutraFajarF/backend-ats-app-cap/repository"
+	"github.com/PutraFajarF/backend-ats-app-cap/service"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -22,7 +22,7 @@ var (
 	skillrepository          repository.SkillRepository          = repository.NewSkillRepository(db)
 	jobsRepository           repository.JobsRepository           = repository.NewJobsRepository(db)
 	jobApplicationRepository repository.JobApplicationRepository = repository.NewjobApplication(db)
-	jobAppliedRepository repository.JobsAppliedRepository = repository.NewJobAppliedConnection(db)
+	jobAppliedRepository     repository.JobsAppliedRepository    = repository.NewJobAppliedConnection(db)
 
 	jwtService service.JWTService = service.NewJWTService()
 
@@ -33,7 +33,7 @@ var (
 	skillService      service.SkillService          = service.NewSkillService(skillrepository)
 	jobsService       service.JobsService           = service.NewJobsService(jobsRepository)
 	jobApplication    service.JobApplicationService = service.NewJobApplicationService(jobApplicationRepository)
-	jobAppliedService service.JobAppliedService = service.NewJobAppliedService(jobAppliedRepository)
+	jobAppliedService service.JobAppliedService     = service.NewJobAppliedService(jobAppliedRepository)
 
 	authController       controller.AuthController       = controller.NewAuthController(authService, jwtService)
 	applicantController  controller.ApplicantController  = controller.NewApplicantController(applicantService, jwtService)
@@ -45,7 +45,6 @@ var (
 	jobAppliedController controller.JobAppliedController = controller.NewJobAppliedController(jobAppliedService, jwtService)
 
 	jobApplicantion controller.JobApplicationController = controller.NewJobApplicationController(jobApplication, jwtService)
-
 )
 
 func main() {

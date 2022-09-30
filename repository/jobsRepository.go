@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"mini-project/entity"
+	"github.com/PutraFajarF/backend-ats-app-cap/entity"
 
 	"github.com/jinzhu/gorm"
 )

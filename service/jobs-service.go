@@ -3,10 +3,10 @@ package service
 import (
 	"errors"
 	"fmt"
+	"github.com/PutraFajarF/backend-ats-app-cap/dto"
+	"github.com/PutraFajarF/backend-ats-app-cap/entity"
+	"github.com/PutraFajarF/backend-ats-app-cap/repository"
 	"log"
-	"mini-project/dto"
-	"mini-project/entity"
-	"mini-project/repository"
 
 	"github.com/mashingan/smapping"
 )

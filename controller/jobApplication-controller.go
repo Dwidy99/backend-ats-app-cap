@@ -2,9 +2,9 @@ package controller
 
 import (
 	"fmt"
-	"mini-project/dto"
-	"mini-project/helpers"
-	"mini-project/service"
+	"github.com/PutraFajarF/backend-ats-app-cap/dto"
+	"github.com/PutraFajarF/backend-ats-app-cap/helpers"
+	"github.com/PutraFajarF/backend-ats-app-cap/service"
 	"net/http"
 	"strconv"
 
@@ -18,13 +18,13 @@ type JobApplicationController interface {
 
 type jobApplicationController struct {
 	serviceJobApplication service.JobApplicationService
-	JWTService service.JWTService
+	JWTService            service.JWTService
 }
 
 func NewJobApplicationController(serviceJobApplication service.JobApplicationService, jwtService service.JWTService) JobApplicationController {
 	return &jobApplicationController{
 		serviceJobApplication: serviceJobApplication,
-		JWTService: jwtService,
+		JWTService:            jwtService,
 	}
 }
 

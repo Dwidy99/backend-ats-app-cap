@@ -3,9 +3,9 @@ package service
 import (
 	"errors"
 	"fmt"
-	"mini-project/dto"
-	"mini-project/entity"
-	"mini-project/repository"
+	"github.com/PutraFajarF/backend-ats-app-cap/dto"
+	"github.com/PutraFajarF/backend-ats-app-cap/entity"
+	"github.com/PutraFajarF/backend-ats-app-cap/repository"
 	"os"
 
 	"github.com/mashingan/smapping"
@@ -48,7 +48,7 @@ func (service *applicantService) UpdateApplicant(a dto.ApplicantUpdateDTO, id in
 		return applicant, err
 	}
 
-	applicant.FirstName =  a.FirstName
+	applicant.FirstName = a.FirstName
 	applicant.LastName = a.LastName
 	applicant.Phone = a.Phone
 	applicant.LastEducation = a.LastEducation
@@ -88,13 +88,13 @@ func (s *applicantService) GetDetailApplicant(userId uint64) (entity.DetailAppli
 	if err != nil {
 		return createDetailApplicant, err
 	}
-	
+
 	// return array
 	jobSkillApplicant, err := s.applicantRepository.GetJobSkillApplicantByApplicantID(applicant.ID)
 	if err != nil {
 		return createDetailApplicant, err
 	}
-	
+
 	experience, err := s.applicantRepository.GetExperienceByApplicantID(applicant.ID)
 	if err != nil {
 		return createDetailApplicant, err
@@ -109,17 +109,17 @@ func (s *applicantService) GetDetailApplicant(userId uint64) (entity.DetailAppli
 	createDetailApplicant.LastEducation = applicant.LastEducation
 	createDetailApplicant.LinkedURL = applicant.LinkedURL
 	createDetailApplicant.GithubURL = applicant.GithubURL
-	
+
 	for _, ex := range experience {
 		createDetailApplicant.JobExperience = append(createDetailApplicant.JobExperience, entity.Jobexperience{
-			ID: ex.ID,
+			ID:          ex.ID,
 			ApplicantID: ex.ApplicantID,
 			CompanyName: ex.CompanyName,
 			Description: ex.Description,
-			Status: ex.Status,
-			Role: ex.Role,
-			DateStart: ex.DateStart,
-			DateEnd: ex.DateEnd,
+			Status:      ex.Status,
+			Role:        ex.Role,
+			DateStart:   ex.DateStart,
+			DateEnd:     ex.DateEnd,
 		})
 	}
 
@@ -131,7 +131,7 @@ func (s *applicantService) GetDetailApplicant(userId uint64) (entity.DetailAppli
 		for _, s := range skill {
 			createDetailApplicant.JobSkill = append(createDetailApplicant.JobSkill, entity.Jobskill{
 				Name: s.Name,
-				ID: s.ID,
+				ID:   s.ID,
 			})
 		}
 	}
@@ -139,7 +139,7 @@ func (s *applicantService) GetDetailApplicant(userId uint64) (entity.DetailAppli
 	return createDetailApplicant, nil
 }
 
-func (s *applicantService)  UploadAvatar(ID int, fileLocation string) (entity.Applicant, error) {
+func (s *applicantService) UploadAvatar(ID int, fileLocation string) (entity.Applicant, error) {
 	applicant, err := s.applicantRepository.FindApplicantByUserID(uint64(ID))
 	if err != nil {
 		return applicant, err
@@ -150,11 +150,11 @@ func (s *applicantService)  UploadAvatar(ID int, fileLocation string) (entity.Ap
 		e := os.Remove(applicant.Avatar)
 		if e != nil {
 			return applicant, e
-		} 
+		}
 	}
 
 	applicant.Avatar = fileLocation
-	
+
 	updatedApplicant, err := s.applicantRepository.SaveApplicant(applicant)
 	if err != nil {
 		return updatedApplicant, err

@@ -1,18 +1,18 @@
-module mini-project
+module github.com/PutraFajarF/backend-ats-app-cap
 
+// +heroku goVersion go1.18
 go 1.18
 
 require (
+	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/jinzhu/gorm v1.9.16
-	github.com/joho/godotenv v1.4.0
 	github.com/mashingan/smapping v0.1.18
 	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90
 )
 
 require (
-	github.com/gin-contrib/cors v1.4.0 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect

@@ -1,9 +1,9 @@
 package middleware
 
 import (
+	"github.com/PutraFajarF/backend-ats-app-cap/helpers"
+	"github.com/PutraFajarF/backend-ats-app-cap/service"
 	"log"
-	"mini-project/helpers"
-	"mini-project/service"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

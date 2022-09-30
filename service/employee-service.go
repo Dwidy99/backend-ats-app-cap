@@ -3,9 +3,9 @@ package service
 import (
 	"errors"
 	"fmt"
-	"mini-project/dto"
-	"mini-project/entity"
-	"mini-project/repository"
+	"github.com/PutraFajarF/backend-ats-app-cap/dto"
+	"github.com/PutraFajarF/backend-ats-app-cap/entity"
+	"github.com/PutraFajarF/backend-ats-app-cap/repository"
 
 	"github.com/mashingan/smapping"
 )
@@ -16,7 +16,7 @@ type EmployeeService interface {
 	GetEmployeeById(userId uint64) (entity.Employee, error)
 }
 
-type employeeService struct{
+type employeeService struct {
 	employeeRepository repository.EmployeeRepository
 }
 

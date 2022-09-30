@@ -2,11 +2,12 @@ package controller
 
 import (
 	"fmt"
-	"mini-project/dto"
-	"mini-project/helpers"
-	"mini-project/service"
 	"net/http"
 	"strconv"
+
+	"github.com/PutraFajarF/backend-ats-app-cap/dto"
+	"github.com/PutraFajarF/backend-ats-app-cap/helpers"
+	"github.com/PutraFajarF/backend-ats-app-cap/service"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
@@ -19,17 +20,17 @@ type EmployeeController interface {
 
 type employeeController struct {
 	employeeService service.EmployeeService
-	jwtService service.JWTService
+	jwtService      service.JWTService
 }
 
 func NewEmployeeController(empService service.EmployeeService, jwtService service.JWTService) EmployeeController {
 	return &employeeController{
 		employeeService: empService,
-		jwtService: jwtService,
+		jwtService:      jwtService,
 	}
 }
 
-func (c *employeeController) EditEmployee(ctx *gin.Context)  {
+func (c *employeeController) EditEmployee(ctx *gin.Context) {
 	var employeeInput dto.EmployeeUpdateDTO
 
 	err := ctx.ShouldBindJSON(&employeeInput)
@@ -54,7 +55,7 @@ func (c *employeeController) EditEmployee(ctx *gin.Context)  {
 		ctx.JSON(http.StatusForbidden, response)
 	}
 
-	if  isAllowed {
+	if isAllowed {
 		result, err := c.employeeService.UpdateEmployee(employeeInput, id)
 		if err != nil {
 			response := helpers.BuildErrorResponse("request failed", err.Error(), helpers.EmptyObj{})
@@ -83,7 +84,7 @@ func (c *employeeController) FetchUserEmployee(ctx *gin.Context) {
 		ctx.JSON(http.StatusForbidden, response)
 		return
 	}
-	
+
 	result, err := c.employeeService.GetEmployeeById(userID)
 	if err != nil {
 		response := helpers.BuildErrorResponse("request failed", err.Error(), helpers.EmptyObj{})

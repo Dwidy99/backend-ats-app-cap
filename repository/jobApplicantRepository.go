@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"mini-project/entity"
+	"github.com/PutraFajarF/backend-ats-app-cap/entity"
 
 	"github.com/jinzhu/gorm"
 )
@@ -16,7 +16,7 @@ type jobApplicationConnection struct {
 	connection *gorm.DB
 }
 
-func NewjobApplication(db *gorm.DB) JobApplicationRepository{
+func NewjobApplication(db *gorm.DB) JobApplicationRepository {
 	return &jobApplicationConnection{
 		connection: db,
 	}

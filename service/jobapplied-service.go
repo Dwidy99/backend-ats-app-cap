@@ -2,8 +2,8 @@ package service
 
 import (
 	"errors"
-	"mini-project/entity"
-	"mini-project/repository"
+	"github.com/PutraFajarF/backend-ats-app-cap/entity"
+	"github.com/PutraFajarF/backend-ats-app-cap/repository"
 )
 
 type JobAppliedService interface {
@@ -35,7 +35,7 @@ func (s *jobAppliedService) GetApplicantByID(userID int) (entity.Applicant, erro
 	if err != nil {
 		return applicant, err
 	}
-	
+
 	if applicant.UserID == 0 {
 		return applicant, errors.New("no user logged in")
 	}

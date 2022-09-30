@@ -3,9 +3,9 @@ package controller
 import (
 	"errors"
 	"fmt"
-	"mini-project/dto"
-	"mini-project/helpers"
-	"mini-project/service"
+	"github.com/PutraFajarF/backend-ats-app-cap/dto"
+	"github.com/PutraFajarF/backend-ats-app-cap/helpers"
+	"github.com/PutraFajarF/backend-ats-app-cap/service"
 	"net/http"
 	"strconv"
 

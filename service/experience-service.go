@@ -2,10 +2,10 @@ package service
 
 import (
 	"errors"
+	"github.com/PutraFajarF/backend-ats-app-cap/dto"
+	"github.com/PutraFajarF/backend-ats-app-cap/entity"
+	"github.com/PutraFajarF/backend-ats-app-cap/repository"
 	"log"
-	"mini-project/dto"
-	"mini-project/entity"
-	"mini-project/repository"
 
 	"github.com/mashingan/smapping"
 )
@@ -36,7 +36,7 @@ func (s *experienceService) GetApplicantByID(userID int) (entity.Applicant, erro
 	if err != nil {
 		return applicant, err
 	}
-	
+
 	if applicant.UserID == 0 {
 		return applicant, errors.New("no user logged in")
 	}
@@ -49,11 +49,11 @@ func (s *experienceService) GetUserByID(userID int) (entity.User, error) {
 	if err != nil {
 		return user, err
 	}
-	
+
 	if user.ID == 0 {
 		return user, errors.New("no user logged in")
 	}
-	
+
 	return user, nil
 }
 
@@ -128,7 +128,7 @@ func (s *experienceService) UpdateExperience(inputID int, inputData dto.CreateEx
 	if err != nil {
 		return experience, err
 	}
-	
+
 	if experience.ID != uint64(inputID) {
 		return experience, errors.New("not a user applicant owner experience")
 	}

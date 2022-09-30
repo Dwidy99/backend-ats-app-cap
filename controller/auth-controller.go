@@ -2,12 +2,13 @@ package controller
 
 import (
 	"fmt"
-	"mini-project/dto"
-	"mini-project/entity"
-	"mini-project/helpers"
-	"mini-project/service"
 	"net/http"
 	"strconv"
+
+	"github.com/PutraFajarF/backend-ats-app-cap/dto"
+	"github.com/PutraFajarF/backend-ats-app-cap/entity"
+	"github.com/PutraFajarF/backend-ats-app-cap/helpers"
+	"github.com/PutraFajarF/backend-ats-app-cap/service"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
@@ -67,7 +68,7 @@ func (c *authController) RegisterEmployees(ctx *gin.Context) {
 			ctx.JSON(http.StatusForbidden, response)
 			return
 		}
-		
+
 		user, err := c.authService.GetUserByID(userID)
 		if err != nil {
 			response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})

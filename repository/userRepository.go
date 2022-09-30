@@ -1,8 +1,8 @@
 package repository
 
 import (
+	"github.com/PutraFajarF/backend-ats-app-cap/entity"
 	"log"
-	"mini-project/entity"
 
 	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"

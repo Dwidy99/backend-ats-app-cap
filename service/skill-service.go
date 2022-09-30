@@ -2,10 +2,10 @@ package service
 
 import (
 	"errors"
+	"github.com/PutraFajarF/backend-ats-app-cap/dto"
+	"github.com/PutraFajarF/backend-ats-app-cap/entity"
+	"github.com/PutraFajarF/backend-ats-app-cap/repository"
 	"log"
-	"mini-project/dto"
-	"mini-project/entity"
-	"mini-project/repository"
 
 	"github.com/mashingan/smapping"
 )
@@ -39,13 +39,13 @@ func (s *skillService) GetSkills(applicantID int) ([]entity.JobSkillsDetailForma
 	if err != nil {
 		return skills, err
 	}
-	
+
 	for _, getSkill := range getSkills {
 		skillApplicant, _ := s.GetSkillByID(int(getSkill.SkillID))
 		skills = append(skills, entity.JobSkillsDetailFormatter{
 			ApplicantID: getSkill.ApplicantID,
-			SkillID: getSkill.SkillID,
-			Name: skillApplicant.Name,
+			SkillID:     getSkill.SkillID,
+			Name:        skillApplicant.Name,
 		})
 	}
 
@@ -60,12 +60,11 @@ func (s *skillService) GetSkillDetailByID(inputID int, applicantID int) (entity.
 		return jobSkills, err
 	}
 
-	
 	jobSkill, err := s.skillRepository.GetSkillByID(inputID)
 	if err != nil {
 		return jobSkill, err
 	}
-	
+
 	for _, jobSkillApp := range jobSkillApplicant {
 		if int(jobSkillApp.ApplicantID) != applicantID {
 			return jobSkill, errors.New("not an owner skill job")
@@ -80,7 +79,7 @@ func (s *skillService) CreateSkill(skillInput dto.Jobskill, applicantID int) (en
 	createJobSkillApplicant := entity.Jobskillapplicant{}
 
 	createSkill.Name = skillInput.Name
-	
+
 	err := smapping.FillStruct(&createSkill, smapping.MapFields(&skillInput))
 	if err != nil {
 		log.Fatalf("Failed map %v", err)
@@ -89,7 +88,7 @@ func (s *skillService) CreateSkill(skillInput dto.Jobskill, applicantID int) (en
 	if err != nil {
 		return res, err
 	}
-	
+
 	return res, nil
 }
 
@@ -98,11 +97,11 @@ func (s *skillService) GetUserByID(userID int) (entity.User, error) {
 	if err != nil {
 		return user, err
 	}
-	
+
 	if user.ID == 0 {
 		return user, errors.New("no user logged in")
 	}
-	
+
 	return user, nil
 }
 
@@ -111,7 +110,7 @@ func (s *skillService) GetApplicantByID(userID int) (entity.Applicant, error) {
 	if err != nil {
 		return applicant, err
 	}
-	
+
 	if applicant.UserID == 0 {
 		return applicant, errors.New("no user logged in")
 	}
@@ -124,7 +123,7 @@ func (s *skillService) GetEmployeeByID(userID int) (entity.Employee, error) {
 	if err != nil {
 		return employee, err
 	}
-	
+
 	if employee.UserID == 0 {
 		return employee, errors.New("no user logged in")
 	}

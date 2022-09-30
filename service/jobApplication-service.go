@@ -2,9 +2,9 @@ package service
 
 import (
 	"errors"
-	"mini-project/dto"
-	"mini-project/entity"
-	"mini-project/repository"
+	"github.com/PutraFajarF/backend-ats-app-cap/dto"
+	"github.com/PutraFajarF/backend-ats-app-cap/entity"
+	"github.com/PutraFajarF/backend-ats-app-cap/repository"
 
 	"github.com/mashingan/smapping"
 )
@@ -49,11 +49,11 @@ func (s *jobApplicationService) GetUserByID(userID int) (entity.User, error) {
 	if err != nil {
 		return user, err
 	}
-	
+
 	if user.ID == 0 {
 		return user, errors.New("no user logged in")
 	}
-	
+
 	return user, nil
 }
 
@@ -62,7 +62,7 @@ func (s *jobApplicationService) GetApplicantByID(userID int) (entity.Applicant, 
 	if err != nil {
 		return applicant, err
 	}
-	
+
 	if applicant.UserID == 0 {
 		return applicant, errors.New("no user logged in")
 	}

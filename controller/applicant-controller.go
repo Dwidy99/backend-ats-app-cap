@@ -2,11 +2,12 @@ package controller
 
 import (
 	"fmt"
-	"mini-project/dto"
-	"mini-project/helpers"
-	"mini-project/service"
 	"net/http"
 	"strconv"
+
+	"github.com/PutraFajarF/backend-ats-app-cap/dto"
+	"github.com/PutraFajarF/backend-ats-app-cap/helpers"
+	"github.com/PutraFajarF/backend-ats-app-cap/service"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"

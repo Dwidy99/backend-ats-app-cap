@@ -1,10 +1,10 @@
 package service
 
 import (
+	"github.com/PutraFajarF/backend-ats-app-cap/dto"
+	"github.com/PutraFajarF/backend-ats-app-cap/entity"
+	"github.com/PutraFajarF/backend-ats-app-cap/repository"
 	"log"
-	"mini-project/dto"
-	"mini-project/entity"
-	"mini-project/repository"
 
 	"github.com/mashingan/smapping"
 	"golang.org/x/crypto/bcrypt"
@@ -19,16 +19,16 @@ type AuthService interface {
 }
 
 type authService struct {
-	userRepository repository.UserRepository
+	userRepository      repository.UserRepository
 	applicantRepository repository.ApplicantRepository
-	employeeRepository repository.EmployeeRepository
+	employeeRepository  repository.EmployeeRepository
 }
 
 func NewAuthService(userRep repository.UserRepository, applicantRep repository.ApplicantRepository, employeeRep repository.EmployeeRepository) AuthService {
 	return &authService{
-		userRepository: userRep,
+		userRepository:      userRep,
 		applicantRepository: applicantRep,
-		employeeRepository: employeeRep,
+		employeeRepository:  employeeRep,
 	}
 }
 

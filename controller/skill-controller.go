@@ -3,9 +3,9 @@ package controller
 import (
 	"errors"
 	"fmt"
-	"mini-project/dto"
-	"mini-project/helpers"
-	"mini-project/service"
+	"github.com/PutraFajarF/backend-ats-app-cap/dto"
+	"github.com/PutraFajarF/backend-ats-app-cap/helpers"
+	"github.com/PutraFajarF/backend-ats-app-cap/service"
 	"net/http"
 	"strconv"
 
@@ -23,13 +23,13 @@ type SkillController interface {
 
 type skillController struct {
 	serviceSkill service.SkillService
-	jwtService service.JWTService
+	jwtService   service.JWTService
 }
 
 func NewSkillController(skillService service.SkillService, jwtService service.JWTService) SkillController {
 	return &skillController{
 		serviceSkill: skillService,
-		jwtService: jwtService,
+		jwtService:   jwtService,
 	}
 }
 
@@ -123,7 +123,7 @@ func (c *skillController) GetSkillByID(ctx *gin.Context) {
 		return
 	}
 
-	// ambil data di tabel experience berdasarkan id url 
+	// ambil data di tabel experience berdasarkan id url
 	skill, err := c.serviceSkill.GetSkillDetailByID(input.ID, int(applicant.ID))
 	if err != nil {
 		response := helpers.BuildErrorResponse("failed to process request", "failed to get job skill, id not found", helpers.EmptyObj{})
@@ -159,7 +159,7 @@ func (c *skillController) CreateSkill(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
-	
+
 	user, err := c.serviceSkill.GetUserByID(userID)
 	if user.Role != "user" {
 		response := helpers.BuildErrorResponse("failed to process request", "role is not user", helpers.EmptyObj{})
@@ -195,7 +195,7 @@ func (c *skillController) UpdateSkill(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
-	
+
 	var inputData dto.Jobskill
 	err = ctx.ShouldBind(&inputData)
 	if err != nil {
@@ -219,7 +219,7 @@ func (c *skillController) UpdateSkill(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
-	
+
 	user, err := c.serviceSkill.GetUserByID(userID)
 	if err != nil {
 		response := helpers.BuildErrorResponse("failed to access request", err.Error(), helpers.EmptyObj{})

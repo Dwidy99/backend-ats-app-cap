@@ -3,8 +3,8 @@ package controller
 import (
 	"errors"
 	"fmt"
-	"mini-project/helpers"
-	"mini-project/service"
+	"github.com/PutraFajarF/backend-ats-app-cap/helpers"
+	"github.com/PutraFajarF/backend-ats-app-cap/service"
 	"net/http"
 	"strconv"
 
@@ -18,13 +18,13 @@ type JobAppliedController interface {
 
 type jobAppliedController struct {
 	jobAppliedService service.JobAppliedService
-	jwtService service.JWTService
+	jwtService        service.JWTService
 }
 
 func NewJobAppliedController(jobApplied service.JobAppliedService, jwtService service.JWTService) JobAppliedController {
 	return &jobAppliedController{
 		jobAppliedService: jobApplied,
-		jwtService: jwtService,
+		jwtService:        jwtService,
 	}
 }
 

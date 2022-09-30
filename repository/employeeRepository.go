@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"mini-project/entity"
+	"github.com/PutraFajarF/backend-ats-app-cap/entity"
 
 	"github.com/jinzhu/gorm"
 )
@@ -56,7 +56,7 @@ func (db *employeeConnection) SaveEmployee(employee entity.Employee) (entity.Emp
 
 func (db *employeeConnection) FindUserByID(userID int) (entity.User, error) {
 	var user entity.User
-	
+
 	err := db.connection.Where("id = ?", userID).Find(&user).Error
 	if err != nil {
 		return user, err
