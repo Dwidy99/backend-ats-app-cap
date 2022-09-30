@@ -1,1 +1,1 @@
-web: github.com/PutraFajarF/backend-ats-app-cap
+web: backend-ats-app-cap
