@@ -14,7 +14,7 @@ type Jobs struct {
 	LevelOfExperience string    `gorm:"type:varchar(255)" json:"level_of_experience"`
 	Address           string    `json:"address"`
 	Contact           string    `gorm:"type:varchar(255)" json:"contact"`
-	Website           string    `gorm:"type:varchar(255)" json:"string"`
+	Website           string    `gorm:"type:varchar(255)" json:"website"`
 	DateStart         string    `gorm:"type:varchar(255)" json:"date_start"`
 	DateEnd           string    `gorm:"type:varchar(255)" json:"date_end"`
 	CreatedAt         time.Time `json:"created_at"`
