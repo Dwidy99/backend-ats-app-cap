@@ -77,7 +77,7 @@ func (c *authController) RegisterEmployees(ctx *gin.Context) {
 		}
 
 		if user.Role != "admin" {
-			response := helpers.BuildErrorResponse("request blocked, role invalid", "role not superadmin", helpers.EmptyObj{})
+			response := helpers.BuildErrorResponse("request blocked, role invalid", "role not admin", helpers.EmptyObj{})
 			ctx.JSON(http.StatusForbidden, response)
 			return
 		} else {

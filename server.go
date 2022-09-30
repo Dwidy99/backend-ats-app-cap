@@ -56,6 +56,8 @@ func main() {
 	{
 		authRoutes.POST("login", authController.Login)
 		authRoutes.POST("applicants/register", authController.RegisterApplicants)
+		authRoutes.GET("/jobs", jobsController.GetAllJobsApplicant)
+		authRoutes.GET("/jobs/:id", jobsController.ApplicantGetJobsByID)
 	}
 
 	// Applicant Routes
@@ -83,8 +85,6 @@ func main() {
 
 		authApplicantRoutes.GET("/applied", jobAppliedController.JobsAppliedByApplicantID)
 
-		authApplicantRoutes.GET("/jobs", jobsController.GetAllJobsApplicant)
-		authApplicantRoutes.GET("/jobs/:id", jobsController.ApplicantGetJobsByID)
 	}
 
 	// Employees Routes
