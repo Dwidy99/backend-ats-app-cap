@@ -51,6 +51,7 @@ var (
 func main() {
 	defer config.CloseConnectionDatabase(db)
 	r := gin.Default()
+	r.Static("/images", config.ProjectRootPath+"/images")
 	r.Static("/images", "./images")
 	r.Use(cors.Default())
 	authRoutes := r.Group("/")
