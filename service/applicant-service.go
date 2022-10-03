@@ -3,10 +3,11 @@ package service
 import (
 	"errors"
 	"fmt"
+	"os"
+
 	"github.com/PutraFajarF/backend-ats-app-cap/dto"
 	"github.com/PutraFajarF/backend-ats-app-cap/entity"
 	"github.com/PutraFajarF/backend-ats-app-cap/repository"
-	"os"
 
 	"github.com/mashingan/smapping"
 )
@@ -147,9 +148,11 @@ func (s *applicantService) UploadAvatar(ID int, fileLocation string) (entity.App
 	fmt.Println(applicant.Avatar)
 
 	if applicant.Avatar != "" {
-		e := os.Remove(applicant.Avatar)
-		if e != nil {
-			return applicant, e
+		if fileExists(applicant.Avatar) {
+			e := os.Remove(applicant.Avatar)
+			if e != nil {
+				return applicant, e
+			}
 		}
 	}
 
@@ -162,4 +165,12 @@ func (s *applicantService) UploadAvatar(ID int, fileLocation string) (entity.App
 	fmt.Println(updatedApplicant.Avatar)
 
 	return updatedApplicant, nil
+}
+
+func fileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
 }
