@@ -2,11 +2,12 @@ package controller
 
 import (
 	"fmt"
+	"net/http"
+	"strconv"
+
 	"github.com/PutraFajarF/backend-ats-app-cap/dto"
 	"github.com/PutraFajarF/backend-ats-app-cap/helpers"
 	"github.com/PutraFajarF/backend-ats-app-cap/service"
-	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
@@ -75,6 +76,6 @@ func (c *jobApplicationController) CreateApply(ctx *gin.Context) {
 		return
 	}
 
-	response := helpers.BuildResponse(true, "success to create job skill", jobApplicantion)
+	response := helpers.BuildResponse(true, "success to apply new job", jobApplicantion)
 	ctx.JSON(http.StatusOK, response)
 }
