@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/PutraFajarF/backend-ats-app-cap/entity"
-	"github.com/joho/godotenv"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -16,10 +15,10 @@ var db *gorm.DB
 func SetupConnectionDatabase() *gorm.DB {
 	// If use localhost uncomment this section and change sslmode from require to disable
 
-	errEnv := godotenv.Load()
-	if errEnv != nil {
-		panic("Failed to load env file")
-	}
+	// errEnv := godotenv.Load()
+	// if errEnv != nil {
+	// 	panic("Failed to load env file")
+	// }
 
 	dbUser := os.Getenv("DB_USER")
 	dbPass := os.Getenv("DB_PASS")
@@ -27,7 +26,7 @@ func SetupConnectionDatabase() *gorm.DB {
 	dbName := os.Getenv("DB_NAME")
 	dbPort := os.Getenv("DB_PORT")
 
-	dbUri := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable", dbHost, dbPort, dbUser, dbName, dbPass)
+	dbUri := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=require", dbHost, dbPort, dbUser, dbName, dbPass)
 	fmt.Println(dbUri)
 
 	conn, err := gorm.Open("postgres", dbUri)
