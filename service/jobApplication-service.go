@@ -11,7 +11,7 @@ import (
 )
 
 type JobApplicationService interface {
-	CreateJobApplicant(inputData dto.CreateJobApplication, applicantID int) (entity.Jobapplication, error)
+	CreateJobApplicant(inputData dto.CreateJobApplicationDTO, applicantID int) (entity.Jobapplication, error)
 	GetUserByID(userID int) (entity.User, error)
 	GetApplicantByID(userID int) (entity.Applicant, error)
 }
@@ -26,7 +26,7 @@ func NewJobApplicationService(jobApplicationRepository repository.JobApplication
 	}
 }
 
-func (s *jobApplicationService) CreateJobApplicant(inputData dto.CreateJobApplication, applicantID int) (entity.Jobapplication, error) {
+func (s *jobApplicationService) CreateJobApplicant(inputData dto.CreateJobApplicationDTO, applicantID int) (entity.Jobapplication, error) {
 	createJobApplication := entity.Jobapplication{}
 	createJobApplication.ApplicantID = uint64(applicantID)
 	createJobApplication.JobID = inputData.JobID

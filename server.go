@@ -23,6 +23,7 @@ var (
 	jobsRepository           repository.JobsRepository           = repository.NewJobsRepository(db)
 	jobApplicationRepository repository.JobApplicationRepository = repository.NewjobApplication(db)
 	jobAppliedRepository     repository.JobsAppliedRepository    = repository.NewJobAppliedConnection(db)
+	jobApplicationEmployeeRepository     repository.JobApplicationEmployeeRepository    = repository.NewjobApplicationEmployee(db)
 
 	jwtService service.JWTService = service.NewJWTService()
 
@@ -34,6 +35,7 @@ var (
 	jobsService       service.JobsService           = service.NewJobsService(jobsRepository)
 	jobApplication    service.JobApplicationService = service.NewJobApplicationService(jobApplicationRepository)
 	jobAppliedService service.JobAppliedService     = service.NewJobAppliedService(jobAppliedRepository)
+	jobApplicationServiceEmployee service.JobApplicationEmployeeService     = service.NewJobApplicationEmployeeService(jobApplicationEmployeeRepository)
 
 	authController       controller.AuthController       = controller.NewAuthController(authService, jwtService)
 	applicantController  controller.ApplicantController  = controller.NewApplicantController(applicantService, jwtService)
@@ -42,10 +44,9 @@ var (
 	skillController      controller.SkillController      = controller.NewSkillController(skillService, jwtService)
 	jobsController       controller.JobsController       = controller.NewJobsController(jobsService, jwtService)
 	jobsAppController    controller.JobsAppController    = controller.NewJobsAppController(jobsService)
-
 	jobAppliedController controller.JobAppliedController = controller.NewJobAppliedController(jobAppliedService, jwtService)
-
 	jobApplicantion controller.JobApplicationController = controller.NewJobApplicationController(jobApplication, jwtService)
+	jobApplicantionEmployee controller.JobApplicationEmployeeController = controller.NewJobApplicationEmployeeController(jobApplicationServiceEmployee, jwtService)
 )
 
 func main() {
@@ -101,6 +102,8 @@ func main() {
 		authEmployeeRoutes.POST("/jobs", jobsController.CreatedJobs)
 		authEmployeeRoutes.DELETE("/jobs/:id", jobsController.DeleteJobs)
 		authEmployeeRoutes.PUT("/jobs/:id", jobsController.UpdateJobs)
+
+		authEmployeeRoutes.PUT("/progress/:id", jobApplicantionEmployee.ProgressApplication)
 	}
 	r.Run()
 }

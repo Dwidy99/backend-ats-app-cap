@@ -13,29 +13,37 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-type JobApplicationController interface {
-	CreateApply(ctx *gin.Context)
+type JobApplicationEmployeeController interface {
+	ProgressApplication(ctx *gin.Context)
 }
 
-type jobApplicationController struct {
-	serviceJobApplication service.JobApplicationService
+type jobApplicationEmployeeController struct {
+	serviceJobApplicationEmployee service.JobApplicationEmployeeService
 	JWTService            service.JWTService
 }
 
-func NewJobApplicationController(serviceJobApplication service.JobApplicationService, jwtService service.JWTService) JobApplicationController {
-	return &jobApplicationController{
-		serviceJobApplication: serviceJobApplication,
+func NewJobApplicationEmployeeController(serviceJobApplicationEmployee service.JobApplicationEmployeeService, jwtService service.JWTService) JobApplicationEmployeeController {
+	return &jobApplicationEmployeeController{
+		serviceJobApplicationEmployee: serviceJobApplicationEmployee,
 		JWTService:            jwtService,
 	}
 }
 
-func (c *jobApplicationController) CreateApply(ctx *gin.Context) {
-	var inputData dto.CreateJobApplicationDTO
+func (c *jobApplicationEmployeeController) ProgressApplication(ctx *gin.Context) {
+	var inputID dto.GetJobApplicationEmployee
 
-	err := ctx.ShouldBind(&inputData)
+	err := ctx.ShouldBindUri(&inputID)
 	if err != nil {
-		res := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
-		ctx.JSON(http.StatusBadRequest, res)
+		response := helpers.BuildErrorResponse("failed update progress application", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	var inputData dto.UpdateJobApplicationEmployeeDTO
+	err = ctx.ShouldBind(&inputData)
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed update progress application", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 
@@ -54,21 +62,14 @@ func (c *jobApplicationController) CreateApply(ctx *gin.Context) {
 		return
 	}
 
-	user, err := c.serviceJobApplication.GetUserByID(userID)
-	if user.Role != "user" {
+	user, err := c.serviceJobApplicationEmployee.GetUserByID(userID)
+	if user.Role != "admin" {
 		response := helpers.BuildErrorResponse("failed to process request", "role is not user", helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 
-	applicant, err := c.serviceJobApplication.GetApplicantByID(userID)
-	if err != nil {
-		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
-		ctx.JSON(http.StatusBadRequest, response)
-		return
-	}
-
-	jobApplicantion, err := c.serviceJobApplication.CreateJobApplicant(inputData, int(applicant.ID))
+	jobApplicantion, err := c.serviceJobApplicationEmployee.UpdateProgress(inputData, int(inputID.ID))
 	if err != nil {
 		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
