@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+
 	"github.com/PutraFajarF/backend-ats-app-cap/dto"
 	"github.com/PutraFajarF/backend-ats-app-cap/entity"
 	"github.com/PutraFajarF/backend-ats-app-cap/repository"
@@ -29,7 +30,7 @@ func (s *jobApplicationService) CreateJobApplicant(inputData dto.CreateJobApplic
 	createJobApplication := entity.Jobapplication{}
 	createJobApplication.ApplicantID = uint64(applicantID)
 	createJobApplication.JobID = inputData.JobID
-	createJobApplication.Status = inputData.Status
+	createJobApplication.Status = "review"
 
 	err := smapping.FillStruct(&createJobApplication, smapping.MapFields(&inputData))
 	if err != nil {
