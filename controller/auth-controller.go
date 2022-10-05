@@ -126,7 +126,7 @@ func (c *authController) Login(ctx *gin.Context) {
 
 	authResult := c.authService.VerifyCredential(login.Email, login.Password)
 	if v, ok := authResult.(entity.User); ok {
-		GeneratedToken := c.jwtService.GenerateToken(strconv.FormatUint(v.ID, 10))
+		GeneratedToken := c.jwtService.GenerateToken(strconv.FormatUint(v.ID, 10), v.Role)
 		v.Token = GeneratedToken
 		response := helpers.BuildResponse(true, "ok", v)
 		ctx.JSON(http.StatusOK, response)

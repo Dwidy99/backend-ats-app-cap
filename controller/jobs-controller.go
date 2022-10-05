@@ -39,8 +39,7 @@ func (c *jobsController) GetAllJobs(ctx *gin.Context) {
 	authHeader := ctx.GetHeader("Authorization")
 	token, errToken := c.jwtService.ValidateToken(authHeader)
 	if errToken != nil {
-		messError := fmt.Sprintf("Failed to get all jobs data, token user wrong or empty")
-		response := helpers.BuildErrorResponse("Failed to process request", messError, helpers.EmptyObj{})
+		response := helpers.BuildErrorResponse("Failed to process request", "Failed to get all jobs data, token user wrong or empty", helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
@@ -257,8 +256,7 @@ func (c *jobsController) CreatedJobs(ctx *gin.Context) {
 		return
 	}
 	if user.Role != "admin" {
-		messError := fmt.Sprintf("failed to create jobs, role is not admin")
-		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+		response := helpers.BuildErrorResponse("failed to process request", "failed to create jobs, role is not admin", helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
@@ -289,10 +287,9 @@ func (c *jobsController) DeleteJobs(ctx *gin.Context) {
 	jobs.ID = id
 
 	authHeader := ctx.GetHeader("Authorization")
-	token, errToken := c.jwtService.ValidateToken(authHeader)
-	if errToken != nil {
-		messError := fmt.Sprintf("failed to access delete job, token user admin wrong or empty")
-		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+	token, err := c.jwtService.ValidateToken(authHeader)
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
@@ -320,21 +317,18 @@ func (c *jobsController) DeleteJobs(ctx *gin.Context) {
 		return
 	}
 	if user.Role != "admin" {
-		messError := fmt.Sprintf("failed to create jobs, role is not admin")
-		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+		response := helpers.BuildErrorResponse("failed to process request", "role is not admin", helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 
 	_, err = c.jobsService.DeletedJob(int(jobs.ID))
 	if err != nil {
-		errorMessage := gin.H{"error": err.Error()}
-		messError := fmt.Sprintf("failed to delete jobs")
-		response := helpers.BuildErrorResponse("failed to process request", messError, errorMessage)
+		response := helpers.BuildErrorResponse("failed to process request", "failed to delete jobs", helpers.EmptyObj{})
 		ctx.JSON(http.StatusForbidden, response)
 		return
 	}
 
-	response := helpers.BuildResponse(true, "success to delete job experience", nil)
+	response := helpers.BuildResponse(true, "success to delete jobs", nil)
 	ctx.JSON(http.StatusOK, response)
 }

@@ -19,13 +19,13 @@ type JobApplicationEmployeeController interface {
 
 type jobApplicationEmployeeController struct {
 	serviceJobApplicationEmployee service.JobApplicationEmployeeService
-	JWTService            service.JWTService
+	JWTService                    service.JWTService
 }
 
 func NewJobApplicationEmployeeController(serviceJobApplicationEmployee service.JobApplicationEmployeeService, jwtService service.JWTService) JobApplicationEmployeeController {
 	return &jobApplicationEmployeeController{
 		serviceJobApplicationEmployee: serviceJobApplicationEmployee,
-		JWTService:            jwtService,
+		JWTService:                    jwtService,
 	}
 }
 
@@ -62,7 +62,7 @@ func (c *jobApplicationEmployeeController) ProgressApplication(ctx *gin.Context)
 		return
 	}
 
-	user, err := c.serviceJobApplicationEmployee.GetUserByID(userID)
+	user, _ := c.serviceJobApplicationEmployee.GetUserByID(userID)
 	if user.Role != "admin" {
 		response := helpers.BuildErrorResponse("failed to process request", "role is not user", helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)

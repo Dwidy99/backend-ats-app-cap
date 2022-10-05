@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -45,42 +44,38 @@ func (c *experienceController) CreateExperience(ctx *gin.Context) {
 	}
 
 	authHeader := ctx.GetHeader("Authorization")
-	token, errToken := c.jwtService.ValidateToken(authHeader)
-	if errToken != nil {
-		messError := fmt.Sprintf("failed to access update job experience, token user applicant wrong or empty")
-		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+	token, err := c.jwtService.ValidateToken(authHeader)
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 	claims := token.Claims.(jwt.MapClaims)
 	userID, err := strconv.Atoi(fmt.Sprintf("%v", claims["user_id"]))
 	if err != nil {
-		messError := fmt.Sprintf("failed to access create job experience, user applicant with user id %v is empty", userID)
-		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 
-	user, _ := c.experienceService.GetUserByID(userID)
-	if user.Role != "user" {
-		messError := fmt.Sprintf("failed to access create job experience, role is unknow")
-		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+	role := fmt.Sprintf("%v", claims["role"])
+	if role != "user" || role == "" {
+		errMessage := fmt.Sprintf("role is not %v", role)
+		response := helpers.BuildErrorResponse("failed to process request", errMessage, helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 
 	applicant, err := c.experienceService.GetApplicantByID(userID)
 	if err != nil {
-		messError := fmt.Sprintf("failed to access create job experience, user applicant with user id %v is empty", userID)
-		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 
 	experience, err := c.experienceService.CreateExperience(experienceInput, int(applicant.ID))
 	if err != nil {
-		messError := fmt.Sprintf("failed to access create job experience, user applicant with user id %v is empty", userID)
-		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
@@ -95,7 +90,7 @@ func (c *experienceController) UpdateExperience(ctx *gin.Context) {
 	err := ctx.ShouldBindUri(&inputID)
 	if err != nil {
 		errorMessage := gin.H{"error": err}
-		response := helpers.BuildErrorResponse("failed update experience", "error", errorMessage)
+		response := helpers.BuildErrorResponse("failed update experience", err.Error(), errorMessage)
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
@@ -112,16 +107,22 @@ func (c *experienceController) UpdateExperience(ctx *gin.Context) {
 	authHeader := ctx.GetHeader("Authorization")
 	token, errToken := c.jwtService.ValidateToken(authHeader)
 	if errToken != nil {
-		messError := fmt.Sprintf("failed to access update job experience, token user applicant wrong or empty")
-		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 	claims := token.Claims.(jwt.MapClaims)
 	userID, err := strconv.Atoi(fmt.Sprintf("%v", claims["user_id"]))
 	if err != nil {
-		messError := fmt.Sprintf("failed to access update job experience, user applicant with user id %v is empty", userID)
-		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	role := fmt.Sprintf("%v", claims["role"])
+	if role != "user" || role == "" {
+		errMessage := fmt.Sprintf("role is not %v", role)
+		response := helpers.BuildErrorResponse("failed to process request", errMessage, helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
@@ -129,7 +130,7 @@ func (c *experienceController) UpdateExperience(ctx *gin.Context) {
 	// ambil data di tabel experience berdasarkan id url
 	experienceId, err := c.experienceService.GetExperienceByID(inputID.ID)
 	if err != nil {
-		response := helpers.BuildErrorResponse("failed to process request", "failed to update job experience, id not found", helpers.EmptyObj{})
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusNotFound, response)
 		return
 	}
@@ -169,7 +170,7 @@ func (c *experienceController) DeleteExperience(ctx *gin.Context) {
 	err := ctx.ShouldBindUri(&inputID)
 	if err != nil {
 		errorMessage := gin.H{"error": err}
-		response := helpers.BuildErrorResponse("failed to delete experience", "error", errorMessage)
+		response := helpers.BuildErrorResponse("failed to delete experience", err.Error(), errorMessage)
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
@@ -177,32 +178,30 @@ func (c *experienceController) DeleteExperience(ctx *gin.Context) {
 	authHeader := ctx.GetHeader("Authorization")
 	token, errToken := c.jwtService.ValidateToken(authHeader)
 	if errToken != nil {
-		messError := fmt.Sprintf("failed to access delete job experience, token user applicant wrong or empty")
-		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 	claims := token.Claims.(jwt.MapClaims)
 	userID, err := strconv.Atoi(fmt.Sprintf("%v", claims["user_id"]))
 	if err != nil {
-		messError := fmt.Sprintf("failed to delete job experience, user applicant with user id %v is empty", userID)
-		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 
-	if userID == 0 {
-		errorMessage := gin.H{"error": errors.New("forbidden")}
-		messError := fmt.Sprintf("failed to delete job experience, user applicant with user id %v is empty", userID)
-		response := helpers.BuildErrorResponse("failed to process request", messError, errorMessage)
-		ctx.JSON(http.StatusForbidden, response)
+	role := fmt.Sprintf("%v", claims["role"])
+	if role != "user" || role == "" {
+		errMessage := fmt.Sprintf("role is not %v", role)
+		response := helpers.BuildErrorResponse("failed to process request", errMessage, helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 
 	// ambil data di tabel experience berdasarkan id url
 	experienceId, err := c.experienceService.GetExperienceByID(inputID.ID)
 	if err != nil {
-		response := helpers.BuildErrorResponse("failed to process request", "failed to update job experience, id not found", helpers.EmptyObj{})
+		response := helpers.BuildErrorResponse("failed to process request", "user not found", helpers.EmptyObj{})
 		ctx.JSON(http.StatusNotFound, response)
 		return
 	}
@@ -227,9 +226,7 @@ func (c *experienceController) DeleteExperience(ctx *gin.Context) {
 
 	_, err = c.experienceService.DeleteExperience(inputID.ID)
 	if err != nil {
-		errorMessage := gin.H{"error": err.Error()}
-		messError := fmt.Sprintf("failed to delete job experience")
-		response := helpers.BuildErrorResponse("failed to process request", messError, errorMessage)
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusForbidden, response)
 		return
 	}
@@ -241,27 +238,25 @@ func (c *experienceController) DeleteExperience(ctx *gin.Context) {
 func (c *experienceController) GetAllExperiences(ctx *gin.Context) {
 
 	authHeader := ctx.GetHeader("Authorization")
-	token, errToken := c.jwtService.ValidateToken(authHeader)
-	if errToken != nil {
-		messError := fmt.Sprintf("failed to access delete job experience, token user applicant wrong or empty")
-		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+	token, err := c.jwtService.ValidateToken(authHeader)
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 	claims := token.Claims.(jwt.MapClaims)
 	userID, err := strconv.Atoi(fmt.Sprintf("%v", claims["user_id"]))
 	if err != nil {
-		messError := fmt.Sprintf("failed to delete job experience, user applicant with user id %v is empty", userID)
-		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 
-	if userID == 0 {
-		errorMessage := gin.H{"error": errors.New("forbidden")}
-		messError := fmt.Sprintf("failed to delete job experience, user applicant with user id %v is empty", userID)
-		response := helpers.BuildErrorResponse("failed to process request", messError, errorMessage)
-		ctx.JSON(http.StatusForbidden, response)
+	role := fmt.Sprintf("%v", claims["role"])
+	if role != "user" || role == "" {
+		errMessage := fmt.Sprintf("role is not %v", role)
+		response := helpers.BuildErrorResponse("failed to process request", errMessage, helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 
@@ -287,27 +282,25 @@ func (c *experienceController) GetExperienceByID(ctx *gin.Context) {
 	}
 
 	authHeader := ctx.GetHeader("Authorization")
-	token, errToken := c.jwtService.ValidateToken(authHeader)
-	if errToken != nil {
-		messError := fmt.Sprintf("failed to access job experience, token user applicant wrong or empty")
-		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+	token, err := c.jwtService.ValidateToken(authHeader)
+	if err != nil {
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 	claims := token.Claims.(jwt.MapClaims)
 	userID, err := strconv.Atoi(fmt.Sprintf("%v", claims["user_id"]))
 	if err != nil {
-		messError := fmt.Sprintf("failed to delete job experience, user applicant with user id %v is empty", userID)
-		response := helpers.BuildErrorResponse("failed to process request", messError, helpers.EmptyObj{})
+		response := helpers.BuildErrorResponse("failed to process request", err.Error(), helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 
-	if userID == 0 {
-		errorMessage := gin.H{"error": errors.New("forbidden")}
-		messError := fmt.Sprintf("failed to delete job experience, user applicant with user id %v is empty", userID)
-		response := helpers.BuildErrorResponse("failed to process request", messError, errorMessage)
-		ctx.JSON(http.StatusForbidden, response)
+	role := fmt.Sprintf("%v", claims["role"])
+	if role != "user" || role == "" {
+		errMessage := fmt.Sprintf("role is not %v", role)
+		response := helpers.BuildErrorResponse("failed to process request", errMessage, helpers.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
 

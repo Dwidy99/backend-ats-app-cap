@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -53,8 +52,7 @@ func (c *jobsAppController) ApplicantGetJobsByID(ctx *gin.Context) {
 	job, err := c.jobsService.GetJobByID(int(jobs.ID))
 	if err != nil {
 		errorMessage := gin.H{"error": err.Error()}
-		messError := fmt.Sprintf("failed to get jobs by id")
-		response := helpers.BuildErrorResponse("failed to process request", messError, errorMessage)
+		response := helpers.BuildErrorResponse("failed to process request", "failed to get jobs by id", errorMessage)
 		ctx.JSON(http.StatusForbidden, response)
 		return
 	}
