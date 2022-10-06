@@ -60,7 +60,7 @@ func (c *experienceController) CreateExperience(ctx *gin.Context) {
 
 	role := fmt.Sprintf("%v", claims["role"])
 	if role != "user" || role == "" {
-		errMessage := fmt.Sprintf("role is not %v", role)
+		errMessage := fmt.Sprintf("role is %v, should role user to access the data", role)
 		response := helpers.BuildErrorResponse("failed to process request", errMessage, helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
@@ -121,7 +121,7 @@ func (c *experienceController) UpdateExperience(ctx *gin.Context) {
 
 	role := fmt.Sprintf("%v", claims["role"])
 	if role != "user" || role == "" {
-		errMessage := fmt.Sprintf("role is not %v", role)
+		errMessage := fmt.Sprintf("role is %v, should role user to access the data", role)
 		response := helpers.BuildErrorResponse("failed to process request", errMessage, helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
@@ -192,7 +192,7 @@ func (c *experienceController) DeleteExperience(ctx *gin.Context) {
 
 	role := fmt.Sprintf("%v", claims["role"])
 	if role != "user" || role == "" {
-		errMessage := fmt.Sprintf("role is not %v", role)
+		errMessage := fmt.Sprintf("role is %v, should role user to access the data", role)
 		response := helpers.BuildErrorResponse("failed to process request", errMessage, helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
@@ -254,7 +254,7 @@ func (c *experienceController) GetAllExperiences(ctx *gin.Context) {
 
 	role := fmt.Sprintf("%v", claims["role"])
 	if role != "user" || role == "" {
-		errMessage := fmt.Sprintf("role is not %v", role)
+		errMessage := fmt.Sprintf("role is %v, should role user to access the data", role)
 		response := helpers.BuildErrorResponse("failed to process request", errMessage, helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
@@ -298,7 +298,7 @@ func (c *experienceController) GetExperienceByID(ctx *gin.Context) {
 
 	role := fmt.Sprintf("%v", claims["role"])
 	if role != "user" || role == "" {
-		errMessage := fmt.Sprintf("role is not %v", role)
+		errMessage := fmt.Sprintf("role is %v, should role user to access the data", role)
 		response := helpers.BuildErrorResponse("failed to process request", errMessage, helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return

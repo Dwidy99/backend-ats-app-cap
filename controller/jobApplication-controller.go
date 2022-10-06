@@ -56,7 +56,7 @@ func (c *jobApplicationController) CreateApply(ctx *gin.Context) {
 
 	role := fmt.Sprintf("%v", claims["role"])
 	if role != "user" || role == "" {
-		errMessage := fmt.Sprintf("role is not %v", role)
+		errMessage := fmt.Sprintf("role is %v, should role user to access the data", role)
 		response := helpers.BuildErrorResponse("failed to process request", errMessage, helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
