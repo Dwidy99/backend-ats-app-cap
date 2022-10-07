@@ -64,7 +64,7 @@ func (c *jobApplicationEmployeeController) ProgressApplication(ctx *gin.Context)
 
 	user, _ := c.serviceJobApplicationEmployee.GetUserByID(userID)
 	if user.Role != "admin" {
-		response := helpers.BuildErrorResponse("failed to process request", "role is not user", helpers.EmptyObj{})
+		response := helpers.BuildErrorResponse("failed to process request", "role is not admin", helpers.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, response)
 		return
 	}
